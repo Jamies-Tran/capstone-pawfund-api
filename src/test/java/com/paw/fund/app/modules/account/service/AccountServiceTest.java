@@ -57,10 +57,10 @@ public class AccountServiceTest {
 
         when(query.findById(accountId))
                 .thenReturn(mockAccount);
-        Account account = useCase.getAccount(AccountId.of(accountId));
+        Account actual = useCase.getAccount(AccountId.of(accountId));
 
-        Assertions.assertNotNull(account);
-        Assertions.assertEquals(mockAccount, account);
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(mockAccount, actual);
 
         verify(query, times(1)).findById(accountId);
     }
@@ -71,9 +71,9 @@ public class AccountServiceTest {
         when(query.findById(any()))
                 .thenThrow(new ResourceNotFoundException());
 
-        ResourceNotFoundException exc = Assertions.assertThrows(ResourceNotFoundException.class, () -> useCase.getAccount(AccountId.of(any())));
+        ResourceNotFoundException actualExc = Assertions.assertThrows(ResourceNotFoundException.class, () -> useCase.getAccount(AccountId.of(any())));
 
-        Assertions.assertEquals("Không tìm thấy tài nguyên.", exc.getMessage());
+        Assertions.assertEquals("Không tìm thấy tài nguyên.", actualExc.getMessage());
     }
 
     @Test
@@ -83,10 +83,10 @@ public class AccountServiceTest {
         when(query.findByAccountEmail(any()))
                 .thenReturn(mockAccount);
 
-        Account account = useCase.getAccountForAuth(AccountEmail.of(email));
+        Account actual = useCase.getAccountForAuth(AccountEmail.of(email));
 
-        Assertions.assertNotNull(account);
-        Assertions.assertEquals(account, mockAccount);
+        Assertions.assertNotNull(actual);
+        Assertions.assertEquals(actual, mockAccount);
 
         verify(query, times(1)).findByAccountEmail(any());
     }
@@ -98,10 +98,10 @@ public class AccountServiceTest {
         when(query.findByAccountEmail(any()))
                 .thenThrow(new ResourceNotFoundException());
 
-        ResourceNotFoundException exc = Assertions.assertThrows(ResourceNotFoundException.class,
+        ResourceNotFoundException actualExc = Assertions.assertThrows(ResourceNotFoundException.class,
                 () -> useCase.getAccountForAuth(AccountEmail.of(email)));
 
-        Assertions.assertEquals("Không tìm thấy tài nguyên.", exc.getMessage());
+        Assertions.assertEquals("Không tìm thấy tài nguyên.", actualExc.getMessage());
 
         verify(query, times(1)).findByAccountEmail(any());
     }
