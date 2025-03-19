@@ -10,16 +10,14 @@ public record ValueResponse<T> (
         Boolean success,
         String errorCode,
         String message,
-        String module,
         String apiVersion
 ) {
-    public static <T> ValueResponse <T> success(T data, HttpStatus responseStatus, String module, String apiVersion) {
+    public static <T> ValueResponse <T> success(T data, HttpStatus responseStatus, String apiVersion) {
         return ValueResponse.<T>builder()
                 .data(data)
                 .success(Boolean.TRUE)
                 .message(responseStatus.getReasonPhrase())
                 .status(String.valueOf(responseStatus.value()))
-                .module(module)
                 .apiVersion(apiVersion)
                 .build();
     }
@@ -31,7 +29,6 @@ public record ValueResponse<T> (
                 .errorCode(errorCode)
                 .message(responseStatus.getReasonPhrase())
                 .status(String.valueOf(responseStatus.value()))
-                .module("")
                 .apiVersion(apiVersion)
                 .build();
     }
