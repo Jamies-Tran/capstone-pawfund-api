@@ -13,11 +13,10 @@ public record PageResponse<T>(
         Boolean success,
         String errorCode,
         String message,
-        String module,
         String apiVersion
 ) {
     public static <T> PageResponse <T> success(List<T> data, Meta meta,
-                                               HttpStatus responseStatus, String module,
+                                               HttpStatus responseStatus,
                                                String apiVersion) {
         return PageResponse.<T>builder()
                 .data(data)
@@ -25,7 +24,6 @@ public record PageResponse<T>(
                 .success(Boolean.TRUE)
                 .message(responseStatus.getReasonPhrase())
                 .status(String.valueOf(responseStatus.value()))
-                .module(module)
                 .apiVersion(apiVersion)
                 .build();
     }

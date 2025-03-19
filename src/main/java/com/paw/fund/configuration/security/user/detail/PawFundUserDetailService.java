@@ -1,9 +1,9 @@
 package com.paw.fund.configuration.security.user.detail;
 
 
-import com.paw.fund.app.modules.account.domain.Account;
-import com.paw.fund.app.modules.account.domain.usecase.AccountEmail;
-import com.paw.fund.app.modules.account.service.usecase.IAccountUseCase;
+import com.paw.fund.app.modules.account_management.domain.Account;
+import com.paw.fund.app.modules.account_management.domain.usecase.AccountEmail;
+import com.paw.fund.app.modules.account_management.service.usecase.IAccountUseCase;
 import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
 import com.paw.fund.utils.password.encoder.PawFundPasswordEncoder;
 import lombok.AccessLevel;
@@ -33,13 +33,16 @@ public class PawFundUserDetailService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Account account = accountUseCase.getAccountForAuth(AccountEmail.of(username));
+        List<SimpleGrantedAuthority> authorities = account.roles().stream()
+                .map(x -> new SimpleGrantedAuthority("ROLE_%s".formatted(x.roleCode())))
+                .toList();
 
         return Optional.of(account)
                 .map(x -> User.builder()
                         .username(x.email())
                         .password(appPasswordEncoder.bCryptpasswordEncoder().encode(x.password()))
                         .disabled(false)
-                        .authorities(List.of(new SimpleGrantedAuthority("ROLE_%s".formatted(x.roleCode()))))
+                        .authorities(authorities)
                         .build())
                 .orElseThrow(AuthenticationException::new);
     }

@@ -16,6 +16,18 @@ spring:
         format_sql: true
   flyway:
     baseline-on-migrate: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    password: kqwb ipyc gkeh ligm
+    username: brokenstar2197@gmail.com
+
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 app:
   version: v1.0.0
@@ -24,3 +36,7 @@ app:
     expired-duration: 4320
   refresh-token:
     expired-duration: 4320
+  mail:
+    username: brokenstar2197@gmail.com
+    smtp:
+      password: kqwb ipyc gkeh ligm
