@@ -17,6 +17,8 @@ public interface IAccountUseCase {
 
     Account verifyCreatedAccount(AccountVerification accountVerification);
 
+    Account verifyNewEmail(AccountVerification accountVerification);
+
     Account selfChangeInfo(Account account);
 
     Account activeAccount(AccountId accountId);

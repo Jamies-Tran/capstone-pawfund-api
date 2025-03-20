@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface IVerificationCodeRepository extends JpaRepository<VerificationCodeEntity, Long> {
-    Optional<VerificationCodeEntity> findByCodeAndAccountId(String code, Long accountId);
+    Optional<VerificationCodeEntity> findByCodeAndAccountIdAndTypeCode(String code, Long accountId, String typeCode);
 }

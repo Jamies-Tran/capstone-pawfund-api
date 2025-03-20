@@ -6,6 +6,7 @@ import com.paw.fund.app.modules.verification_code_management.repository.database
 import com.paw.fund.app.modules.verification_code_management.repository.database.VerificationCodeEntity;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
+import com.paw.fund.enums.EVerificationCodeType;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -25,10 +26,12 @@ public class VerificationCodeQueryService {
     @NonNull
     IVerificationCodeMapper mapper;
 
-    public VerificationCode findByCodeAndAccountId(String code, Long accountId) {
+    public VerificationCode findByCodeAndAccountIdAndVerificationCodeType(String code, Long accountId, EVerificationCodeType verificationCodeType) {
         ValidationUtil.validateArgumentNotNull(code);
         ValidationUtil.validateArgumentNotNull(accountId);
-        VerificationCodeEntity foundVerificationCode = repository.findByCodeAndAccountId(code, accountId)
+        ValidationUtil.validateArgumentNotNull(verificationCodeType);
+        VerificationCodeEntity foundVerificationCode = repository
+                .findByCodeAndAccountIdAndTypeCode(code, accountId, verificationCodeType.getCode())
                 .orElseThrow(ResourceNotFoundException::new);
         validateVerificationCode(foundVerificationCode);
 

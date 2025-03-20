@@ -5,7 +5,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface IVerificationCodeModelMapper {
-    VerificationCode toDto(VerificationCodeRequest request);
+    VerificationCode toDto(VerificationEmailRequest request);
 
     VerificationCodeResponse toResponse(VerificationCode dto);
 }

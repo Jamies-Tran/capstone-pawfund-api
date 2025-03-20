@@ -4,6 +4,7 @@ import com.paw.fund.app.modules.account_management.controller.models.AccountRequ
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
 import com.paw.fund.app.modules.account_management.controller.models.AccountUpdatePasswordRequest;
 import com.paw.fund.app.modules.account_management.controller.models.AccountUpdateRequest;
+import com.paw.fund.app.modules.account_management.controller.models.verification.code.VerificationCodeRequest;
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/v1/api/account")
 @Tag(name = "Account", description = "QL tài khoản")
@@ -46,4 +46,16 @@ public interface IAccountV1API {
                     - [AUTHENTICATED - Người dùng đã xác thực]
                     """)
     ValueResponse<AccountResponse> selfChangePassword(@RequestBody @Valid AccountUpdatePasswordRequest accountUpdatePasswordRequest);
+
+    @PatchMapping("/email-verify")
+    @Operation(
+            summary = "Xác thực thay đổi email",
+            description = """
+                    - Người dùng đăng nhập xác thực cập nhật email
+                    - [AUTHENTICATED - Người dùng đã xác thực]
+                    """)
+    ValueResponse<AccountResponse> verifyEmail(
+            @RequestBody
+            @Valid
+            VerificationCodeRequest emailVerifyCodeRequest);
 }

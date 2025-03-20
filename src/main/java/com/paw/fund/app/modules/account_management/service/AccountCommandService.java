@@ -73,6 +73,18 @@ public class AccountCommandService {
         return mapper.toDto(updatedAccount);
     }
 
+    public Account updateEmail(Long accountId, String email) {
+        ValidationUtil.validateArgumentNotNull(accountId);
+        ValidationUtil.validateArgumentNotNull(email);
+        AccountEntity account = repository.findById(accountId)
+                .orElseThrow(ResourceNotFoundException::new);
+        account.setEmail(email);
+        account.prepareUpdate(auditableUseCase.createAuditableForUpdate());
+        AccountEntity updatedAccount = repository.save(account);
+
+        return mapper.toDto(updatedAccount);
+    }
+
     public Account update(Long accountId, Account account) {
         ValidationUtil.validateArgumentNotNull(accountId);
         ValidationUtil.validateNotNullPointerException(account);
