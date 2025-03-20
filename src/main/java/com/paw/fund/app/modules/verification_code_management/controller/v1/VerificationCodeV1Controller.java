@@ -1,4 +1,4 @@
-package com.paw.fund.app.modules.verification_code_management.controller.v1.pub;
+package com.paw.fund.app.modules.verification_code_management.controller.v1;
 
 import com.paw.fund.app.modules.verification_code_management.controller.models.IVerificationCodeModelMapper;
 import com.paw.fund.app.modules.verification_code_management.controller.models.VerificationEmailRequest;
@@ -19,10 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class VerificationCodeV1PubController implements IVerificationCodeV1PubAPI {
-    @NonFinal
-    @Value("${app.version}")
-    String API_VERSION;
+public class VerificationCodeV1Controller implements IVerificationCodeV1API {
 
     @NonNull
     IVerificationCodeUseCase useCase;
@@ -30,10 +27,14 @@ public class VerificationCodeV1PubController implements IVerificationCodeV1PubAP
     @NonNull
     IVerificationCodeModelMapper modelMapper;
 
+    @NonFinal
+    @Value("${app.version}")
+    String API_VERSION;
+
     @Override
-    public ValueResponse<VerificationCodeResponse> sendAccountVerification(VerificationEmailRequest verificationCodeRequest) {
+    public ValueResponse<VerificationCodeResponse> sendEmailVerification(VerificationEmailRequest verificationCodeRequest) {
         VerificationCode verificationCode = useCase
-                .createAndSendCodeVerificationAccount(VerificationMail.of(verificationCodeRequest.email()));
+                .createAndSendCodeVerificationEmail(VerificationMail.of(verificationCodeRequest.email()));
 
         return ValueResponse.success(modelMapper.toResponse(verificationCode), HttpStatus.OK, API_VERSION);
     }

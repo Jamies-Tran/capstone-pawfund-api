@@ -36,6 +36,9 @@ public class VerificationCodeEntity {
     String code;
 
     @Column
+    String newEmail;
+
+    @Column
     String typeCode;
 
     @Column

@@ -9,6 +9,7 @@ import java.util.Random;
 public record VerificationCode(
         Long verificationCodeId,
         Long accountId,
+        String newEmail,
         String code,
         String typeCode,
         String typeName,

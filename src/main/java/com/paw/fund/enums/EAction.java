@@ -10,8 +10,10 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum EAction {
     CREATED("CREATED", "Tạo mới"),
-    SEND_VERIFIED("SEND_VERIFIED", "Gửi mã xác thức"),
-    VERIFIED("VERIFIED", "Xác thực"),
+    SEND_VERIFIED_ACCOUNT("SEND_VERIFIED_ACCOUNT", "Gửi mã xác thức tài khoản"),
+    SEND_VERIFIED_EMAIL("SEND_VERIFIED_EMAIL", "Gửi mã xác thức email"),
+    VERIFIED_ACCOUNT("VERIFIED_ACCOUNT", "Đã xác thực tài khoản"),
+    VERIFIED_EMAIL("VERIFIED_EMAIL", "Đã xác thực email"),
     LOGIN("LOGIN", "Đăng nhập"),
     LOGOUT("LOGOUT", "Đăng xuất"),;
 

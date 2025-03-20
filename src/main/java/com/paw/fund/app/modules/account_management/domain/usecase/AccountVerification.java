@@ -13,4 +13,10 @@ public record AccountVerification(
                 .verificationCode(verificationCode)
                 .build();
     }
+
+    public static AccountVerification of(String verificationCode) {
+        return AccountVerification.builder()
+                .verificationCode(verificationCode)
+                .build();
+    }
 }

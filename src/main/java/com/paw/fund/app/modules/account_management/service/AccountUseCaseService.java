@@ -24,6 +24,7 @@ import com.paw.fund.configuration.request.context.RequestContext;
 import com.paw.fund.dto.CurrentAccountLogin;
 import com.paw.fund.enums.EAction;
 import com.paw.fund.enums.EAccountStatus;
+import com.paw.fund.enums.EVerificationCodeType;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -138,14 +139,39 @@ public class AccountUseCaseService implements IAccountUseCase {
     public Account verifyCreatedAccount(AccountVerification accountVerification) {
         ValidationUtil.validateNotNullPointerException(accountVerification);
         VerificationCode verificationCode = verificationCodeQueryService
-                .findByCodeAndAccountId(accountVerification.verificationCode(), accountVerification.accountId());
+                .findByCodeAndAccountIdAndVerificationCodeType(
+                        accountVerification.verificationCode(),
+                        accountVerification.accountId(),
+                        EVerificationCodeType.ACCOUNT_CREATION);
         Account foundAccount = queryService.findById(verificationCode.accountId());
         Account updatedAccount = commandService.updateStatus(foundAccount.accountId(), EAccountStatus.ACTIVE);
         verificationCodeCommandService.delete(verificationCode.verificationCodeId());
         AccountActivityLog log = AccountActivityLog.builder()
                 .accountId(updatedAccount.accountId())
-                .actionCode(EAction.VERIFIED.getCode())
-                .actionName(EAction.VERIFIED.getName())
+                .actionCode(EAction.VERIFIED_ACCOUNT.getCode())
+                .actionName(EAction.VERIFIED_ACCOUNT.getName())
+                .build();
+        accountActivityLogCommandService.save(log);
+
+        return updatedAccount;
+    }
+
+    @Override
+    public Account verifyNewEmail(AccountVerification accountVerification) {
+        ValidationUtil.validateNotNullPointerException(accountVerification);
+        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+        VerificationCode verificationCode = verificationCodeQueryService
+                .findByCodeAndAccountIdAndVerificationCodeType(
+                        accountVerification.verificationCode(),
+                        currentAccountLogin.accountId(),
+                        EVerificationCodeType.EMAIL_UPDATE);
+        Account foundAccount = queryService.findById(currentAccountLogin.accountId());
+        Account updatedAccount = commandService.updateEmail(foundAccount.accountId(), verificationCode.newEmail());
+        verificationCodeCommandService.delete(verificationCode.verificationCodeId());
+        AccountActivityLog log = AccountActivityLog.builder()
+                .accountId(updatedAccount.accountId())
+                .actionCode(EAction.VERIFIED_EMAIL.getCode())
+                .actionName(EAction.VERIFIED_EMAIL.getName())
                 .build();
         accountActivityLogCommandService.save(log);
 

@@ -10,6 +10,8 @@ import com.paw.fund.app.modules.verification_code_management.domain.Verification
 import com.paw.fund.app.modules.verification_code_management.domain.usecase.VerificationMail;
 import com.paw.fund.app.modules.verification_code_management.service.usecase.IVerificationCodeUseCase;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
+import com.paw.fund.configuration.request.context.RequestContext;
+import com.paw.fund.dto.CurrentAccountLogin;
 import com.paw.fund.enums.EAction;
 import com.paw.fund.enums.EAccountStatus;
 import com.paw.fund.enums.EVerificationCodeType;
@@ -41,6 +43,9 @@ public class VerificationCodeUseCaseService implements IVerificationCodeUseCase 
     @NonNull
     AccountActivityLogCommandService accountActivityLogCommandService;
 
+    @NonNull
+    RequestContext requestContext;
+
     @NonFinal
     @Value("${app.mail.username}")
     String systemMail;
@@ -49,7 +54,6 @@ public class VerificationCodeUseCaseService implements IVerificationCodeUseCase 
     @Override
     public VerificationCode createAndSendCodeVerificationAccount(VerificationMail verificationMail) {
         ValidationUtil.validateNotNullPointerException(verificationMail);
-        ValidationUtil.validateArgumentNotNull(verificationMail.value());
         Account account = accountQueryService.findByAccountEmail(verificationMail.value());
         validateAccountVerification(account);
 
@@ -65,13 +69,36 @@ public class VerificationCodeUseCaseService implements IVerificationCodeUseCase 
                 .content(createdVerificationCode.code())
                 .isHTMLSupport(true)
                 .build();
-        mailSenderCommandService.sendMail(mailSender.configForAccountVerification(account.lastName()));
+        mailSenderCommandService.sendMail(mailSender.prepareForAccountVerification(account.lastName()));
         AccountActivityLog log = AccountActivityLog.builder()
                 .accountId(account.accountId())
-                .actionCode(EAction.SEND_VERIFIED.getCode())
-                .actionName(EAction.SEND_VERIFIED.getName())
+                .actionCode(EAction.SEND_VERIFIED_ACCOUNT.getCode())
+                .actionName(EAction.SEND_VERIFIED_ACCOUNT.getName())
                 .build();
         accountActivityLogCommandService.save(log);
+
+        return createdVerificationCode;
+    }
+
+    @Override
+    public VerificationCode createAndSendCodeVerificationEmail(VerificationMail newEmail) {
+        ValidationUtil.validateNotNullPointerException(newEmail);
+        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+
+        VerificationCode verificationCode = VerificationCode.builder()
+                .accountId(currentAccountLogin.accountId())
+                .newEmail(newEmail.value())
+                .typeCode(EVerificationCodeType.EMAIL_UPDATE.getCode())
+                .typeName(EVerificationCodeType.EMAIL_UPDATE.getName())
+                .build();
+        VerificationCode createdVerificationCode = commandService.save(verificationCode);
+        MailSender mailSender = MailSender.builder()
+                .from(systemMail)
+                .to(newEmail.value())
+                .content(createdVerificationCode.code())
+                .isHTMLSupport(true)
+                .build();
+        mailSenderCommandService.sendMail(mailSender.prepareForEmailVerification(currentAccountLogin.fullName()));
 
         return createdVerificationCode;
     }

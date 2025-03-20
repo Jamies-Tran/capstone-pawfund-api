@@ -9,7 +9,8 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum EVerificationCodeType {
-    ACCOUNT_CREATION("ACCOUNT_CREATION", "Xác minh tài khoản");
+    ACCOUNT_CREATION("ACCOUNT_CREATION", "Xác minh tài khoản"),
+    EMAIL_UPDATE("EMAIL_UPDATE", "Xác minh thay đổi email");
 
 
     String code;

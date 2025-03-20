@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 
 @Builder
-public record VerificationCodeRequest(
+public record VerificationEmailRequest(
         @NotNull(message = "Vui lập nhập email")
         @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Email không hợp lệ")
         String email

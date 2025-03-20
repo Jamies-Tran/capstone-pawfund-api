@@ -5,4 +5,6 @@ import com.paw.fund.app.modules.verification_code_management.domain.usecase.Veri
 
 public interface IVerificationCodeUseCase {
     VerificationCode createAndSendCodeVerificationAccount(VerificationMail verificationMail);
+
+    VerificationCode createAndSendCodeVerificationEmail(VerificationMail newEmail);
 }

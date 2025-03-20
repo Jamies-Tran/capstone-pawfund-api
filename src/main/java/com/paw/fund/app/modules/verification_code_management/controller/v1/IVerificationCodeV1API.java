@@ -1,28 +1,26 @@
-package com.paw.fund.app.modules.verification_code_management.controller.v1.pub;
+package com.paw.fund.app.modules.verification_code_management.controller.v1;
 
 import com.paw.fund.app.modules.verification_code_management.controller.models.VerificationEmailRequest;
 import com.paw.fund.app.modules.verification_code_management.controller.models.VerificationCodeResponse;
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-@RequestMapping("/v1/public/verification-code")
+@RequestMapping("/v1/api/verification-code")
 @Tag(name = "Verification Code", description = "QL Mã xác thực")
-public interface IVerificationCodeV1PubAPI {
-    @PostMapping("/account-verification/send")
+public interface IVerificationCodeV1API {
+    @PostMapping("/email-verification/send")
     @Operation(
-            summary = "Gửi mã xác thực tài khoản qua email của người dùng",
+            summary = "Gửi mã xác thực email qua email mới của người dùng",
             description = """
-                    - Tạo và gửi mã xác thực tài khoản qua email người dùng cung cấp
+                    - Tạo và gửi mã xác thực email qua email mới của người dùng cung cấp
                     """)
-    ValueResponse<VerificationCodeResponse> sendAccountVerification(
-            @Schema(description = "Email cần xác thực")
-            @RequestParam
+    ValueResponse<VerificationCodeResponse> sendEmailVerification(
+            @RequestBody
             @Valid
             VerificationEmailRequest verificationCodeRequest);
 }
