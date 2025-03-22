@@ -11,4 +11,6 @@ public interface IRoleUseCase {
     Role getAdaptorRole();
 
     Role getAdminRole();
+
+    Role getStaffRole();
 }

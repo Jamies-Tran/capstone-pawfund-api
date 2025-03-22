@@ -52,6 +52,15 @@ public class AccountV1Controller implements IAccountV1API {
     }
 
     @Override
+    public ValueResponse<AccountResponse> createStaff(AccountRequest accountRequest) {
+        List<Role> roles = List.of(roleUseCase.getStaffRole());
+        Account account = modelMapper.toDto(accountRequest, roles);
+        Account createdAccount = useCase.createAccount(account);
+
+        return ValueResponse.success(modelMapper.toResponse(createdAccount), HttpStatus.CREATED, API_VERSION);
+    }
+
+    @Override
     public ValueResponse<AccountResponse> selfChangeInfo(AccountUpdateRequest updateRequest) {
         Account updateAccount = modelMapper.toDto(updateRequest);
         Account updatedAccount = useCase.selfChangeInfo(updateAccount);
@@ -70,6 +79,13 @@ public class AccountV1Controller implements IAccountV1API {
     @Override
     public ValueResponse<AccountResponse> verifyEmail(VerificationCodeRequest emailVerifyCodeRequest) {
         Account account = useCase.verifyNewEmail(AccountVerification.of(emailVerifyCodeRequest.verificationCode()));
+
+        return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK, API_VERSION);
+    }
+
+    @Override
+    public ValueResponse<AccountResponse> getSelfAccountDetail() {
+        Account account = useCase.getSelfDetail();
 
         return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK, API_VERSION);
     }

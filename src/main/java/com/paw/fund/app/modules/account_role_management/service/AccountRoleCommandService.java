@@ -6,6 +6,7 @@ import com.paw.fund.app.modules.account_role_management.domain.IAccountRoleMappe
 import com.paw.fund.app.modules.account_role_management.repository.database.AccountRoleEntity;
 import com.paw.fund.app.modules.account_role_management.repository.database.IAccountRoleRepository;
 import com.paw.fund.configuration.handler.exceptions.NullPointerException;
+import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +24,11 @@ public class AccountRoleCommandService {
     IAccountRoleRepository repository;
 
     @NonNull
-    AccountQueryService accountQueryService;
-
-    @NonNull
     IAccountRoleMapper mapper;
 
     public List<AccountRole> saveAll(Long accountId, List<Long> roleIds) {
-        validateArgument(accountId);
+        ValidationUtil.validateArgumentNotNull(accountId);
+        ValidationUtil.validateArgumentListNotNull(roleIds);
         List<AccountRoleEntity> newAccountRoles = roleIds.stream()
                 .map(x -> AccountRoleEntity.builder()
                         .accountId(accountId)
@@ -43,15 +42,11 @@ public class AccountRoleCommandService {
                 .toList();
     }
 
-    private void validateArgument(Long accountId) {
-        String msg = "";
 
-        if(!accountQueryService.existsByAccountId(accountId)) {
-            msg = "Tài khoản không tồn tại";
-        }
+    public void deleteByAccountId(Long accountId) {
+        ValidationUtil.validateArgumentNotNull(accountId);
+        List<AccountRoleEntity> accountRoles = repository.findAllByAccountId(accountId);
 
-        if(StringUtils.hasText(msg)) {
-            throw new NullPointerException(msg);
-        }
+        repository.deleteAll(accountRoles);
     }
 }

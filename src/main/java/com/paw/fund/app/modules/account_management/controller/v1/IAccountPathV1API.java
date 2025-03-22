@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -52,4 +53,17 @@ public interface IAccountPathV1API {
                                                   @RequestBody
                                                   @Valid
                                                   AccountUpdatePasswordRequest accountUpdatePasswordRequest);
+
+    @DeleteMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Xóa tài khoản",
+            description = """
+                    - Admin xóa tài khoản
+                    - [ADMIN - Quản trị viên]
+                    """)
+    ValueResponse<?> deleteAccount(
+            @Schema(description = "Id tài khoản người dùng")
+            @PathVariable
+            Long accountId);
 }

@@ -2,6 +2,7 @@ package com.paw.fund.app.modules.account_management.service;
 
 import com.paw.fund.app.modules.account_management.domain.Account;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountEmail;
+import com.paw.fund.app.modules.account_management.domain.usecase.AccountFilter;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountId;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountPassword;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountUpdate;
@@ -14,6 +15,7 @@ import com.paw.fund.app.modules.log_management.domain.account.AccountActivityLog
 import com.paw.fund.app.modules.log_management.service.account.AccountActivityLogCommandService;
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaCommandService;
+import com.paw.fund.app.modules.media_management.service.common.CommonMediaQueryService;
 import com.paw.fund.app.modules.role_management.domain.Role;
 import com.paw.fund.app.modules.role_management.service.RoleQueryService;
 import com.paw.fund.app.modules.verification_code_management.domain.VerificationCode;
@@ -30,6 +32,7 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -61,6 +64,9 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @NonNull
     CommonMediaCommandService commonMediaCommandService;
+
+    @NonNull
+    CommonMediaQueryService commonMediaQueryService;
 
     @NonNull
     AccountActivityLogCommandService accountActivityLogCommandService;
@@ -182,8 +188,11 @@ public class AccountUseCaseService implements IAccountUseCase {
     public Account selfChangeInfo(Account account) {
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         Account updatedAccount = commandService.update(currentAccountLogin.accountId(), account);
+        commonMediaCommandService.deleteAllByAccountId(updatedAccount.accountId());
+        List<CommonMedia> commonMedia = commonMediaCommandService
+                .saveAllForAccount(currentAccountLogin.accountId(), account.medias());
 
-        return updatedAccount;
+        return updatedAccount.withMedias(commonMedia);
     }
 
     @Override
@@ -218,5 +227,42 @@ public class AccountUseCaseService implements IAccountUseCase {
                 accountUpdatePassword.password());
 
         return account;
+    }
+
+    @Override
+    public Account getAccountDetail(AccountId accountId) {
+        Account account = queryService.findById(accountId.value());
+        List<Role> roles = roleQueryService.findAllByAccountId(accountId.value());
+        List<CommonMedia> commonMedia = commonMediaQueryService.findAllByAccountId(accountId.value());
+
+        return account
+                .withRoles(roles)
+                .withMedias(commonMedia);
+    }
+
+    @Override
+    public Account getSelfDetail() {
+        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+        Account account = queryService.findById(currentAccountLogin.accountId());
+        List<Role> roles = roleQueryService.findAllByAccountId(currentAccountLogin.accountId());
+        List<CommonMedia> commonMedia = commonMediaQueryService.findAllByAccountId(currentAccountLogin.accountId());
+
+        return account
+                .withRoles(roles)
+                .withMedias(commonMedia);
+    }
+
+    @Override
+    public Page<Account> getAccountList(AccountFilter filter) {
+        return queryService.findAll(filter.searchCriteria(), filter.pageRequestCustom());
+    }
+
+    @Override
+    @Transactional
+    public void deleteAccount(AccountId accountId) {
+        accountRoleCommandService.deleteByAccountId(accountId.value());
+        commonMediaCommandService.deleteAllByAccountId(accountId.value());
+        accountActivityLogCommandService.deleteAllByAccountId(accountId.value());
+        commandService.delete(accountId.value());
     }
 }

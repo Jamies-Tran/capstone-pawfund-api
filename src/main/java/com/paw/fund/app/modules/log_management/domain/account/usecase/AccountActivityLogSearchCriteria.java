@@ -35,15 +35,15 @@ public record AccountActivityLogSearchCriteria(
                 .build();
     }
 
-    public Boolean isAccountIdEmpty() {
+    public Boolean isAccountIdNull() {
         return Objects.isNull(accountId);
     }
 
-    public Boolean isSearchEmpty() {
+    public Boolean isSearchEmptyOrNull() {
         return !StringUtils.hasText(search);
     }
 
-    public Boolean isActionCodesEmpty() {
+    public Boolean isActionCodesEmptyOrNull() {
         return CollectionUtils.isEmpty(actionCodes);
     }
 }

@@ -7,7 +7,9 @@ import com.paw.fund.app.modules.account_management.repository.database.IAccountR
 import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
 import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
+import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.enums.EAccountStatus;
+import com.paw.fund.enums.EDeleteStatus;
 import com.paw.fund.utils.password.encoder.PawFundPasswordEncoder;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
@@ -125,5 +127,21 @@ public class AccountCommandService {
         AccountEntity updatedAccount = repository.save(foundAccount);
 
         return mapper.toDto(updatedAccount);
+    }
+
+    public void delete(Long accountId) {
+        ValidationUtil.validateArgumentNotNull(accountId);
+        if(validateDelete(accountId)) {
+            AccountEntity account = repository.findById(accountId)
+                    .orElseThrow(ResourceNotFoundException::new);
+            repository.delete(account);
+        } else {
+            throw new ResourceNotValidException("Không thể xóa tài khoản");
+        }
+    }
+
+    private boolean validateDelete(Long accountId) {
+        //TODO: Kiểm tra điều kiện xóa tài khoản
+        return true;
     }
 }
