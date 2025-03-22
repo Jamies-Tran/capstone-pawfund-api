@@ -4,6 +4,7 @@ import com.paw.fund.app.modules.account_management.controller.models.AccountResp
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
 import com.paw.fund.app.modules.account_management.controller.models.verification.code.VerificationCodeRequest;
 import com.paw.fund.app.modules.account_management.domain.Account;
+import com.paw.fund.app.modules.account_management.domain.usecase.AccountId;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountVerification;
 import com.paw.fund.app.modules.account_management.service.usecase.IAccountUseCase;
 import com.paw.fund.utils.response.ValueResponse;
@@ -37,5 +38,12 @@ public class AccountPathV1PubController implements IAccountPathV1PubAPI {
         Account verifiedAccount = useCase.verifyCreatedAccount(accountVerification);
 
         return ValueResponse.success(modelMapper.toResponse(verifiedAccount), HttpStatus.OK, APP_VERSION);
+    }
+
+    @Override
+    public ValueResponse<AccountResponse> getAccountDetail(Long accountId) {
+        Account account = useCase.getAccountDetail(AccountId.of(accountId));
+
+        return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK, APP_VERSION);
     }
 }

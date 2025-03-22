@@ -14,7 +14,6 @@ public record AccountResponse(
         String lastName,
         String identification,
         String email,
-        String password,
         String phone,
         String address,
         LocalDate dateOfBirth,

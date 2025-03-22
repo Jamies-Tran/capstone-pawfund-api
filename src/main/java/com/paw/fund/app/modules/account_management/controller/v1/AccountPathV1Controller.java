@@ -53,4 +53,11 @@ public class AccountPathV1Controller implements IAccountPathV1API {
 
         return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK, API_VERSION);
     }
+
+    @Override
+    public ValueResponse<?> deleteAccount(Long accountId) {
+        useCase.deleteAccount(AccountId.of(accountId));
+
+        return ValueResponse.success(null, HttpStatus.NO_CONTENT, API_VERSION);
+    }
 }
