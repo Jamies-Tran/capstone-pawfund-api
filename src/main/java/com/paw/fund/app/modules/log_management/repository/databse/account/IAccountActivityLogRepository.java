@@ -7,18 +7,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface IAccountActivityLogRepository extends JpaRepository<AccountActivityLogEntity, Long> {
     @Query("""
         SELECT aal
         FROM AccountActivityLogEntity aal
         WHERE aal.loggedAt BETWEEN :#{#searchCriteria.timeRange().get(0)} AND :#{#searchCriteria.timeRange().get(1)}
-        AND (:#{#searchCriteria.isAccountIdEmpty()} = TRUE
+        AND (:#{#searchCriteria.isAccountIdNull()} = TRUE
             OR aal.accountId = :#{#searchCriteria.accountId()})
-        AND (:#{#searchCriteria.isSearchEmpty()} = TRUE
+        AND (:#{#searchCriteria.isSearchEmptyOrNull()} = TRUE
             OR aal.actionName ILIKE :#{#searchCriteria.search()})
-        AND (:#{#searchCriteria.isActionCodesEmpty()} = TRUE
+        AND (:#{#searchCriteria.isActionCodesEmptyOrNull()} = TRUE
             OR aal.actionCode IN :#{#searchCriteria.actionCodes()})
     """)
     Page<AccountActivityLogEntity> findAll(AccountActivityLogSearchCriteria searchCriteria, Pageable pageable);
+
+    List<AccountActivityLogEntity> findAllByAccountId(Long accountId);
 }

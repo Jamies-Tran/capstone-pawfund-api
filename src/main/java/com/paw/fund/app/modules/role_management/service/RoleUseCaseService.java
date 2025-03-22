@@ -41,4 +41,11 @@ public class RoleUseCaseService implements IRoleUseCase {
         ERole adaptorRole = ERole.ADMIN;
         return getRole(RoleCode.of(adaptorRole.getCode()));
     }
+
+    @Override
+    public Role getStaffRole() {
+        ERole staffRole = ERole.STAFF;
+
+        return getRole(RoleCode.of(staffRole.getCode()));
+    }
 }

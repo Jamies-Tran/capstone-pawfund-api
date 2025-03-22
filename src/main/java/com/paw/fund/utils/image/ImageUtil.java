@@ -16,7 +16,7 @@ public class ImageUtil {
             String mimeType = tika.detect(is);
             return EMimeType.findByCode(mimeType);
         } catch (Exception exc) {
-            throw new ServiceException();
+            return EMimeType.UNDEFINED;
         }
     }
 }

@@ -2,11 +2,13 @@ package com.paw.fund.app.modules.account_management.service.usecase;
 
 import com.paw.fund.app.modules.account_management.domain.Account;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountEmail;
+import com.paw.fund.app.modules.account_management.domain.usecase.AccountFilter;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountId;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountPassword;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountUpdate;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountUpdatePassword;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountVerification;
+import org.springframework.data.domain.Page;
 
 public interface IAccountUseCase {
     Account getAccount(AccountId accountId);
@@ -28,4 +30,12 @@ public interface IAccountUseCase {
     Account selfChangePassword(AccountPassword accountPassword);
 
     Account changePassword(AccountUpdatePassword accountUpdatePassword);
+
+    Account getAccountDetail(AccountId accountId);
+
+    Account getSelfDetail();
+
+    Page<Account> getAccountList(AccountFilter filter);
+
+    void deleteAccount(AccountId accountId);
 }

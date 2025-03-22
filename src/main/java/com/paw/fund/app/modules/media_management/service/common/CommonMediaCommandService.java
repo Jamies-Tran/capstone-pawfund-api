@@ -43,4 +43,9 @@ public class CommonMediaCommandService {
                 .map(mapper::toDto)
                 .toList();
     };
+
+    public void deleteAllByAccountId(Long accountId) {
+        List<CommonMediaEntity> commonMedias = repository.findAllByAccountId(accountId);
+        repository.deleteAll(commonMedias);
+    }
 }

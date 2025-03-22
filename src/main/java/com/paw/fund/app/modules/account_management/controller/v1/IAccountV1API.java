@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,6 +29,16 @@ public interface IAccountV1API {
                     - [ADMIN - Quản trị viên]
                     """)
     ValueResponse<AccountResponse> createAdmin(@RequestBody @Valid AccountRequest accountRequest);
+
+    @PostMapping("/staff")
+    @PreAuthorize("hasRole({'ROLE_SHELTER_OWNER'})")
+    @Operation(
+            summary = "Tạo tài khoản Admin",
+            description = """
+                    - Chủ trung tâm cứu hộ tạo tài khoản nhân viên
+                    - [SHELTER_OWNER - Chủ trung tâm cứu hộ]
+                    """)
+    ValueResponse<AccountResponse> createStaff(@RequestBody @Valid AccountRequest accountRequest);
 
     @PutMapping
     @Operation(
@@ -58,4 +69,13 @@ public interface IAccountV1API {
             @RequestBody
             @Valid
             VerificationCodeRequest emailVerifyCodeRequest);
+
+    @GetMapping("/self-detail")
+    @Operation(
+            summary = "Xem thông tin chi tiết của cá nhân",
+            description = """
+                    - Người dùng xem thông tin chi tiết của cá nhân
+                    - [AUTHENTICATED - Người dùng đã xác thực]
+                    """)
+    ValueResponse<AccountResponse> getSelfAccountDetail();
 }
