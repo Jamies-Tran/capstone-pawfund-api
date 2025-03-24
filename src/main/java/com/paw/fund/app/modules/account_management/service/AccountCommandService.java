@@ -48,17 +48,20 @@ public class AccountCommandService {
     }
 
     private void validateNewAccount(Account account) {
-        String msg = "";
-        if(repository.existsByEmail(account.email())) {
-            msg = "Email đã tồn tại";
-        } else if(repository.existsByPhone(account.phone())) {
-            msg = "Số điện thoại đã tồn tại";
-        } else if(repository.existsByIdentification(account.identification())) {
-            msg = "CCCD đã tồn tại";
+        boolean isDuplicatedEmail = repository.existsByEmail(account.email());
+        boolean isDuplicatedPhone = repository.existsByPhone(account.phone());
+        boolean isDuplicatedIdentification = repository.existsByIdentification(account.identification());
+
+        if(isDuplicatedEmail) {
+            throw new ResourceDuplicateException("Email đã tồn tại");
         }
 
-        if(StringUtils.hasText(msg)) {
-            throw new ResourceDuplicateException(msg);
+        if(isDuplicatedPhone) {
+            throw new ResourceDuplicateException("Số điện thoại đã tồn tại");
+        }
+
+        if(isDuplicatedIdentification) {
+            throw new ResourceDuplicateException("CCCD đã tồn tại");
         }
     }
 
@@ -101,20 +104,18 @@ public class AccountCommandService {
     }
 
     private void validateUpdateAccount(AccountEntity foundAccount, Account account) {
-        String msg = "";
-        if(!Objects.equals(foundAccount.getEmail(), account.email())
-                && repository.existsByEmail(account.email())) {
-            msg = "Email đã tồn tại";
-        } else if(!Objects.equals(foundAccount.getPhone(), account.phone())
-                && repository.existsByPhone(account.phone())) {
-            msg = "Số điện thoại đã tồn tại";
-        } else if(!Objects.equals(foundAccount.getIdentification(), account.identification())
-                && repository.existsByIdentification(account.identification())) {
-            msg = "CCCD đã tồn tại";
-        }
-
-        if(StringUtils.hasText(msg)) {
-            throw new ResourceDuplicateException(msg);
+        boolean isDuplicatedEmail = !Objects.equals(foundAccount.getEmail(), account.email())
+                && repository.existsByEmail(account.email());
+        boolean isDuplicatedPhone = !Objects.equals(foundAccount.getPhone(), account.phone())
+                && repository.existsByPhone(account.phone());
+        boolean isDuplicatedIdentification = !Objects.equals(foundAccount.getIdentification(), account.identification())
+                && repository.existsByIdentification(account.identification());
+        if(isDuplicatedEmail) {
+            throw new ResourceDuplicateException("Email đã tồn tại");
+        } else if(isDuplicatedPhone) {
+            throw new ResourceDuplicateException("Số điện thoại đã tồn tại");
+        } else if(isDuplicatedIdentification) {
+            throw new ResourceDuplicateException("CCCD đã tồn tại");
         }
     }
 
@@ -140,7 +141,7 @@ public class AccountCommandService {
         }
     }
 
-    private boolean validateDelete(Long accountId) {
+    public boolean validateDelete(Long accountId) {
         //TODO: Kiểm tra điều kiện xóa tài khoản
         return true;
     }

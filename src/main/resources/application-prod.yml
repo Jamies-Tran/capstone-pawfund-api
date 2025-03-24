@@ -21,14 +21,13 @@ spring:
     port: 587
     password: kqwb ipyc gkeh ligm
     username: brokenstar2197@gmail.com
+
     properties:
       mail:
         smtp:
           auth: true
           starttls:
             enable: true
-  profiles:
-    active: dev
 
 app:
   version: v1.0.0
