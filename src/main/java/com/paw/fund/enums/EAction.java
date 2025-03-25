@@ -20,7 +20,8 @@ public enum EAction {
     ACTIVE_ACCOUNT("ACTIVE_ACCOUNT", "Kích hoạt tài khoản người dùng"),
     INACTIVE_ACCOUNT("INACTIVE_ACCOUNT", "Vô hiệu hóa tài khoản người dùng"),
     SELF_CHANGE_PASS("SELF_CHANGE_PASS", "Đổi mật khẩu tài khoản cá nhân"),
-    CHANGE_PASS("CHANGE_PASS", "Đổi mật khẩu tài khoản người dùng");
+    CHANGE_PASS("CHANGE_PASS", "Đổi mật khẩu tài khoản người dùng"),
+    SELF_UPDATE("SELF_UPDATE", "Cập nhật thông tin cá nhân"),;
 
     String code;
     String name;

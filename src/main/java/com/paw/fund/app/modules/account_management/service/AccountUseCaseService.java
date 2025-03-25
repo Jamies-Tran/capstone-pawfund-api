@@ -188,6 +188,12 @@ public class AccountUseCaseService implements IAccountUseCase {
     public Account selfChangeInfo(Account account) {
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         Account updatedAccount = commandService.update(currentAccountLogin.accountId(), account);
+        AccountActivityLog log = AccountActivityLog.builder()
+                .accountId(currentAccountLogin.accountId())
+                .actionCode(EAction.SELF_UPDATE.getCode())
+                .actionName(EAction.SELF_UPDATE.getName())
+                .build();
+        accountActivityLogCommandService.save(log);
         commonMediaCommandService.deleteAllByAccountId(updatedAccount.accountId());
         List<CommonMedia> commonMedia = commonMediaCommandService
                 .saveAllForAccount(currentAccountLogin.accountId(), account.medias());
