@@ -15,7 +15,8 @@ public enum EAction {
     VERIFIED_ACCOUNT("VERIFIED_ACCOUNT", "Đã xác thực tài khoản"),
     VERIFIED_EMAIL("VERIFIED_EMAIL", "Đã xác thực email"),
     LOGIN("LOGIN", "Đăng nhập"),
-    LOGOUT("LOGOUT", "Đăng xuất"),;
+    LOGOUT("LOGOUT", "Đăng xuất"),
+    DELETE_ACCOUNT("DELETE_ACCOUNT", "Xóa tài khoản người dùng khác ra khỏi hệ thống"),;
 
     String code;
     String name;

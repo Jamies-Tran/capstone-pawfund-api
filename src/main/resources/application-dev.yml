@@ -4,9 +4,9 @@ spring:
   main:
     allow-circular-references: true
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/paw_fund}
-    username: ${DB_USER:root}
-    password: ${DB_PASSWORD:minhtranquang2197}
+    url: ${DB_CONNECTION_STRING}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
     show-sql: true
     hibernate:
@@ -17,10 +17,10 @@ spring:
   flyway:
     baseline-on-migrate: true
   mail:
-    host: smtp.gmail.com
-    port: 587
-    password: kqwb ipyc gkeh ligm
-    username: brokenstar2197@gmail.com
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    password: ${MAIL_PASSWORD}
+    username: ${MAIL_USERNAME}
 
     properties:
       mail:
@@ -36,7 +36,3 @@ app:
     expired-duration: 4320
   refresh-token:
     expired-duration: 4320
-  mail:
-    username: brokenstar2197@gmail.com
-    smtp:
-      password: kqwb ipyc gkeh ligm

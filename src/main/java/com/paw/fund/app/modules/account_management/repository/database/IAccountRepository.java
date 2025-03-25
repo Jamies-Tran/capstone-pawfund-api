@@ -25,7 +25,7 @@ public interface IAccountRepository extends JpaRepository<AccountEntity, Long> {
         FROM AccountEntity a
         LEFT JOIN AccountRoleEntity ar ON a.accountId = ar.accountId
         LEFT JOIN RoleEntity r ON r.roleId = ar.roleId
-        WHERE (a.statusCode != :#{T(com.paw.fund.enums.EAccountStatus).DELETED.getCode()})
+        WHERE (a.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()})
             AND (a.createdAt BETWEEN :#{#searchCriteria.timeRange().get(0)} AND :#{#searchCriteria.timeRange().get(1)})
             AND (:#{#searchCriteria.isStatusCodesEmptyOrNull()} = TRUE
                 OR a.statusCode IN :#{#searchCriteria.statusCodes()})

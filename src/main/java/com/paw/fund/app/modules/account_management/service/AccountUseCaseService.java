@@ -175,7 +175,7 @@ public class AccountUseCaseService implements IAccountUseCase {
         Account updatedAccount = commandService.updateEmail(foundAccount.accountId(), verificationCode.newEmail());
         verificationCodeCommandService.delete(verificationCode.verificationCodeId());
         AccountActivityLog log = AccountActivityLog.builder()
-                .accountId(updatedAccount.accountId())
+                .accountId(currentAccountLogin.accountId())
                 .actionCode(EAction.VERIFIED_EMAIL.getCode())
                 .actionName(EAction.VERIFIED_EMAIL.getName())
                 .build();
@@ -260,9 +260,16 @@ public class AccountUseCaseService implements IAccountUseCase {
     @Override
     @Transactional
     public void deleteAccount(AccountId accountId) {
+        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         accountRoleCommandService.deleteByAccountId(accountId.value());
         commonMediaCommandService.deleteAllByAccountId(accountId.value());
         accountActivityLogCommandService.deleteAllByAccountId(accountId.value());
         commandService.delete(accountId.value());
+        AccountActivityLog log = AccountActivityLog.builder()
+                .accountId(currentAccountLogin.accountId())
+                .actionCode(EAction.DELETE_ACCOUNT.getCode())
+                .actionName(EAction.DELETE_ACCOUNT.getName())
+                .build();
+        accountActivityLogCommandService.save(log);
     }
 }
