@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>core.service</groupId>
 	<artifactId>pawfund</artifactId>
-	<version>PAWFUND-v1.0.0</version>
+	<version>v1.0.0</version>
 	<name>PawFund</name>
 	<description>Platform to support adopting and fund-raising for abandoned pets</description>
 	<url/>
