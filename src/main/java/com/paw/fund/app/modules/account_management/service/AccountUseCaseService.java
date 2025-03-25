@@ -198,7 +198,14 @@ public class AccountUseCaseService implements IAccountUseCase {
     @Override
     public Account activeAccount(AccountId accountId) {
         ValidationUtil.validateNotNullPointerException(accountId);
+        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         Account updatedAccount = commandService.updateStatus(accountId.value(), EAccountStatus.ACTIVE);
+        AccountActivityLog log = AccountActivityLog.builder()
+                .accountId(currentAccountLogin.accountId())
+                .actionCode(EAction.ACTIVE_ACCOUNT.getCode())
+                .actionName(EAction.ACTIVE_ACCOUNT.getName())
+                .build();
+        accountActivityLogCommandService.save(log);
 
         return updatedAccount;
     }
@@ -206,7 +213,14 @@ public class AccountUseCaseService implements IAccountUseCase {
     @Override
     public Account inactiveAccount(AccountId accountId) {
         ValidationUtil.validateNotNullPointerException(accountId);
+        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         Account updatedAccount = commandService.updateStatus(accountId.value(), EAccountStatus.INACTIVE);
+        AccountActivityLog log = AccountActivityLog.builder()
+                .accountId(currentAccountLogin.accountId())
+                .actionCode(EAction.ACTIVE_ACCOUNT.getCode())
+                .actionName(EAction.ACTIVE_ACCOUNT.getName())
+                .build();
+        accountActivityLogCommandService.save(log);
 
         return updatedAccount;
     }
@@ -216,6 +230,12 @@ public class AccountUseCaseService implements IAccountUseCase {
         ValidationUtil.validateNotNullPointerException(accountPassword);
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         Account account = commandService.updatePassword(currentAccountLogin.accountId(), accountPassword.value());
+        AccountActivityLog log = AccountActivityLog.builder()
+                .accountId(currentAccountLogin.accountId())
+                .actionCode(EAction.SELF_CHANGE_PASS.getCode())
+                .actionName(EAction.SELF_CHANGE_PASS.getName())
+                .build();
+        accountActivityLogCommandService.save(log);
 
         return account;
     }
@@ -223,8 +243,15 @@ public class AccountUseCaseService implements IAccountUseCase {
     @Override
     public Account changePassword(AccountUpdatePassword accountUpdatePassword) {
         ValidationUtil.validateNotNullPointerException(accountUpdatePassword);
+        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         Account account = commandService.updatePassword(accountUpdatePassword.accountId(),
                 accountUpdatePassword.password());
+        AccountActivityLog log = AccountActivityLog.builder()
+                .accountId(currentAccountLogin.accountId())
+                .actionCode(EAction.CHANGE_PASS.getCode())
+                .actionName(EAction.CHANGE_PASS.getName())
+                .build();
+        accountActivityLogCommandService.save(log);
 
         return account;
     }
