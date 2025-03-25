@@ -11,6 +11,7 @@ import com.paw.fund.app.modules.session_management.repository.database.SessionEn
 import com.paw.fund.app.modules.session_management.service.usecase.ISessionUseCase;
 import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
+import com.paw.fund.enums.EAccountStatus;
 import com.paw.fund.enums.EAction;
 import com.paw.fund.utils.password.encoder.PawFundPasswordEncoder;
 import com.paw.fund.utils.token.TokenUtil;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,7 +53,9 @@ public class SessionUseCaseService implements ISessionUseCase {
     @Override
     public Session login(LoginInfo login) {
         Account account = accountQueryService.findByAccountEmail(login.email());
-        if(!appPasswordEncoder.bCryptpasswordEncoder().matches(login.password(), account.password())) {
+        if(!Objects.equals(account.statusCode(), EAccountStatus.ACTIVE.getCode())) {
+            throw new AuthenticationException("Tài khoản chưa được kích hoạt");
+        } else if(!appPasswordEncoder.bCryptpasswordEncoder().matches(login.password(), account.password())) {
             throw new AuthenticationException();
         }
         String accessToken = tokenUtil.generateAccessToken(account.email());
