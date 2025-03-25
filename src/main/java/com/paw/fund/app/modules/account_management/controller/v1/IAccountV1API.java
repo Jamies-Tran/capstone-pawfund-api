@@ -4,7 +4,8 @@ import com.paw.fund.app.modules.account_management.controller.models.AccountRequ
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
 import com.paw.fund.app.modules.account_management.controller.models.AccountUpdatePasswordRequest;
 import com.paw.fund.app.modules.account_management.controller.models.AccountUpdateRequest;
-import com.paw.fund.app.modules.account_management.controller.models.verification.code.VerificationCodeRequest;
+import com.paw.fund.app.modules.account_management.controller.models.verification.code.AccountVerificationCodeRequest;
+import com.paw.fund.app.modules.account_management.controller.models.verification.code.EmailVerificationCodeRequest;
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -68,7 +69,7 @@ public interface IAccountV1API {
     ValueResponse<AccountResponse> verifyEmail(
             @RequestBody
             @Valid
-            VerificationCodeRequest emailVerifyCodeRequest);
+            EmailVerificationCodeRequest emailVerifyCodeRequest);
 
     @GetMapping("/self-detail")
     @Operation(

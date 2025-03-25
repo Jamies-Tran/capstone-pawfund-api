@@ -4,12 +4,12 @@ import lombok.Builder;
 
 @Builder
 public record AccountVerification(
-        Long accountId,
+        String email,
         String verificationCode
 ) {
-    public static AccountVerification of(Long accountId, String verificationCode) {
+    public static AccountVerification of(String email, String verificationCode) {
         return AccountVerification.builder()
-                .accountId(accountId)
+                .email(email)
                 .verificationCode(verificationCode)
                 .build();
     }
