@@ -15,3 +15,10 @@ Features:
 - View account detail
 - Log account activity
 - View log account activity
+
+V1.0.1
+
+Features:
+
+- Write log for action: self update, active account, inactive account, change password, delete account
+- Account must have ACTIVE status to login
