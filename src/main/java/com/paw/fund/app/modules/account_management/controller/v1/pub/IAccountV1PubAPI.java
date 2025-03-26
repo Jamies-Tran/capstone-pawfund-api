@@ -2,6 +2,7 @@ package com.paw.fund.app.modules.account_management.controller.v1.pub;
 
 import com.paw.fund.app.modules.account_management.controller.models.AccountRequest;
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
+import com.paw.fund.app.modules.account_management.controller.models.verification.code.AccountVerificationCodeRequest;
 import com.paw.fund.utils.response.PageResponse;
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -107,4 +109,13 @@ public interface IAccountV1PubAPI {
             @RequestParam(required = false, value = "pageSize", defaultValue = "25")
             Integer pageSize
     );
+
+    @PatchMapping("/verify")
+    @Operation(
+            summary = "Xác minh tài khoản",
+            description = """
+                    - Người dùng xác minh bang mã xác thực gửi qua mail
+                    """)
+    ValueResponse<AccountResponse> verifyCreatedAccount(
+            @RequestBody @Valid AccountVerificationCodeRequest request);
 }

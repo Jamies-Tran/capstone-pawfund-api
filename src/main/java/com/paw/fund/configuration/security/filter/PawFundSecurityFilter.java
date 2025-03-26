@@ -85,11 +85,11 @@ public class PawFundSecurityFilter extends OncePerRequestFilter {
         } catch (RuntimeException e) {
             log.error("[{}-doFilterInternal] Xác thực that bại", this.getClass().getSimpleName());
             ValueResponse<?> errorResponse = ValueResponse
-                    .error("Có lỗi xảy ra.",
-                            HttpStatus.INTERNAL_SERVER_ERROR,
-                            EErrorCode.SERVER_ERROR.getCode(),
+                    .error("Lỗi xác thực",
+                            HttpStatus.UNAUTHORIZED,
+                            EErrorCode.AUTHORIZE_EXCEPTION.getCode(),
                             API_VERSION);
-            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.getWriter().write(AppObjectMapper.convertDataToJsonString(errorResponse));
         }

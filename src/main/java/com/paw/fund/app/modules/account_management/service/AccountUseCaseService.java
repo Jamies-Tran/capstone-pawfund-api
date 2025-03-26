@@ -144,10 +144,11 @@ public class AccountUseCaseService implements IAccountUseCase {
     @Transactional
     public Account verifyCreatedAccount(AccountVerification accountVerification) {
         ValidationUtil.validateNotNullPointerException(accountVerification);
+        Account account = queryService.findByAccountEmail(accountVerification.email());
         VerificationCode verificationCode = verificationCodeQueryService
                 .findByCodeAndAccountIdAndVerificationCodeType(
                         accountVerification.verificationCode(),
-                        accountVerification.accountId(),
+                        account.accountId(),
                         EVerificationCodeType.ACCOUNT_CREATION);
         Account foundAccount = queryService.findById(verificationCode.accountId());
         Account updatedAccount = commandService.updateStatus(foundAccount.accountId(), EAccountStatus.ACTIVE);

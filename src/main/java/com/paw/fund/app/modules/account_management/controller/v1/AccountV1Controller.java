@@ -5,7 +5,8 @@ import com.paw.fund.app.modules.account_management.controller.models.AccountResp
 import com.paw.fund.app.modules.account_management.controller.models.AccountUpdatePasswordRequest;
 import com.paw.fund.app.modules.account_management.controller.models.AccountUpdateRequest;
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
-import com.paw.fund.app.modules.account_management.controller.models.verification.code.VerificationCodeRequest;
+import com.paw.fund.app.modules.account_management.controller.models.verification.code.AccountVerificationCodeRequest;
+import com.paw.fund.app.modules.account_management.controller.models.verification.code.EmailVerificationCodeRequest;
 import com.paw.fund.app.modules.account_management.domain.Account;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountPassword;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountVerification;
@@ -77,7 +78,7 @@ public class AccountV1Controller implements IAccountV1API {
     }
 
     @Override
-    public ValueResponse<AccountResponse> verifyEmail(VerificationCodeRequest emailVerifyCodeRequest) {
+    public ValueResponse<AccountResponse> verifyEmail(EmailVerificationCodeRequest emailVerifyCodeRequest) {
         Account account = useCase.verifyNewEmail(AccountVerification.of(emailVerifyCodeRequest.verificationCode()));
 
         return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK, API_VERSION);

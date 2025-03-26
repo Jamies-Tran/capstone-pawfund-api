@@ -6,15 +6,10 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
 
 @Builder
-public record VerificationCodeRequest(
+public record EmailVerificationCodeRequest(
         @Schema(description = "Mã xác thực người dùng nhập vào")
         @NotNull(message = "Vui long nhập mã xác thực")
         @Pattern(regexp = "^[0-9]{6}$", message = "Mã xác nhận không hợp lệ")
         String verificationCode
 ) {
-    public static VerificationCodeRequest of(String verificationCode) {
-        return VerificationCodeRequest.builder()
-                .verificationCode(verificationCode)
-                .build();
-    }
 }

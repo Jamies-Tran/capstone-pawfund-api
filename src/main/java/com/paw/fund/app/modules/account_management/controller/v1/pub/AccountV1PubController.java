@@ -3,9 +3,11 @@ package com.paw.fund.app.modules.account_management.controller.v1.pub;
 import com.paw.fund.app.modules.account_management.controller.models.AccountRequest;
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
+import com.paw.fund.app.modules.account_management.controller.models.verification.code.AccountVerificationCodeRequest;
 import com.paw.fund.app.modules.account_management.domain.Account;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountFilter;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountSearchCriteria;
+import com.paw.fund.app.modules.account_management.domain.usecase.AccountVerification;
 import com.paw.fund.app.modules.account_management.service.usecase.IAccountUseCase;
 import com.paw.fund.app.modules.role_management.domain.Role;
 import com.paw.fund.app.modules.role_management.service.usecase.IRoleUseCase;
@@ -89,5 +91,14 @@ public class AccountV1PubController implements IAccountV1PubAPI {
                 Meta.of(responses),
                 HttpStatus.OK,
                 API_VERSION);
+    }
+
+    @Override
+    public ValueResponse<AccountResponse> verifyCreatedAccount(AccountVerificationCodeRequest verificationCode) {
+        AccountVerification accountVerification = AccountVerification.of(verificationCode.email(),
+                verificationCode.verificationCode());
+        Account verifiedAccount = useCase.verifyCreatedAccount(accountVerification);
+
+        return ValueResponse.success(modelMapper.toResponse(verifiedAccount), HttpStatus.OK, API_VERSION);
     }
 }
