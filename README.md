@@ -28,3 +28,10 @@ V1.0.2
 Features:
 
 - Update verify new account
+
+V1.0.3
+
+Features:
+
+- View category list: account status, gender, role
+- Update swagger UI 
