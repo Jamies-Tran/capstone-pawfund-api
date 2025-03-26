@@ -30,7 +30,7 @@ spring:
             enable: true
 
 app:
-  version: v1.0.0
+  version: v1.0.2
   access-token:
     secret-key: ftoLRVxHq82BzLq3stXhnOJRo4azrVab
     expired-duration: 4320
