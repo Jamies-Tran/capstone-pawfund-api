@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RequestMapping("/v1/public/account")
-@Tag(name = "Account", description = "QL tài khoản")
+@Tag(name = "Account V1", description = "QL tài khoản")
 public interface IAccountV1PubAPI {
     @PostMapping
     @Operation(

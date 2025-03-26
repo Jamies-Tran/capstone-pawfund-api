@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @RequestMapping("/v1/public/verification-code")
-@Tag(name = "Verification Code", description = "QL Mã xác thực")
+@Tag(name = "Verification Code V1", description = "QL Mã xác thực")
 public interface IVerificationCodeV1PubAPI {
     @PostMapping("/account-verification/send")
     @Operation(

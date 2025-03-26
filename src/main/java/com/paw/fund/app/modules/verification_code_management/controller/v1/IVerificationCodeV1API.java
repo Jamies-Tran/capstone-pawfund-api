@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/v1/api/verification-code")
-@Tag(name = "Verification Code", description = "QL Mã xác thực")
+@Tag(name = "Verification Code V1", description = "QL Mã xác thực")
 public interface IVerificationCodeV1API {
     @PostMapping("/email-verification/send")
     @Operation(

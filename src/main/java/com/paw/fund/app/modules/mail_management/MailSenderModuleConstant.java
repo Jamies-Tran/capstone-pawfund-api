@@ -1,4 +1,4 @@
-package com.paw.fund.app.modules.mail_sender;
+package com.paw.fund.app.modules.mail_management;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;

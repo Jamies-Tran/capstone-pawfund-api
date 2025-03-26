@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/v1/public/account/{accountId}")
-@Tag(name = "Account", description = "QL tài khoản")
+@Tag(name = "Account V1", description = "QL tài khoản")
 public interface IAccountPathV1PubAPI {
     @GetMapping
     @Operation(

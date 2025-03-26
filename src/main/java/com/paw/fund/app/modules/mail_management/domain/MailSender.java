@@ -1,4 +1,4 @@
-package com.paw.fund.app.modules.mail_sender.domain;
+package com.paw.fund.app.modules.mail_management.domain;
 
 import lombok.Builder;
 import lombok.With;

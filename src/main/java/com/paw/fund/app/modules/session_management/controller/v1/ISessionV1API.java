@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/v1/api/session")
-@Tag(name = "Session", description = "QL phiên đăng nhập")
+@Tag(name = "Session V1", description = "QL phiên đăng nhập")
 public interface ISessionV1API {
     @PutMapping("/logout")
     @Operation(

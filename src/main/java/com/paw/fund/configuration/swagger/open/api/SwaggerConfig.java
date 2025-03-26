@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info =@Info(
                 title = "PawFund API",
-                version = "v1.0.0",
+                version = "v1.0.3",
                 contact = @Contact(
                         name = "Trần Quang Minh",
                         email = "minhtranquang2197@gmail.com",

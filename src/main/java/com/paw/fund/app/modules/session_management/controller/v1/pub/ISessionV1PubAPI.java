@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/v1/public/session")
-@Tag(name = "Session", description = "QL phiên đăng nhập")
+@Tag(name = "Session V1", description = "QL phiên đăng nhập")
 public interface ISessionV1PubAPI {
     @PostMapping("/login")
     @Operation(
