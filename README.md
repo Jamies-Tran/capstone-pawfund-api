@@ -22,3 +22,9 @@ Features:
 
 - Write log for action: self update, active account, inactive account, change password, delete account
 - Account must have ACTIVE status to login
+
+V1.0.2
+
+Features:
+
+- Update verify new account
