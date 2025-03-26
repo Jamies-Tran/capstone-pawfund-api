@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/v1/api/account")
-@Tag(name = "Account", description = "QL tài khoản")
+@Tag(name = "Account V1", description = "QL tài khoản")
 public interface IAccountV1API {
     @PostMapping("/admin")
     @PreAuthorize("hasRole({'ROLE_ADMIN'})")

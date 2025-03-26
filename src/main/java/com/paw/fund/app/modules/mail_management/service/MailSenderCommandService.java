@@ -1,6 +1,6 @@
-package com.paw.fund.app.modules.mail_sender.service;
+package com.paw.fund.app.modules.mail_management.service;
 
-import com.paw.fund.app.modules.mail_sender.domain.MailSender;
+import com.paw.fund.app.modules.mail_management.domain.MailSender;
 import com.paw.fund.utils.validation.ValidationUtil;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;

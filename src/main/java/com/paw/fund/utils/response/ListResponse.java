@@ -12,15 +12,13 @@ public record ListResponse<T>(
         Boolean success,
         String errorCode,
         String message,
-        String module,
         String apiVersion) {
-    public static <T> ListResponse <T> success(List<T> data, HttpStatus responseStatus, String module, String apiVersion) {
+    public static <T> ListResponse <T> success(List<T> data, HttpStatus responseStatus, String apiVersion) {
         return ListResponse.<T>builder()
                 .data(data)
                 .success(Boolean.TRUE)
                 .message(responseStatus.getReasonPhrase())
                 .status(String.valueOf(responseStatus.value()))
-                .module(module)
                 .apiVersion(apiVersion)
                 .build();
     }

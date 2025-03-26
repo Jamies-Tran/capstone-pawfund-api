@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/v1/api/account/{accountId}")
-@Tag(name = "Account", description = "QL tài khoản")
+@Tag(name = "Account V1", description = "QL tài khoản")
 public interface IAccountPathV1API {
     @PatchMapping("/active")
     @PreAuthorize("hasRole('ROLE_ADMIN')")

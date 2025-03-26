@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RequestMapping("/v1/api/account-activity-log")
-@Tag(name = "Log", description = "QL nhật ký hoạt động")
+@Tag(name = "Log V1", description = "QL nhật ký hoạt động")
 public interface IAccountActivityLogV1API {
     @GetMapping("/self")
     @Operation(

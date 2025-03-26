@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequestMapping("/v2/public/account")
-@Tag(name = "Account", description = "QL tài khoản")
+@Tag(name = "Account V2", description = "QL tài khoản")
 public interface IAccountPubV2API {
 
     @PostMapping("/adopter-donor")
