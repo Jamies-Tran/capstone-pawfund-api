@@ -55,15 +55,6 @@ public class AccountV1PubController implements IAccountV1PubAPI {
     }
 
     @Override
-    public ValueResponse<AccountResponse> createDonorAndAdopterAccount(AccountRequest accountRequest) {
-        List<Role> roles = List.of(roleUseCase.getDonorRole(), roleUseCase.getAdaptorRole());
-        Account account = modelMapper.toDto(accountRequest, roles);
-        Account createdAccount = useCase.createAccount(account);
-
-        return ValueResponse.success(modelMapper.toResponse(createdAccount), HttpStatus.CREATED, API_VERSION);
-    }
-
-    @Override
     public PageResponse<AccountResponse> findAll(String search,
                                                  List<LocalDateTime> timeRange,
                                                  List<LocalDate> dateOfBirth,

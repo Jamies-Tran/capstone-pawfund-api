@@ -33,14 +33,6 @@ public interface IAccountV1PubAPI {
                     """)
     ValueResponse<AccountResponse> createAccount(@RequestBody @Valid AccountRequest accountRequest);
 
-    @PostMapping("/donor-adoptor")
-    @Operation(
-            summary = "Tạo tài khoản người nguyên góp và người nhận nuôi",
-            description = """
-                    - Người dùng tạo tài khoản người nguyên góp và người nhận nuôi
-                    """)
-    ValueResponse<AccountResponse> createDonorAndAdopterAccount(@RequestBody @Valid AccountRequest accountRequest);
-
     @GetMapping
     @Operation(
             summary = "Tìm kiếm danh sách tài khoản",
