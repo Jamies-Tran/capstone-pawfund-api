@@ -1,9 +1,12 @@
 package com.paw.fund.app.modules.form_management.service.form;
 
 import com.paw.fund.app.modules.form_management.domain.form.Form;
+import com.paw.fund.app.modules.form_management.domain.form.usecase.FormId;
 import com.paw.fund.app.modules.form_management.domain.question.Question;
+import com.paw.fund.app.modules.form_management.repository.database.form.FormEntity;
 import com.paw.fund.app.modules.form_management.service.form.usecase.IFormUseCase;
 import com.paw.fund.app.modules.form_management.service.question.QuestionCommandService;
+import com.paw.fund.app.modules.form_management.service.question.QuestionQueryService;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +25,13 @@ public class FormUseCaseService implements IFormUseCase {
     FormCommandService commandService;
 
     @NonNull
+    FormQueryService queryService;
+
+    @NonNull
     QuestionCommandService questionCommandService;
+
+    @NonNull
+    QuestionQueryService questionQueryService;
 
     @Override
     @Transactional
@@ -32,5 +41,13 @@ public class FormUseCaseService implements IFormUseCase {
                 .saveAllWithFormId(savedForm.formId(), form.questions());
 
         return savedForm.withQuestions(savedQuestions);
+    }
+
+    @Override
+    public Form getFormDetail(FormId formId) {
+        Form form = queryService.findById(formId.value());
+        List<Question> questions = questionQueryService.findAllByFormId(formId.value());
+
+        return form.withQuestions(questions);
     }
 }

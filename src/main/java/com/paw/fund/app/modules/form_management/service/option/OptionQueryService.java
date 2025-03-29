@@ -10,28 +10,24 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class OptionCommandService {
+public class OptionQueryService {
     @NonNull
     IOptionRepository repository;
 
     @NonNull
     IOptionMapper mapper;
 
-    public List<Option> saveAllWithQuestionId(Long questionId, List<Option> options) {
-        ValidationUtil.validateArgumentNotNull(questionId);
-        ValidationUtil.validateArgumentListNotNull(options);
-        List<OptionEntity> newOptions = options.stream()
-                .map(x -> mapper.toEntity(x.withQuestionId(questionId)))
-                .toList();
-        List<OptionEntity> savedOptions = repository.saveAll(newOptions);
+    public List<Option> findAllByQuestionIdIn(List<Long> questionIds) {
+        ValidationUtil.validateArgumentListNotNull(questionIds);
+        List<OptionEntity> foundOptions = repository
+                .findAllByQuestionIdIn(questionIds);
 
-        return savedOptions.stream()
+        return foundOptions.stream()
                 .map(mapper::toDto)
                 .toList();
     }
