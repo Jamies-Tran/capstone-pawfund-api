@@ -8,5 +8,7 @@ import org.mapstruct.ReportingPolicy;
 public interface IOptionModelMapper {
     Option toDto(OptionRequest request);
 
+    Option toDto(OptionUpdateRequest request);
+
     OptionResponse toResponse(Option dto);
 }

@@ -6,6 +6,7 @@ import com.paw.fund.app.modules.form_management.domain.form.IFormMapper;
 import com.paw.fund.app.modules.form_management.repository.database.form.FormEntity;
 import com.paw.fund.app.modules.form_management.repository.database.form.IFormRepository;
 import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
+import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -34,6 +35,17 @@ public class FormCommandService {
         FormEntity newForm = mapper.toEntity(form);
         FormEntity savedForm = repository.save(newForm);
         savedForm.prepareSave(auditableUseCase.createAuditableForNew());
+
+        return mapper.toDto(savedForm);
+    }
+
+    public Form update(Long formId, Form form) {
+        ValidationUtil.validateArgumentNotNull(formId);
+        ValidationUtil.validateNotNullPointerException(form);
+        FormEntity foundForm = repository.findById(formId).orElseThrow(ResourceNotFoundException::new);
+        mapper.update(foundForm, form);
+        foundForm.prepareSave(auditableUseCase.createAuditableForNew());
+        FormEntity savedForm = repository.save(foundForm);
 
         return mapper.toDto(savedForm);
     }

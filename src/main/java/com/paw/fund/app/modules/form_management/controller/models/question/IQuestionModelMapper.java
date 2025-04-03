@@ -12,5 +12,7 @@ import org.mapstruct.ReportingPolicy;
 public interface IQuestionModelMapper {
     Question toDto(QuestionRequest request);
 
+    Question toDto(QuestionUpdateRequest request);
+
     QuestionResponse toResponse(Question dto);
 }

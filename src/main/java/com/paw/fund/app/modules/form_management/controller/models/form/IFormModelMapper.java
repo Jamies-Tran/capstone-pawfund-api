@@ -13,5 +13,7 @@ import org.mapstruct.ReportingPolicy;
 public interface IFormModelMapper {
     Form toDto(FormRequest request);
 
+    Form toDto(FormUpdateRequest request);
+
     FormResponse toResponse(Form dto);
 }

@@ -4,6 +4,7 @@ import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableU
 import com.paw.fund.app.modules.form_management.domain.option.Option;
 import com.paw.fund.app.modules.form_management.domain.question.IQuestionMapper;
 import com.paw.fund.app.modules.form_management.domain.question.Question;
+import com.paw.fund.app.modules.form_management.repository.database.form.FormEntity;
 import com.paw.fund.app.modules.form_management.repository.database.option.OptionEntity;
 import com.paw.fund.app.modules.form_management.repository.database.question.IQuestionRepository;
 import com.paw.fund.app.modules.form_management.repository.database.question.QuestionEntity;
@@ -19,10 +20,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -46,21 +49,62 @@ public class QuestionCommandService {
         List<Question> savedQuestions = questions.stream()
                 .map(x -> {
                     QuestionEntity newQuestion = mapper.toEntity(x.withFormId(formId));
-                    QuestionEntity savedQuestion = repository.save(newQuestion);
+                    newQuestion.prepareSave(auditableUseCase.createAuditableForNew());
                     if(Objects.equals(x.questionTypeCode(), EQuestionType.MULTIPLE_CHOICE.getCode())) {
                         if(CollectionUtils.isEmpty(x.options())) {
                             throw new ResourceNotValidException("Câu hỏi trắc nghiệm phải có lựa chọn trả lời");
                         }
-
+                        QuestionEntity savedQuestion = repository.save(newQuestion);
                         List<Option> savedOptions = optionCommandService
                                 .saveAllWithQuestionId(savedQuestion.getQuestionId(), x.options());
                         return mapper.toDto(savedQuestion)
                                 .withOptions(savedOptions);
                     }
+                    QuestionEntity savedQuestion = repository.save(newQuestion);
 
                     return mapper.toDto(savedQuestion);
                 }).toList();
 
         return savedQuestions;
+    }
+
+    public List<Question> updateAllByFormId(Long formId, List<Question> questions) {
+        ValidationUtil.validateArgumentNotNull(formId);
+        ValidationUtil.validateArgumentListNotNull(questions);
+
+        List<QuestionEntity> foundQuestions = repository.findAllByFormId(formId);
+        Map<Long, List<Option>> newOptions = new HashMap<>();
+        Map<Long, QuestionEntity> foundQuestionMap = foundQuestions.stream()
+                .collect(Collectors.toMap(QuestionEntity::getQuestionId, x -> x));
+
+        List<QuestionEntity> saveQuestionList = questions.stream()
+                .map(q -> {
+                    QuestionEntity newQuestion;
+                    if(Objects.isNull(q.questionId())) {
+                        newQuestion = mapper.toEntity(q.withFormId(formId));
+                        newQuestion.prepareSave(auditableUseCase.createAuditableForNew());
+
+                    } else {
+                        newQuestion = foundQuestionMap.computeIfAbsent(q.questionId(), x -> null);
+                        if(Objects.nonNull(newQuestion)) {
+                            mapper.update(newQuestion, q);
+                            newQuestion.prepareUpdate(auditableUseCase.createAuditableForUpdate());
+                        }
+                    }
+                    QuestionEntity savedQuestion = repository.save(newQuestion);
+                    if(Objects.equals(q.questionTypeCode(), EQuestionType.MULTIPLE_CHOICE.getCode())) {
+                        if(CollectionUtils.isEmpty(q.options())) {
+                            throw new ResourceNotValidException("Câu hỏi trắc nghiệm phải có lựa chọn trả lời");
+                        }
+                        newOptions.put(savedQuestion.getQuestionId(), q.options());
+                    }
+
+                    return newQuestion;
+                }).toList();
+
+        newOptions.forEach(optionCommandService::updateAllByQuestionId);
+
+
+        return saveQuestionList.stream().map(mapper::toDto).toList();
     }
 }

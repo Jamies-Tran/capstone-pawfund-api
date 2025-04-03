@@ -1,9 +1,12 @@
 package com.paw.fund.app.modules.form_management.controller.form.v1;
 
+import com.paw.fund.app.modules.form_management.controller.models.form.FormRequest;
 import com.paw.fund.app.modules.form_management.controller.models.form.FormResponse;
+import com.paw.fund.app.modules.form_management.controller.models.form.FormUpdateRequest;
 import com.paw.fund.app.modules.form_management.controller.models.form.IFormModelMapper;
 import com.paw.fund.app.modules.form_management.domain.form.Form;
 import com.paw.fund.app.modules.form_management.domain.form.usecase.FormId;
+import com.paw.fund.app.modules.form_management.domain.form.usecase.FormUpdate;
 import com.paw.fund.app.modules.form_management.service.form.usecase.IFormUseCase;
 import com.paw.fund.utils.response.ValueResponse;
 import lombok.AccessLevel;
@@ -34,5 +37,14 @@ public class FormPathV1Controller implements IFormPathV1API {
         Form foundForm = useCase.getFormDetail(FormId.of(formId));
 
         return ValueResponse.success(modelMapper.toResponse(foundForm), HttpStatus.OK, API_VERSION);
+    }
+
+    @Override
+    public ValueResponse<FormResponse> updateForm(Long formId, FormUpdateRequest formRequest) {
+        Form form = modelMapper.toDto(formRequest);
+        FormUpdate formUpdate = FormUpdate.of(formId, form);
+        Form updatedForm = useCase.updateForm(formUpdate);
+
+        return ValueResponse.success(modelMapper.toResponse(updatedForm), HttpStatus.OK, API_VERSION);
     }
 }
