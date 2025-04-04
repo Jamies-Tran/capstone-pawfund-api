@@ -2,7 +2,7 @@ package com.paw.fund.app.modules.category_management.controller.role;
 
 import com.paw.fund.app.modules.category_management.controller.role.models.IRoleCategoryModelMapper;
 import com.paw.fund.app.modules.category_management.controller.role.models.RoleCategoryResponse;
-import com.paw.fund.app.modules.category_management.domain.usecase.RoleSearch;
+import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
 import com.paw.fund.app.modules.category_management.service.role.usecase.IRoleCategoryUseCase;
 import com.paw.fund.utils.response.ListResponse;
 import lombok.AccessLevel;
@@ -32,7 +32,7 @@ public class RoleCategoryV1PubController implements IRoleCategoryV1PubAPI {
 
     @Override
     public ListResponse<RoleCategoryResponse> getRoleList(String search) {
-        List<RoleCategoryResponse> responses = useCase.getRoleList(RoleSearch.of(search))
+        List<RoleCategoryResponse> responses = useCase.getRoleList(CategorySearch.of(search))
                 .stream()
                 .map(modelMapper::toResponse)
                 .toList();
