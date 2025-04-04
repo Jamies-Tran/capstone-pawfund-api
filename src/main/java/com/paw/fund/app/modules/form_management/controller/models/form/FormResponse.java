@@ -12,6 +12,7 @@ public record FormResponse(
         String description,
         String formTypeCode,
         String formTypeName,
+        Integer questionCount,
         List<QuestionResponse> questions
 ) {
 }

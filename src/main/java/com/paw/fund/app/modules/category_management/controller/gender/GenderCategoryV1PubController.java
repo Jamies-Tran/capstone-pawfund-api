@@ -2,8 +2,8 @@ package com.paw.fund.app.modules.category_management.controller.gender;
 
 import com.paw.fund.app.modules.category_management.controller.gender.models.GenderCategoryResponse;
 import com.paw.fund.app.modules.category_management.controller.gender.models.IGenderCategoryModelMapper;
-import com.paw.fund.app.modules.category_management.domain.usecase.GenderSearch;
-import com.paw.fund.app.modules.category_management.service.gender.usecase.IGenderCategoryUseCase;
+import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
+import com.paw.fund.app.modules.category_management.service.usecase.IGenderCategoryUseCase;
 import com.paw.fund.utils.response.ListResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -32,7 +32,7 @@ public class GenderCategoryV1PubController implements IGenderCategoryV1PubAPI {
 
     @Override
     public ListResponse<GenderCategoryResponse> getGenderList(String search) {
-        List<GenderCategoryResponse> responses = useCase.getGenderList(GenderSearch.of(search))
+        List<GenderCategoryResponse> responses = useCase.getGenderList(CategorySearch.of(search))
                 .stream()
                 .map(modelMapper::toResponse)
                 .toList();

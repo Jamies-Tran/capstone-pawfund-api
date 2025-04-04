@@ -1,5 +1,6 @@
 package com.paw.fund.app.modules.form_management.service.question;
 
+import com.paw.fund.app.modules.form_management.domain.form.usecase.FormQuestionSearchCriteria;
 import com.paw.fund.app.modules.form_management.domain.option.Option;
 import com.paw.fund.app.modules.form_management.domain.question.IQuestionMapper;
 import com.paw.fund.app.modules.form_management.domain.question.Question;
@@ -29,8 +30,9 @@ public class QuestionQueryService {
     @NonNull
     OptionQueryService optionQueryService;
 
-    public List<Question> findAllByFormId(Long formId) {
-        List<QuestionEntity> foundQuestions = repository.findAllByFormId(formId);
+    public List<Question> findAllByFormId(Long formId, FormQuestionSearchCriteria searchCriteria) {
+        List<QuestionEntity> foundQuestions = repository
+                .findAllByStatusNotDeletedFormIdAndQuestionTextOrQuestionTypeCodeIn(formId, searchCriteria);
         List<Long> questionIds = foundQuestions.stream()
                 .map(QuestionEntity::getQuestionId)
                 .toList();
@@ -41,5 +43,9 @@ public class QuestionQueryService {
         return foundQuestions.stream()
                 .map(x -> mapper.toDto(x).withOptions(options.get(x.getQuestionId())))
                 .toList();
+    }
+
+    public Integer countByFormId(Long formId) {
+        return repository.countByFormId(formId);
     }
 }

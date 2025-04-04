@@ -23,9 +23,9 @@ public class OptionQueryService {
     IOptionMapper mapper;
 
     public List<Option> findAllByQuestionIdIn(List<Long> questionIds) {
-        ValidationUtil.validateArgumentListNotNull(questionIds);
+
         List<OptionEntity> foundOptions = repository
-                .findAllByQuestionIdIn(questionIds);
+                .findAllByStatusCodeNotDeletedAndQuestionIdIn(questionIds);
 
         return foundOptions.stream()
                 .map(mapper::toDto)

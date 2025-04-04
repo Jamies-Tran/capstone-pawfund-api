@@ -2,8 +2,8 @@ package com.paw.fund.app.modules.category_management.controller.account.status;
 
 import com.paw.fund.app.modules.category_management.controller.account.status.models.AccountStatusCategoryResponse;
 import com.paw.fund.app.modules.category_management.controller.account.status.models.IAccountStatusCategoryModelMapper;
-import com.paw.fund.app.modules.category_management.domain.usecase.AccountStatusSearch;
-import com.paw.fund.app.modules.category_management.service.account.status.usecase.IAccountStatusCategoryUseCase;
+import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
+import com.paw.fund.app.modules.category_management.service.usecase.IAccountStatusCategoryUseCase;
 import com.paw.fund.utils.response.ListResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -32,7 +32,7 @@ public class AccountStatusCategoryV1PubController implements IAccountStatusCateg
 
     @Override
     public ListResponse<AccountStatusCategoryResponse> getAccountStatusList(String search) {
-        List<AccountStatusCategoryResponse> responses = useCase.getAccountStatusList(AccountStatusSearch.of(search))
+        List<AccountStatusCategoryResponse> responses = useCase.getAccountStatusList(CategorySearch.of(search))
                 .stream()
                 .map(modelMapper::toResponse)
                 .toList();

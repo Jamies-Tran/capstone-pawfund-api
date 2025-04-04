@@ -1,8 +1,8 @@
 package com.paw.fund.app.modules.category_management.service.account.status;
 
 import com.paw.fund.app.modules.category_management.domain.AccountStatusCategory;
-import com.paw.fund.app.modules.category_management.domain.usecase.AccountStatusSearch;
-import com.paw.fund.app.modules.category_management.service.account.status.usecase.IAccountStatusCategoryUseCase;
+import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
+import com.paw.fund.app.modules.category_management.service.usecase.IAccountStatusCategoryUseCase;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,7 +17,7 @@ public class AccountStatusCategoryUseCaseService implements IAccountStatusCatego
     AccountStatusCategoryQueryService queryService;
 
     @Override
-    public List<AccountStatusCategory> getAccountStatusList(AccountStatusSearch search) {
+    public List<AccountStatusCategory> getAccountStatusList(CategorySearch search) {
         return queryService.findAll(search.value());
     }
 }

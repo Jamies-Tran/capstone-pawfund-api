@@ -1,10 +1,11 @@
 package com.paw.fund.app.modules.form_management.service.form;
 
 import com.paw.fund.app.modules.form_management.domain.form.Form;
+import com.paw.fund.app.modules.form_management.domain.form.usecase.FormDetail;
+import com.paw.fund.app.modules.form_management.domain.form.usecase.FormFilter;
 import com.paw.fund.app.modules.form_management.domain.form.usecase.FormId;
 import com.paw.fund.app.modules.form_management.domain.form.usecase.FormUpdate;
 import com.paw.fund.app.modules.form_management.domain.question.Question;
-import com.paw.fund.app.modules.form_management.repository.database.form.FormEntity;
 import com.paw.fund.app.modules.form_management.service.form.usecase.IFormUseCase;
 import com.paw.fund.app.modules.form_management.service.question.QuestionCommandService;
 import com.paw.fund.app.modules.form_management.service.question.QuestionQueryService;
@@ -13,9 +14,9 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -47,10 +48,11 @@ public class FormUseCaseService implements IFormUseCase {
     }
 
     @Override
-    public Form getFormDetail(FormId formId) {
-        ValidationUtil.validateNotNullPointerException(formId);
-        Form form = queryService.findById(formId.value());
-        List<Question> questions = questionQueryService.findAllByFormId(formId.value());
+    public Form getFormDetail(FormDetail formDetail) {
+        ValidationUtil.validateNotNullPointerException(formDetail);
+        Form form = queryService.findById(formDetail.formId());
+        List<Question> questions = questionQueryService.findAllByFormId(formDetail.formId(),
+                formDetail.formQuestionSearchCriteria());
 
         return form.withQuestions(questions);
     }
@@ -64,5 +66,18 @@ public class FormUseCaseService implements IFormUseCase {
                 .updateAllByFormId(formUpdate.formId(), formUpdate.form().questions());
 
         return form.withQuestions(updatedQuestion);
+    }
+
+    @Override
+    public Page<Form> getFormList(FormFilter filter) {
+        return queryService
+                .findAll(filter.searchCriteria(), filter.pageRequestCustom())
+                .map(x -> x.withQuestionCount(questionQueryService.countByFormId(x.formId())));
+    }
+
+    @Override
+    public void deleteForm(FormId formId) {
+        Long deletedId = commandService.delete(formId.value());
+        questionCommandService.deleteAllByFormId(deletedId);
     }
 }

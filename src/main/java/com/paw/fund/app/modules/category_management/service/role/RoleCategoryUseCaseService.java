@@ -1,7 +1,7 @@
 package com.paw.fund.app.modules.category_management.service.role;
 
 import com.paw.fund.app.modules.category_management.domain.RoleCategory;
-import com.paw.fund.app.modules.category_management.domain.usecase.RoleSearch;
+import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
 import com.paw.fund.app.modules.category_management.service.role.usecase.IRoleCategoryUseCase;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -19,7 +19,7 @@ public class RoleCategoryUseCaseService implements IRoleCategoryUseCase {
     RoleCategoryQueryService queryService;
 
     @Override
-    public List<RoleCategory> getRoleList(RoleSearch search) {
+    public List<RoleCategory> getRoleList(CategorySearch search) {
         return queryService.findAll(search.value());
     }
 }

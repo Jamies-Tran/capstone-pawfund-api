@@ -7,6 +7,7 @@ import com.paw.fund.app.modules.form_management.repository.database.form.FormEnt
 import com.paw.fund.app.modules.form_management.repository.database.form.IFormRepository;
 import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
+import com.paw.fund.enums.EDeleteStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -48,5 +49,16 @@ public class FormCommandService {
         FormEntity savedForm = repository.save(foundForm);
 
         return mapper.toDto(savedForm);
+    }
+
+    public Long delete(Long formId) {
+        ValidationUtil.validateArgumentNotNull(formId);
+        FormEntity foundForm = repository.findById(formId).orElseThrow(ResourceNotFoundException::new);
+        foundForm.setStatusCode(EDeleteStatus.DELETED.getCode());
+        foundForm.setStatusName(EDeleteStatus.DELETED.getName());
+        foundForm.prepareUpdate(auditableUseCase.createAuditableForUpdate());
+        repository.save(foundForm);
+
+        return formId;
     }
 }

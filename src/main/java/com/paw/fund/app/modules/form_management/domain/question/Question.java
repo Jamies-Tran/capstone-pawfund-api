@@ -13,6 +13,8 @@ public record Question(
         String questionText,
         @With List<Option> options,
         String questionTypeCode,
-        String questionTypeName
+        String questionTypeName,
+        String statusCode,
+        String statusName
 ) {
 }

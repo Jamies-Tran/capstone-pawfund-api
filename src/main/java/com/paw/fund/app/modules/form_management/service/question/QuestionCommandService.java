@@ -10,6 +10,7 @@ import com.paw.fund.app.modules.form_management.repository.database.question.IQu
 import com.paw.fund.app.modules.form_management.repository.database.question.QuestionEntity;
 import com.paw.fund.app.modules.form_management.service.option.OptionCommandService;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
+import com.paw.fund.enums.EDeleteStatus;
 import com.paw.fund.enums.EQuestionType;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
@@ -72,8 +73,21 @@ public class QuestionCommandService {
         ValidationUtil.validateArgumentNotNull(formId);
         ValidationUtil.validateArgumentListNotNull(questions);
 
-        List<QuestionEntity> foundQuestions = repository.findAllByFormId(formId);
         Map<Long, List<Option>> newOptions = new HashMap<>();
+
+        List<QuestionEntity> foundQuestions = repository.findAllByStatusNotDeletedFormId(formId);
+
+        List<Long> newQuestionId = questions.stream().map(Question::questionId).toList();
+        List<QuestionEntity> deleteList = foundQuestions.stream()
+                .filter(x -> !newQuestionId.contains(x.getQuestionId()))
+                .peek(x -> {
+                    x.setStatusCode(EDeleteStatus.DELETED.getCode());
+                    x.setStatusName(EDeleteStatus.DELETED.getName());
+                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
+                }).toList();
+        optionCommandService.deleteAllByQuestionIdIn(deleteList.stream().map(QuestionEntity::getQuestionId).toList());
+        repository.saveAll(deleteList);
+
         Map<Long, QuestionEntity> foundQuestionMap = foundQuestions.stream()
                 .collect(Collectors.toMap(QuestionEntity::getQuestionId, x -> x));
 
@@ -85,8 +99,12 @@ public class QuestionCommandService {
                         newQuestion.prepareSave(auditableUseCase.createAuditableForNew());
 
                     } else {
-                        newQuestion = foundQuestionMap.computeIfAbsent(q.questionId(), x -> null);
-                        if(Objects.nonNull(newQuestion)) {
+                        newQuestion = foundQuestionMap.computeIfAbsent(q.questionId(), _ -> {
+                            QuestionEntity altQuestion = mapper.toEntity(q.withFormId(formId));
+                            altQuestion.setQuestionId(null);
+                            return altQuestion;
+                        });
+                        if(Objects.nonNull(newQuestion.getQuestionId())) {
                             mapper.update(newQuestion, q);
                             newQuestion.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                         }
@@ -100,11 +118,23 @@ public class QuestionCommandService {
                     }
 
                     return newQuestion;
-                }).toList();
+                }).filter(Objects::nonNull).toList();
 
         newOptions.forEach(optionCommandService::updateAllByQuestionId);
 
-
         return saveQuestionList.stream().map(mapper::toDto).toList();
+    }
+
+    public void deleteAllByFormId(Long formId) {
+        List<QuestionEntity> foundQuestions = repository.findAllByStatusNotDeletedFormId(formId)
+                .stream().peek(x -> {
+                    x.setStatusCode(EDeleteStatus.DELETED.getCode());
+                    x.setStatusName(EDeleteStatus.DELETED.getName());
+                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
+                }).toList();
+        List<Long> foundQuestionIds = foundQuestions.stream().map(QuestionEntity::getQuestionId).toList();
+        optionCommandService.deleteAllByQuestionIdIn(foundQuestionIds);
+
+        repository.saveAll(foundQuestions);
     }
 }

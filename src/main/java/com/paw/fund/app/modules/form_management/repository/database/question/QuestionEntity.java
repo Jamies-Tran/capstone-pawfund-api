@@ -1,11 +1,13 @@
 package com.paw.fund.app.modules.form_management.repository.database.question;
 
 import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
+import com.paw.fund.enums.EFormStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,6 +15,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -37,4 +41,18 @@ public class QuestionEntity extends AuditableEntity {
 
     @Column
     String questionTypeName;
+
+    @Column
+    String statusCode;
+
+    @Column
+    String statusName;
+
+    @PrePersist
+    public void prePersist() {
+        if(Objects.isNull(statusCode)) {
+            statusCode = EFormStatus.ENABLE.getCode();
+            statusName = EFormStatus.ENABLE.getName();
+        }
+    }
 }

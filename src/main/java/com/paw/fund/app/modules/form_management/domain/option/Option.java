@@ -7,6 +7,8 @@ import lombok.With;
 public record Option(
         Long optionId,
         @With Long questionId,
-        String optionText
+        String optionText,
+        String statusCode,
+        String statusName
 ) {
 }

@@ -11,8 +11,11 @@ public record Form(
         Long formId,
         String title,
         String description,
+        @With Integer questionCount,
         @With String formTypeCode,
         @With String formTypeName,
-        @With List<Question> questions
+        @With List<Question> questions,
+        String statusCode,
+        String statusName
 ) {
 }

@@ -34,4 +34,10 @@ public class FormEntity extends AuditableEntity {
 
     @Column
     String formTypeName;
+
+    @Column
+    String statusCode;
+
+    @Column
+    String statusName;
 }
