@@ -34,4 +34,16 @@ V1.0.3
 Features:
 
 - View category list: account status, gender, role
-- Update swagger UI 
+- Update swagger UI
+
+V1.1.0
+
+Features:
+
+- Create form / question / option
+- Get list form
+- Get form detail form / list question / list option
+- Update form / question / option
+- Delete form /question/option
+- Get form type category
+- Get question type category
