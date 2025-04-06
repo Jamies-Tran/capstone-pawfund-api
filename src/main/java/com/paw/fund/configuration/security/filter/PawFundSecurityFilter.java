@@ -8,6 +8,7 @@ import com.paw.fund.utils.mapper.AppObjectMapper;
 import com.paw.fund.utils.response.ValueResponse;
 import com.paw.fund.utils.token.TokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,9 +27,16 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.web.filter.AbstractRequestLoggingFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -35,7 +45,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PawFundSecurityFilter extends OncePerRequestFilter {
-     TokenUtil tokenUtil;
+    TokenUtil tokenUtil;
 
     PawFundUserDetailService userDetailsService;
 
@@ -47,7 +57,9 @@ public class PawFundSecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         try {
+
             String token = tokenUtil.getTokenFromRequest(request);
             if(Optional.ofNullable(token).isPresent()) {
                 tokenUtil.validateToken(token);
@@ -61,7 +73,7 @@ public class PawFundSecurityFilter extends OncePerRequestFilter {
                 log.info("Authenticated with token: {}", token);
             }
 
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(requestWrapper , response);
 
         } catch (ExpiredJwtException e) {
             log.error("[{}-doFilterInternal] Token không hợp lệ", this.getClass().getSimpleName());
@@ -92,6 +104,22 @@ public class PawFundSecurityFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.getWriter().write(AppObjectMapper.convertDataToJsonString(errorResponse));
+        } finally {
+            String authorization = requestWrapper.getHeader("Authorization");
+            String method = request.getMethod();
+            String path = request.getRequestURI();
+            String body = new String(requestWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
+            List<String> paramList = requestWrapper.getParameterMap().entrySet().stream()
+                    .map(x -> "%s - %s".formatted(x.getKey(), String.join(", ", x.getValue()))).toList();
+            String param = String.join(",", paramList);
+            String requestAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
+            log.info("\n{\n Request logging: " +
+                    "\n Authorization: [{}]" +
+                    "\n Method: [{}]  " +
+                    "\n Path: [{}]" +
+                    "\n Param: [{}]" +
+                    "\n Body: [{}]" +
+                    "\n time: [{}]\n}", authorization, method, path, param, body, requestAt);
         }
     }
 }
