@@ -1,13 +1,12 @@
-package com.paw.fund.app.modules.account_management.controller.v2.pub;
+package com.paw.fund.app.modules.account_management.controller.v2;
 
-import com.paw.fund.app.modules.account_management.controller.models.AccountRequest;
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
-import com.paw.fund.app.modules.account_management.controller.models.AccountV2Request;
+import com.paw.fund.app.modules.account_management.controller.models.AccountRoleRegisterRequest;
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
 import com.paw.fund.app.modules.account_management.domain.Account;
+import com.paw.fund.app.modules.account_management.domain.usecase.AccountRegisterRole;
 import com.paw.fund.app.modules.account_management.service.usecase.IAccountUseCase;
-import com.paw.fund.app.modules.role_management.domain.Role;
-import com.paw.fund.app.modules.role_management.service.usecase.IRoleUseCase;
+import com.paw.fund.enums.ERole;
 import com.paw.fund.utils.response.ValueResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -23,30 +22,23 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AccountPubV2Controller implements IAccountPubV2API {
-    @NonFinal
-    @Value("${app.version}")
-    String APP_VERSION;
-
+public class AccountV2Controller implements IAccountV2API {
     @NonNull
     IAccountUseCase useCase;
 
     @NonNull
-    IRoleUseCase roleUseCase;
-
-    @NonNull
     IAccountModelMapper modelMapper;
 
+    @NonFinal
+    @Value("${app.version}")
+    String API_VERSION;
 
     @Override
-    public ValueResponse<AccountResponse> createAccount(AccountV2Request request) {
-        Account newAccount = modelMapper.toDto(request);
-        Account savedAccount = useCase.createAccount(newAccount);
+    public ValueResponse<AccountResponse> registerAdopterRole(AccountRoleRegisterRequest request) {
+        AccountRegisterRole accountRegisterRole = AccountRegisterRole.of(modelMapper.toDto(request),
+                List.of(ERole.ADOPTER));
+        Account registeredAccount = useCase.registerRole(accountRegisterRole);
 
-        return ValueResponse.success(
-                modelMapper.toResponse(savedAccount),
-                HttpStatus.CREATED,
-                APP_VERSION
-        );
+        return ValueResponse.success(modelMapper.toResponse(registeredAccount), HttpStatus.OK, API_VERSION);
     }
 }

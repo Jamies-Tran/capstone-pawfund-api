@@ -16,4 +16,8 @@ public interface IAccountModelMapper {
     AccountResponse toResponse(Account dto);
 
     Account toDto(AccountUpdateRequest updateRequest);
+
+    Account toDto(AccountV2Request request);
+
+    Account toDto(AccountRoleRegisterRequest request);
 }

@@ -12,7 +12,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +30,7 @@ public class RoleQueryService {
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
-    public List<Role> findAllByCodeList(List<String> codes) {
+    public List<Role> findAllByCodeIn(List<String> codes) {
         ValidationUtil.validateArgumentListNotNull(codes);
         return repository.findAllByRoleCodeIn(codes)
                 .stream()
