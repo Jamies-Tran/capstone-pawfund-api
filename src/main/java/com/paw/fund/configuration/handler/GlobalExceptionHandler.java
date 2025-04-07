@@ -124,6 +124,17 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(Exception.class)
+    public ValueResponse<?> exceptionHandler(Exception exc) {
+        return ValueResponse.error(
+                exc.getMessage(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                EErrorCode.SERVICE_ERROR.getCode(),
+                API_VERSION
+        );
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ValueResponse<?> methodArgumentExceptionHandler(MethodArgumentNotValidException exc) {

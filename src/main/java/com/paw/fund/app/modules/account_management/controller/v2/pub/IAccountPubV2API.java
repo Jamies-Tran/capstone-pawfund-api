@@ -2,6 +2,7 @@ package com.paw.fund.app.modules.account_management.controller.v2.pub;
 
 import com.paw.fund.app.modules.account_management.controller.models.AccountRequest;
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
+import com.paw.fund.app.modules.account_management.controller.models.AccountV2Request;
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "Account V2", description = "QL tài khoản")
 public interface IAccountPubV2API {
 
-    @PostMapping("/adopter-donor")
+    @PostMapping
     @Operation(
             summary = "Tạo tài khoản cho người nhận nuôi và người quyên góp",
             description = """
                     - Người dùng tạo tài khoản
                     """)
-    ValueResponse<AccountResponse> createAdopterAndDonor(@RequestBody @Valid AccountRequest request);
+    ValueResponse<AccountResponse> createAccount(@RequestBody @Valid AccountV2Request request);
 }

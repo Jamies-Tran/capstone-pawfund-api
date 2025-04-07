@@ -5,10 +5,14 @@ import com.paw.fund.app.modules.account_management.domain.usecase.AccountEmail;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountFilter;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountId;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountPassword;
+import com.paw.fund.app.modules.account_management.domain.usecase.AccountRegisterRole;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountUpdate;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountUpdatePassword;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountVerification;
+import com.paw.fund.app.modules.role_management.domain.Role;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface IAccountUseCase {
     Account getAccount(AccountId accountId);
@@ -38,4 +42,6 @@ public interface IAccountUseCase {
     Page<Account> getAccountList(AccountFilter filter);
 
     void deleteAccount(AccountId accountId);
+
+    Account registerRole(AccountRegisterRole registerRole);
 }

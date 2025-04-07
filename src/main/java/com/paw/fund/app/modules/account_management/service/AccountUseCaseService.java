@@ -5,7 +5,7 @@ import com.paw.fund.app.modules.account_management.domain.usecase.AccountEmail;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountFilter;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountId;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountPassword;
-import com.paw.fund.app.modules.account_management.domain.usecase.AccountUpdate;
+import com.paw.fund.app.modules.account_management.domain.usecase.AccountRegisterRole;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountUpdatePassword;
 import com.paw.fund.app.modules.account_management.domain.usecase.AccountVerification;
 import com.paw.fund.app.modules.account_management.service.usecase.IAccountUseCase;
@@ -99,7 +99,7 @@ public class AccountUseCaseService implements IAccountUseCase {
                     .stream()
                     .map(Role::roleCode)
                     .toList();
-            List<Role> roles = roleQueryService.findAllByCodeList(roleCodes);
+            List<Role> roles = roleQueryService.findAllByCodeIn(roleCodes);
             List<Long> roleIds = roles
                     .stream()
                     .map(Role::roleId)
@@ -305,5 +305,22 @@ public class AccountUseCaseService implements IAccountUseCase {
                 .actionName(EAction.DELETE_ACCOUNT.getName())
                 .build();
         accountActivityLogCommandService.save(log);
+    }
+
+    @Override
+    @Transactional
+    public Account registerRole(AccountRegisterRole registerRole) {
+        ValidationUtil.validateNotNullPointerException(registerRole);
+        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+        Account account = commandService.update(currentAccountLogin.accountId(), registerRole.account());
+        List<String> roleCodes = registerRole.roles().stream()
+                .map(Role::roleCode)
+                .toList();
+        List<Role> foundRoles = roleQueryService.findAllByCodeIn(roleCodes);
+        List<Long> roleIds = foundRoles.stream().map(Role::roleId).toList();
+        accountRoleCommandService
+                .saveAll(currentAccountLogin.accountId(), roleIds);
+
+        return account.withRoles(foundRoles);
     }
 }
