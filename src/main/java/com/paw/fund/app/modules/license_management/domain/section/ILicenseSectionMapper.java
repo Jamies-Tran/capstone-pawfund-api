@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.paw.fund.app.modules.license_management.repository.database.section.LicenseSectionEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.ReportingPolicy;
 
@@ -21,6 +22,9 @@ public interface ILicenseSectionMapper {
 
     @Mapping(target = "sectionContent", expression = "java(toContent(entity.getSectionContent()))")
     LicenseSection toDto(LicenseSectionEntity entity);
+
+    @Mapping(target = "sectionContent", expression = "java(toByte(dto.sectionContent()))")
+    void update(@MappingTarget LicenseSectionEntity entity, LicenseSection dto);
 
     default byte[] toByte(List<SectionContent> sectionContents) {
         try {

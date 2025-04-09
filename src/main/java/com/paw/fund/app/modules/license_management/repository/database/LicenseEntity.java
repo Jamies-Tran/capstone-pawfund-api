@@ -33,16 +33,13 @@ public class LicenseEntity extends AuditableEntity {
     Long licenseId;
 
     @Column
-    String licenseNumber;
+    String description;
 
     @Column
     String licenseTypeCode;
 
     @Column
     String licenseTypeName;
-
-    @Column
-    LocalDateTime expiryDate;
 
     @Column
     String statusCode;

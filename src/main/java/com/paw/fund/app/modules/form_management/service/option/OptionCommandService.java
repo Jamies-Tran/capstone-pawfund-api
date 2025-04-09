@@ -49,8 +49,8 @@ public class OptionCommandService {
 
         List<Long> newOptionId = options.stream().map(Option::optionId).toList();
         List<Long> deleteIdList = foundOptions.stream()
-                .filter(x -> !newOptionId.contains(x.getOptionId()))
                 .map(OptionEntity::getOptionId)
+                .filter(optionId -> !newOptionId.contains(optionId))
                 .toList();
         repository.deleteAllById(deleteIdList);
 

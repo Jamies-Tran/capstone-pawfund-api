@@ -8,5 +8,7 @@ import org.mapstruct.ReportingPolicy;
 public interface ILicenseModelMapper {
     License toDto(LicenseRequest request);
 
+    License toDto(LicenseUpdateRequest request);
+
     LicenseResponse toResponse(License dto);
 }

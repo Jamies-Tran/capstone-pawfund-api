@@ -20,8 +20,16 @@ public enum EAction {
     ACTIVE_ACCOUNT("ACTIVE_ACCOUNT", "Kích hoạt tài khoản người dùng"),
     INACTIVE_ACCOUNT("INACTIVE_ACCOUNT", "Vô hiệu hóa tài khoản người dùng"),
     SELF_CHANGE_PASS("SELF_CHANGE_PASS", "Đổi mật khẩu tài khoản cá nhân"),
+    SELF_CHANGE_INFO("SELF_CHANGE_INFO", "Đổi thông tin cá nhân"),
     CHANGE_PASS("CHANGE_PASS", "Đổi mật khẩu tài khoản người dùng"),
-    SELF_UPDATE("SELF_UPDATE", "Cập nhật thông tin cá nhân"),;
+    SELF_UPDATE("SELF_UPDATE", "Cập nhật thông tin cá nhân"),
+    NOT_DEFINE("NOT_DEFINE", "Hành động chưa xác định"),
+    REGISTER_ADOPTER("REGISTER_ADOPTER", "Đăng ký người nhận nuôi"),
+    CREATE_LICENSE("CREATE_LICENSE", "Tạo giấy phép"),
+    UPDATE_LICENSE("UPDATE_LICENSE", "Cập nhật giấy phép"),
+    ACTIVE_LICENSE("ACTIVE_LICENSE", "Kích hoạt giấy phép"),
+    INACTIVE_LICENSE("INACTIVE_LICENSE", "Vô hiệu hóa giấy phép"),
+    DELETE_LICENSE("DELETE_LICENSE", "Xóa giấy phép"),;
 
     String code;
     String name;

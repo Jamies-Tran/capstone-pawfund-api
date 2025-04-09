@@ -7,10 +7,9 @@ import java.util.List;
 
 public record LicenseResponse(
         Long licenseId,
-        String licenseNumber,
+        String description,
         String licenseTypeCode,
         String licenseTypeName,
-        LocalDateTime expiryDate,
         String statusCode,
         String statusName,
         List<LicenseSectionResponse> licenseSections

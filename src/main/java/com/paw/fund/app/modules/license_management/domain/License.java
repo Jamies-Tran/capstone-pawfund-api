@@ -10,10 +10,9 @@ import java.util.List;
 @Builder
 public record License(
         Long licenseId,
-        String licenseNumber,
+        String description,
         String licenseTypeCode,
         String licenseTypeName,
-        LocalDateTime expiryDate,
         String statusCode,
         String statusName,
         @With List<LicenseSection> licenseSections

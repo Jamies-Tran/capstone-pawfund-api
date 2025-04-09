@@ -11,6 +11,7 @@ import com.paw.fund.app.modules.account_management.domain.usecase.AccountVerific
 import com.paw.fund.app.modules.account_management.service.usecase.IAccountUseCase;
 import com.paw.fund.app.modules.account_role_management.domain.AccountRole;
 import com.paw.fund.app.modules.account_role_management.service.AccountRoleCommandService;
+import com.paw.fund.app.modules.log_management.annotation.LogAction;
 import com.paw.fund.app.modules.log_management.domain.account.AccountActivityLog;
 import com.paw.fund.app.modules.log_management.service.account.AccountActivityLogCommandService;
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
@@ -36,7 +37,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.filter.RequestContextFilter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,6 +76,7 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @NonNull
     RequestContext requestContext;
+    private final RequestContextFilter requestContextFilter;
 
     @Override
     public Account getAccount(AccountId accountId) {
@@ -91,6 +95,7 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @Override
     @Transactional
+    @LogAction(action = EAction.CREATED)
     public Account createAccount(Account account) {
         ValidationUtil.validateNotNullPointerException(account);
 
@@ -107,12 +112,6 @@ public class AccountUseCaseService implements IAccountUseCase {
             Account createdAccount = commandService.save(account);
             List<AccountRole> createdAccountRoles = accountRoleCommandService
                     .saveAll(createdAccount.accountId(), roleIds);
-            AccountActivityLog log = AccountActivityLog.builder()
-                    .accountId(createdAccount.accountId())
-                    .actionCode(EAction.CREATED.getCode())
-                    .actionName(EAction.CREATED.getName())
-                    .build();
-            accountActivityLogCommandService.save(log);
             if(Objects.nonNull(createdAccountRoles) && !CollectionUtils.isEmpty(createdAccountRoles)) {
                 if(!CollectionUtils.isEmpty(account.medias())) {
                     List<CommonMedia> commonMedias = commonMediaCommandService.saveAllForAccount(createdAccount.accountId(),
@@ -142,6 +141,7 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @Override
     @Transactional
+    @LogAction(action = EAction.VERIFIED_ACCOUNT)
     public Account verifyCreatedAccount(AccountVerification accountVerification) {
         ValidationUtil.validateNotNullPointerException(accountVerification);
         Account account = queryService.findByAccountEmail(accountVerification.email());
@@ -153,17 +153,12 @@ public class AccountUseCaseService implements IAccountUseCase {
         Account foundAccount = queryService.findById(verificationCode.accountId());
         Account updatedAccount = commandService.updateStatus(foundAccount.accountId(), EAccountStatus.ACTIVE);
         verificationCodeCommandService.delete(verificationCode.verificationCodeId());
-        AccountActivityLog log = AccountActivityLog.builder()
-                .accountId(updatedAccount.accountId())
-                .actionCode(EAction.VERIFIED_ACCOUNT.getCode())
-                .actionName(EAction.VERIFIED_ACCOUNT.getName())
-                .build();
-        accountActivityLogCommandService.save(log);
 
         return updatedAccount;
     }
 
     @Override
+    @LogAction(action = EAction.VERIFIED_EMAIL, isCurrentLogin = true)
     public Account verifyNewEmail(AccountVerification accountVerification) {
         ValidationUtil.validateNotNullPointerException(accountVerification);
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
@@ -175,26 +170,16 @@ public class AccountUseCaseService implements IAccountUseCase {
         Account foundAccount = queryService.findById(currentAccountLogin.accountId());
         Account updatedAccount = commandService.updateEmail(foundAccount.accountId(), verificationCode.newEmail());
         verificationCodeCommandService.delete(verificationCode.verificationCodeId());
-        AccountActivityLog log = AccountActivityLog.builder()
-                .accountId(currentAccountLogin.accountId())
-                .actionCode(EAction.VERIFIED_EMAIL.getCode())
-                .actionName(EAction.VERIFIED_EMAIL.getName())
-                .build();
-        accountActivityLogCommandService.save(log);
 
         return updatedAccount;
     }
 
     @Override
+    @Transactional
+    @LogAction(action = EAction.SELF_UPDATE, isCurrentLogin = true)
     public Account selfChangeInfo(Account account) {
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         Account updatedAccount = commandService.update(currentAccountLogin.accountId(), account);
-        AccountActivityLog log = AccountActivityLog.builder()
-                .accountId(currentAccountLogin.accountId())
-                .actionCode(EAction.SELF_UPDATE.getCode())
-                .actionName(EAction.SELF_UPDATE.getName())
-                .build();
-        accountActivityLogCommandService.save(log);
         commonMediaCommandService.deleteAllByAccountId(updatedAccount.accountId());
         List<CommonMedia> commonMedia = commonMediaCommandService
                 .saveAllForAccount(currentAccountLogin.accountId(), account.medias());
@@ -203,46 +188,32 @@ public class AccountUseCaseService implements IAccountUseCase {
     }
 
     @Override
+    @Transactional
+    @LogAction(action = EAction.ACTIVE_ACCOUNT, isCurrentLogin = true)
     public Account activeAccount(AccountId accountId) {
         ValidationUtil.validateNotNullPointerException(accountId);
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
-        Account updatedAccount = commandService.updateStatus(accountId.value(), EAccountStatus.ACTIVE);
-        AccountActivityLog log = AccountActivityLog.builder()
-                .accountId(currentAccountLogin.accountId())
-                .actionCode(EAction.ACTIVE_ACCOUNT.getCode())
-                .actionName(EAction.ACTIVE_ACCOUNT.getName())
-                .build();
-        accountActivityLogCommandService.save(log);
 
-        return updatedAccount;
+        return commandService.updateStatus(accountId.value(), EAccountStatus.ACTIVE);
     }
 
     @Override
+    @Transactional
+    @LogAction(action = EAction.INACTIVE_ACCOUNT, isCurrentLogin = true)
     public Account inactiveAccount(AccountId accountId) {
         ValidationUtil.validateNotNullPointerException(accountId);
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
-        Account updatedAccount = commandService.updateStatus(accountId.value(), EAccountStatus.INACTIVE);
-        AccountActivityLog log = AccountActivityLog.builder()
-                .accountId(currentAccountLogin.accountId())
-                .actionCode(EAction.ACTIVE_ACCOUNT.getCode())
-                .actionName(EAction.ACTIVE_ACCOUNT.getName())
-                .build();
-        accountActivityLogCommandService.save(log);
 
-        return updatedAccount;
+        return commandService.updateStatus(accountId.value(), EAccountStatus.INACTIVE);
     }
 
     @Override
+    @Transactional
+    @LogAction(action = EAction.SELF_CHANGE_PASS, isCurrentLogin = true)
     public Account selfChangePassword(AccountPassword accountPassword) {
         ValidationUtil.validateNotNullPointerException(accountPassword);
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         Account account = commandService.updatePassword(currentAccountLogin.accountId(), accountPassword.value());
-        AccountActivityLog log = AccountActivityLog.builder()
-                .accountId(currentAccountLogin.accountId())
-                .actionCode(EAction.SELF_CHANGE_PASS.getCode())
-                .actionName(EAction.SELF_CHANGE_PASS.getName())
-                .build();
-        accountActivityLogCommandService.save(log);
 
         return account;
     }
@@ -293,22 +264,17 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @Override
     @Transactional
+    @LogAction(action = EAction.DELETE_ACCOUNT, isCurrentLogin = true)
     public void deleteAccount(AccountId accountId) {
-        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         accountRoleCommandService.deleteByAccountId(accountId.value());
         commonMediaCommandService.deleteAllByAccountId(accountId.value());
         accountActivityLogCommandService.deleteAllByAccountId(accountId.value());
         commandService.delete(accountId.value());
-        AccountActivityLog log = AccountActivityLog.builder()
-                .accountId(currentAccountLogin.accountId())
-                .actionCode(EAction.DELETE_ACCOUNT.getCode())
-                .actionName(EAction.DELETE_ACCOUNT.getName())
-                .build();
-        accountActivityLogCommandService.save(log);
     }
 
     @Override
     @Transactional
+    @LogAction(action = EAction.REGISTER_ADOPTER, isCurrentLogin = true)
     public Account registerRole(AccountRegisterRole registerRole) {
         ValidationUtil.validateNotNullPointerException(registerRole);
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();

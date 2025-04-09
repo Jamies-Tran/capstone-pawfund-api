@@ -8,7 +8,9 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record LicenseSectionRequest(
+public record LicenseSectionUpdateRequest(
+        Long licenseSectionId,
+
         @NotNull(message = "Vui lòng nhập tiêu đề của mục giấy phép")
         String sectionTitle,
 
