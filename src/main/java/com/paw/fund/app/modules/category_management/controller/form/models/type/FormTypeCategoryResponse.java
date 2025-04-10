@@ -1,4 +1,4 @@
-package com.paw.fund.app.modules.category_management.controller.form.type.models;
+package com.paw.fund.app.modules.category_management.controller.form.models.type;
 
 import lombok.Builder;
 

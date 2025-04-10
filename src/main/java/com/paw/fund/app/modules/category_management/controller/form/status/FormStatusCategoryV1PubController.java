@@ -1,9 +1,9 @@
-package com.paw.fund.app.modules.category_management.controller.form.type;
+package com.paw.fund.app.modules.category_management.controller.form.status;
 
-import com.paw.fund.app.modules.category_management.controller.form.models.type.FormTypeCategoryResponse;
-import com.paw.fund.app.modules.category_management.controller.form.models.type.IFormTypeCategoryModelMapper;
+import com.paw.fund.app.modules.category_management.controller.form.models.status.FormStatusCategoryResponse;
+import com.paw.fund.app.modules.category_management.controller.form.models.status.IFormStatusCategoryModelMapper;
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
-import com.paw.fund.app.modules.category_management.service.usecase.IFormTypeCategoryUseCase;
+import com.paw.fund.app.modules.category_management.service.usecase.IFormStatusCategoryUseCase;
 import com.paw.fund.utils.response.ListResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -19,20 +19,20 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class FormTypeCategoryV1PubController implements IFormTypeCategoryV1PubAPI {
+public class FormStatusCategoryV1PubController implements IFormStatusCategoryV1PubAPI {
     @NonNull
-    IFormTypeCategoryUseCase useCase;
+    IFormStatusCategoryUseCase useCase;
 
     @NonNull
-    IFormTypeCategoryModelMapper modelMapper;
+    IFormStatusCategoryModelMapper modelMapper;
 
     @NonFinal
     @Value("${app.version}")
     String API_VERSION;
 
     @Override
-    public ListResponse<FormTypeCategoryResponse> getFormTypeList(String search) {
-        List<FormTypeCategoryResponse> responses = useCase.getFormTypeList(CategorySearch.of(search))
+    public ListResponse<FormStatusCategoryResponse> findFormStatusList(String search) {
+        List<FormStatusCategoryResponse> responses = useCase.findFormStatusList(CategorySearch.of(search))
                 .stream()
                 .map(modelMapper::toResponse)
                 .toList();
