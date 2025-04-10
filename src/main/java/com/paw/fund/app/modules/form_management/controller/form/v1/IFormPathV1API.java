@@ -71,4 +71,10 @@ public interface IFormPathV1API {
             @PathVariable
             @Schema(description = "ID của form")
             Long formId);
+
+    @PatchMapping("/active")
+    ValueResponse<FormResponse> activeForm(@PathVariable Long formId);
+
+    @PatchMapping("/inactive")
+    ValueResponse<FormResponse> inactiveForm(@PathVariable Long formId);
 }

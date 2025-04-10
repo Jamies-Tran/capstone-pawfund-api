@@ -140,7 +140,7 @@ public class GlobalExceptionHandler {
     public ValueResponse<?> methodArgumentExceptionHandler(MethodArgumentNotValidException exc) {
         Map<String, String> errors = new LinkedHashMap<>();
         for (FieldError fieldError : exc.getBindingResult().getFieldErrors()) {
-            errors.put(fieldError.getField(), fieldError.getDefaultMessage());
+            errors.put("message", fieldError.getDefaultMessage());
         }
         return ValueResponse.error(
                 errors,

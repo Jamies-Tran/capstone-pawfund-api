@@ -13,6 +13,8 @@ public record FormResponse(
         String formTypeCode,
         String formTypeName,
         Integer questionCount,
-        List<QuestionResponse> questions
+        List<QuestionResponse> questions,
+        String statusCode,
+        String statusName
 ) {
 }

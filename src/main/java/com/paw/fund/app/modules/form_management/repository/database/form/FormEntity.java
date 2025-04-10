@@ -1,16 +1,19 @@
 package com.paw.fund.app.modules.form_management.repository.database.form;
 
 import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
+import com.paw.fund.enums.EFormStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.util.StringUtils;
 
 @Getter
 @Setter
@@ -40,4 +43,12 @@ public class FormEntity extends AuditableEntity {
 
     @Column
     String statusName;
+
+    @PrePersist
+    public void prePersist() {
+        if(!StringUtils.hasText(statusCode)) {
+            statusCode = EFormStatus.ENABLE.getCode();
+            statusName = EFormStatus.ENABLE.getName();
+        }
+    }
 }

@@ -6,6 +6,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -17,7 +18,8 @@ public class FormTypeCategoryQueryService {
     public List<FormTypeCategory> findAll(String search) {
         return Stream.of(EFormType.values())
                 .map(FormTypeCategory::of)
-                .filter(x -> x.name().toLowerCase().contains(search.toLowerCase()))
+                .filter(x -> !StringUtils.hasText(search)
+                        || x.name().toLowerCase().contains(search.toLowerCase()))
                 .toList();
     }
 }
