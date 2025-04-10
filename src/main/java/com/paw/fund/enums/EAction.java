@@ -29,7 +29,12 @@ public enum EAction {
     UPDATE_LICENSE("UPDATE_LICENSE", "Cập nhật giấy phép"),
     ACTIVE_LICENSE("ACTIVE_LICENSE", "Kích hoạt giấy phép"),
     INACTIVE_LICENSE("INACTIVE_LICENSE", "Vô hiệu hóa giấy phép"),
-    DELETE_LICENSE("DELETE_LICENSE", "Xóa giấy phép"),;
+    DELETE_LICENSE("DELETE_LICENSE", "Xóa giấy phép"),
+    CREATE_SHELTER_FORM("CREATE_SHELTER_FORM", "Tạo biểu mẫu đăng ký trung tâm cứu trợ"),
+    UPDATE_SHELTER_FORM("UPDATE_SHELTER_FORM", "Cập nhật biểu mẫu đăng ký trung tâm cứu trợ"),
+    ACTIVE_SHELTER_FORM("ACTIVE_SHELTER_FORM", "Kích hoạt biểu mẫu đăng ký trung tâm cứu trợ"),
+    INACTIVE_SHELTER_FORM("INACTIVE_SHELTER_FORM", "Vô hiệu hóa biểu mẫu đăng ký trung tâm cứu trợ"),
+    DELETE_SHELTER_FORM("DELETE_SHELTER_FORM", "Xóa biểu mẫu đăng ký trung tâm cứu trợ"),;
 
     String code;
     String name;

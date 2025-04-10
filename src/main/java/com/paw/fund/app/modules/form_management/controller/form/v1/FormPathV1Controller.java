@@ -60,4 +60,18 @@ public class FormPathV1Controller implements IFormPathV1API {
     public void deleteForm(Long formId) {
         useCase.deleteForm(FormId.of(formId));
     }
+
+    @Override
+    public ValueResponse<FormResponse> activeForm(Long formId) {
+        Form updatedForm = useCase.activeForm(FormId.of(formId));
+
+        return ValueResponse.success(modelMapper.toResponse(updatedForm), HttpStatus.OK, API_VERSION);
+    }
+
+    @Override
+    public ValueResponse<FormResponse> inactiveForm(Long formId) {
+        Form updatedForm = useCase.inactiveForm(FormId.of(formId));
+
+        return ValueResponse.success(modelMapper.toResponse(updatedForm), HttpStatus.OK, API_VERSION);
+    }
 }

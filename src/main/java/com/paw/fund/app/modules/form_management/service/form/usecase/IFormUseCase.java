@@ -16,5 +16,9 @@ public interface IFormUseCase {
 
     Page<Form> getFormList(FormFilter filter);
 
+    Form activeForm(FormId formId);
+
+    Form inactiveForm(FormId formId);
+
     void deleteForm(FormId formId);
 }

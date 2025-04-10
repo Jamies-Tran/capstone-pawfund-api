@@ -34,7 +34,7 @@ public class LogActivityHandler {
     RequestContext requestContext;
 
     @Around("@annotation(com.paw.fund.app.modules.log_management.annotation.LogAction)")
-    public Object aroundAction(ProceedingJoinPoint joinPoint) {
+    public Object aroundAction(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         LogAction logAction = methodSignature.getMethod().getAnnotation(LogAction.class);
         Object result;
@@ -54,10 +54,18 @@ public class LogActivityHandler {
 
                 return result;
             } else {
-                return null;
+                AccountActivityLog log = AccountActivityLog.builder()
+                        .actionCode(logAction.action().getCode())
+                        .actionName(logAction.action().getName())
+                        .loggedAt(LocalDateTime.now())
+                        .accountId(currentAccountLogin.accountId())
+                        .build();
+                commandService.save(log);
+
+                return result;
             }
         } catch (Throwable e) {
-            return null;
+            throw e;
         }
 
     }

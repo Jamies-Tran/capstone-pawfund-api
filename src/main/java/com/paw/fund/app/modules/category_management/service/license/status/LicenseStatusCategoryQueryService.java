@@ -1,7 +1,7 @@
-package com.paw.fund.app.modules.category_management.service.form.type;
+package com.paw.fund.app.modules.category_management.service.license.status;
 
-import com.paw.fund.app.modules.category_management.domain.FormTypeCategory;
-import com.paw.fund.enums.EFormType;
+import com.paw.fund.app.modules.category_management.domain.LicenseStatusCategory;
+import com.paw.fund.enums.ELicenseStatus;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class FormTypeCategoryQueryService {
-    public List<FormTypeCategory> findAll(String search) {
-        return Stream.of(EFormType.values())
-                .map(FormTypeCategory::of)
+public class LicenseStatusCategoryQueryService {
+    public List<LicenseStatusCategory> findAll(String search) {
+        return Stream.of(ELicenseStatus.values())
+                .map(LicenseStatusCategory::of)
                 .filter(x -> !StringUtils.hasText(search)
                         || x.name().toLowerCase().contains(search.toLowerCase()))
                 .toList();
