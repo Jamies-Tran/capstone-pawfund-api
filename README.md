@@ -47,3 +47,23 @@ Features:
 - Delete form /question/option
 - Get form type category
 - Get question type category
+
+V1.2.0
+
+Features:
+
+- Update writing activity log for account
+- Add function: active/inactive form
+- Add find category: form type, license type, license status
+- Create license,
+- Find license detail
+- Find license list
+- Update license,
+- Active/inactive license
+- Delete license
+
+V1.2.1
+
+Features:
+
+- Add find category: form status
