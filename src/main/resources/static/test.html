@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>STOMP WebSocket Test Client</title>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+  <h2>STOMP WebSocket Test Client</h2>
+
+  <label>WebSocket URL: <input type="text" id="wsUrl" value="ws://localhost:8080/pawfund-ws" size="40"/></label>
+  <button onclick="connect()">Connect</button>
+  <br/><br/>
+
+  <label>Subscribe Topic: <input type="text" id="subscribeTopic" value="/topic/get-shelter-registration-topic"/></label>
+  <button onclick="subscribe()">Subscribe</button>
+  <br/><br/>
+
+  <label>Send Destination: <input type="text" id="sendDestination" value="/app/shelter-registration-message"/></label><br/>
+  <label>Message Body (JSON):</label><br/>
+  <button onclick="sendMessage()">Send Message</button>
+
+  <hr/>
+
+  <h3>Received Messages:</h3>
+  <pre id="messages" style="background: #f4f4f4; padding: 10px; border: 1px solid #ccc; max-height: 300px; overflow-y: scroll;"></pre>
+
+  <script>
+    async function getJwtToken() {
+      const response = await fetch('http://localhost:8080/v1/public/session/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          "email": "admin@gmail.com",
+          "password": "admin"
+        })
+      });
+
+      const resData = await response.json();
+      console.log(resData.data.accessToken);
+      return resData.data.accessToken;
+    }
+
+    let stompClient = null;
+
+    function connect(options) {
+      const token = getJwtToken();
+      token.then(token => {
+        const socket = new SockJS(`http://localhost:8080/pawfund-sockjs`);
+        socket.debug = console.log;
+        stompClient = Stomp.over(socket);
+
+        stompClient.connect({
+          Authorization: `Bearer ${token}`
+        }, function (frame) {
+
+          log("✅ Connected: " + frame);
+          stompClient.subscribe(
+                  '/topic/get-shelter-registration-topic',
+                  function (message) {
+                    const notification = JSON.parse(message.body);
+                    log2(notification);
+                    console.log(notification);
+                  },
+                  {
+                    Authorization:`Bearer ${token}`
+                  });
+          // stompClient.send('/app/shelter-registration-message', {}, null);
+          }, function (error) {
+          log("❌ Error: " + error);
+          });
+      })
+
+    }
+
+    function sendMessage() {
+      const requestAtTimeRange = [
+        "2025-04-08T00:00:00Z",
+        "2025-04-14T21:05:00Z"
+      ];
+      const payload = {
+        requestAtTimeRange: requestAtTimeRange
+      };
+      const destination = '/app/shelter-registration-message';
+      stompClient.send(destination, {
+        Authorization:`Bearer ${token}`
+      }, JSON.stringify(payload));
+    }
+
+    function log(message) {
+      const messages = document.getElementById('messages');
+      messages.textContent += message + "\n";
+    }
+
+    function log2(message) {
+      const messages = document.getElementById('messages');
+      const registrations = message.registrations;
+      registrations.forEach(registration => {
+        messages.textContent += `\nRequest ID: ${registration.shelterRegistrationId}` + "\n";
+        messages.textContent += `Shelter ID: ${registration.shelterId}` + "\n";
+        messages.textContent += `Account ID: ${registration.accountId}` + "\n";
+        messages.textContent += `Request At: ${registration.requestAt}` + "\n";
+        messages.textContent += "\n"
+      });
+      messages.textContent += `\ntotal: ${message.totalRegistrations}`
+    }
+  </script>
+</body>
+</html>

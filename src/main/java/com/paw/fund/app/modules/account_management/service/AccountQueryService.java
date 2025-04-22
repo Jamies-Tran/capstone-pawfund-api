@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -60,5 +61,14 @@ public class AccountQueryService {
 
         return repository.findAll(searchCriteria, pageRequestCustom.pageRequest())
                 .map(mapper::toDto);
+    }
+
+    public Boolean existsAnyShelterById(Long accountId) {
+        return repository.existsAnyShelterByAccountId(accountId);
+    }
+
+    public Boolean existsAnyShelterRegistrationByIdAndStatusCodeNot(Long accountId,
+                                                                    String statusCode) {
+        return repository.existsByAnyShelterRegistrationByIdAndStatusCodeNot(accountId, statusCode);
     }
 }

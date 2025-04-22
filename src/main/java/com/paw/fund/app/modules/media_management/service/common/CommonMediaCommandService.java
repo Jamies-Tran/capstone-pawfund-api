@@ -25,7 +25,7 @@ public class CommonMediaCommandService {
     @NonNull
     ICommonMediaMapper mapper;
 
-    public List<CommonMedia> saveAllForAccount(Long accountId, List<CommonMedia> medias) {
+    public List<CommonMedia> saveAllWithAccountId(Long accountId, List<CommonMedia> medias) {
         List<CommonMediaEntity> newMedias = medias.stream()
                 .map(x -> {
                     EMimeType mimeType = ImageUtil.findMimeType(x.url());
@@ -48,4 +48,23 @@ public class CommonMediaCommandService {
         List<CommonMediaEntity> commonMedias = repository.findAllByAccountId(accountId);
         repository.deleteAll(commonMedias);
     }
+
+    public List<CommonMedia> saveAllWithShelterId(Long shelterId, List<CommonMedia> medias) {
+        List<CommonMediaEntity> newMedias = medias.stream()
+                .map(x -> {
+                    EMimeType mimeType = ImageUtil.findMimeType(x.url());
+                    return x
+                            .withShelterId(shelterId)
+                            .withMediaTypeCode(mimeType.getType())
+                            .withMediaTypeName(mimeType.getName());
+                })
+                .map(mapper::toEntity)
+                .toList();
+        List<CommonMediaEntity> savedMedias = repository.saveAll(newMedias);
+
+        return savedMedias
+                .stream()
+                .map(mapper::toDto)
+                .toList();
+    };
 }

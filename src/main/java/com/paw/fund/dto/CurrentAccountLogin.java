@@ -3,6 +3,9 @@ package com.paw.fund.dto;
 import com.paw.fund.app.modules.account_management.domain.Account;
 import com.paw.fund.app.modules.role_management.domain.Role;
 import lombok.Builder;
+import lombok.With;
+
+import java.util.List;
 
 @Builder
 public record CurrentAccountLogin(
@@ -10,7 +13,7 @@ public record CurrentAccountLogin(
         String email,
         String phone,
         String fullName,
-        Role role
+        @With List<Role> roles
 ) {
     public static CurrentAccountLogin of(Account account) {
         return CurrentAccountLogin.builder()

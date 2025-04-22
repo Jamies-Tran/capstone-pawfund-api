@@ -1,5 +1,6 @@
 package com.paw.fund.configuration.handler;
 
+import com.paw.fund.configuration.handler.exceptions.RequestNotAvailable;
 import com.paw.fund.configuration.handler.exceptions.RuntimeException;
 import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
 import com.paw.fund.configuration.handler.exceptions.IllegalArgumentException;
@@ -116,6 +117,17 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ResourceNotValidException.class)
     public ValueResponse<?> resourceNotValidExceptionHandler(ResourceNotValidException exc) {
+        return ValueResponse.error(
+                exc.getMessage(),
+                HttpStatus.BAD_REQUEST,
+                EErrorCode.SERVICE_ERROR.getCode(),
+                API_VERSION
+        );
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(RequestNotAvailable.class)
+    public ValueResponse<?> requestNotAvailableExceptionHandler(RequestNotAvailable exc) {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.BAD_REQUEST,

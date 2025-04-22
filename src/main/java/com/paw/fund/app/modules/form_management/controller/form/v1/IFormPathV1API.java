@@ -1,11 +1,9 @@
 package com.paw.fund.app.modules.form_management.controller.form.v1;
 
-import com.paw.fund.app.modules.form_management.controller.models.form.FormRequest;
-import com.paw.fund.app.modules.form_management.controller.models.form.FormResponse;
-import com.paw.fund.app.modules.form_management.controller.models.form.FormUpdateRequest;
+import com.paw.fund.app.modules.form_management.controller.form.v1.models.form.FormResponse;
+import com.paw.fund.app.modules.form_management.controller.form.v1.models.form.FormUpdateRequest;
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -60,12 +58,12 @@ public interface IFormPathV1API {
             FormUpdateRequest formRequest);
 
     @DeleteMapping
-    @PreAuthorize("hasAnyRole({'ROLE_ADMIN', 'ROLE_SHELTER_OWNER'})")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
             summary = "Xóa form",
             description = """
-                    - Quản trị viên hoặc chủ trung tâm cứu hộ xóa form
-                    - [ADMIN | SHELTER_OWNER - Quản trị viên | Chủ trung tâm cứu trợ]
+                    - Quản trị viên xóa form
+                    - [ADMIN - Quản trị viên]
                     """)
     void deleteForm(
             @PathVariable
@@ -73,8 +71,22 @@ public interface IFormPathV1API {
             Long formId);
 
     @PatchMapping("/active")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Xóa form",
+            description = """
+                    - Quản trị viên kích hoạt form
+                    - [ADMIN - Quản trị viên]
+                    """)
     ValueResponse<FormResponse> activeForm(@PathVariable Long formId);
 
     @PatchMapping("/inactive")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Xóa form",
+            description = """
+                    - Quản trị viên vô hiệu hóa form
+                    - [ADMIN - Quản trị viên]
+                    """)
     ValueResponse<FormResponse> inactiveForm(@PathVariable Long formId);
 }

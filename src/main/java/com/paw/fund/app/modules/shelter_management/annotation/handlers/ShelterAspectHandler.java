@@ -1,0 +1,276 @@
+package com.paw.fund.app.modules.shelter_management.annotation.handlers;
+
+import com.paw.fund.app.modules.account_management.domain.Account;
+import com.paw.fund.app.modules.account_management.service.AccountQueryService;
+import com.paw.fund.app.modules.form_management.service.form.reply.FormReplyQueryService;
+import com.paw.fund.app.modules.mail_management.domain.MailSender;
+import com.paw.fund.app.modules.mail_management.service.MailSenderCommandService;
+import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
+import com.paw.fund.app.modules.media_management.service.common.CommonMediaCommandService;
+import com.paw.fund.app.modules.role_management.domain.Role;
+import com.paw.fund.app.modules.shelter_management.annotation.PublishRegistration;
+import com.paw.fund.app.modules.shelter_management.annotation.SendMail;
+import com.paw.fund.app.modules.shelter_management.domain.Shelter;
+import com.paw.fund.app.modules.shelter_management.domain.registration.ShelterRegistration;
+import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterActive;
+import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationCreate;
+import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationFilter;
+import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationNotification;
+import com.paw.fund.app.modules.shelter_management.repository.feign.data.PlaceComponent;
+import com.paw.fund.app.modules.shelter_management.repository.feign.data.PlaceDetail;
+import com.paw.fund.app.modules.shelter_management.service.ShelterQueryService;
+import com.paw.fund.app.modules.shelter_management.service.map.ShelterMapQueryService;
+import com.paw.fund.app.modules.shelter_management.service.registration.ShelterRegistrationCommandService;
+import com.paw.fund.app.modules.shelter_management.service.registration.ShelterRegistrationQueryService;
+import com.paw.fund.app.modules.shelter_management.service.registration.ShelterRegistrationUseCaseService;
+import com.paw.fund.configuration.handler.exceptions.RequestNotAvailable;
+import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
+import com.paw.fund.configuration.handler.exceptions.ServiceException;
+import com.paw.fund.configuration.request.context.RequestContext;
+import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.enums.ERole;
+import com.paw.fund.enums.EShelterRegistrationStatus;
+import lombok.AccessLevel;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+@Aspect
+@Component
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class ShelterAspectHandler {
+    @NonNull
+    ShelterRegistrationUseCaseService useCaseService;
+
+    @NonNull
+    AccountQueryService accountQueryService;
+
+    @NonNull
+    ShelterRegistrationCommandService registrationCommandService;
+
+    @NonNull
+    ShelterRegistrationQueryService registrationQueryService;
+
+    @NonNull
+    FormReplyQueryService formReplyQueryService;
+
+    @NonNull
+    ShelterQueryService shelterQueryService;
+
+    @NonNull
+    SimpMessagingTemplate messagingTemplate;
+
+    @NonNull
+    MailSenderCommandService mailSenderCommandService;
+
+    @NonNull
+    ShelterMapQueryService mapQueryService;
+
+    @NonNull
+    CommonMediaCommandService mediaCommandService;
+
+    @NonNull
+    RequestContext requestContext;
+
+    @NonFinal
+    @Value("${app.websocket.shelter-registration-topic}")
+    String topic;
+
+    @NonFinal
+    @Value("${app.websocket.shelter-registration-topic}")
+    String appDestination;
+
+    @NonFinal
+    @Value("${app.mail.username}")
+    String systemMail;
+
+    @Around("@annotation(com.paw.fund.app.modules.shelter_management.annotation.CreateShelterRegistration)")
+    public Object handleCreateShelterRegistration(ProceedingJoinPoint joinPoint) throws Throwable{
+        Object result;
+        Object args;
+        try {
+            result = joinPoint.proceed();
+            args = joinPoint.getArgs()[0];
+            if(result instanceof Shelter shelter && args instanceof ShelterRegistrationCreate shelterRegistrationCreate) {
+                CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+                validateCreateRegistrationAvailability(currentAccountLogin.accountId(),
+                        shelterRegistrationCreate.formResponseId());
+                if(Objects.isNull(shelter.shelterId())) {
+                    throw new ResourceNotValidException("Lỗi đăng ký trung tâm cứu trợ");
+                }
+                ShelterRegistration registration = ShelterRegistration.builder()
+                        .shelterId(shelter.shelterId())
+                        .accountId(currentAccountLogin.accountId())
+                        .formResponseId(shelterRegistrationCreate.formResponseId())
+                        .requestAt(LocalDateTime.now())
+                        .build();
+                ShelterRegistration saveShelterReg = registrationCommandService.save(registration);
+                ShelterRegistrationNotification notification = getRegistrationNotification();
+                messagingTemplate.convertAndSend(topic, notification);
+                return shelter
+                        .withShelterRegistration(saveShelterReg);
+            }
+            throw new ResourceNotValidException("Lỗi đăng ký trung tâm cứu trợ");
+        } catch (Throwable e) {
+            throw e;
+        }
+    }
+
+    private ShelterRegistrationNotification getRegistrationNotification() {
+        List<String> accountRoleCodes = requestContext.getCurrentAccountLogin().roles()
+                .stream()
+                .map(Role::roleCode)
+                .toList();
+        if(accountRoleCodes.contains(ERole.ADMIN.getCode())) {
+            ShelterRegistrationFilter filter = ShelterRegistrationFilter.prepareForAdmin();
+            Page<ShelterRegistration> shelterRegistrations = registrationQueryService
+                    .findAll(filter.searchCriteria(), filter.pageRequestCustom());
+            return ShelterRegistrationNotification.builder()
+                    .registrations(shelterRegistrations.getContent())
+                    .totalRegistrations(shelterRegistrations.getTotalElements())
+                    .build();
+        } else {
+            return ShelterRegistrationNotification.ofEmpty();
+        }
+
+    }
+
+    private void validateCreateRegistrationAvailability(Long accountId, Long formResponseId) {
+        List<EShelterRegistrationStatus> registrationStatuses = List.of(EShelterRegistrationStatus.NEW,
+                EShelterRegistrationStatus.RECEIVED, EShelterRegistrationStatus.APPROVED);
+
+        if(registrationQueryService.existsByAccountIdAndStatusIn(accountId, registrationStatuses)) {
+            throw new RequestNotAvailable("Không thể tạo thêm yêu cầu đăng ký trung tâm cứu trợ");
+        }
+
+        if(Objects.isNull(formResponseId) || !formReplyQueryService.existsByFormResponseId(formResponseId)) {
+            throw new RequestNotAvailable("Chưa điền form đăng ký trung tâm");
+        }
+    }
+
+    @AfterReturning(
+            pointcut = "@annotation(com.paw.fund.app.modules.shelter_management.annotation.PublishRegistration)",
+            returning = "result"
+    )
+    public void handlePublishRegistration(JoinPoint joinPoint, Object result) throws Throwable {
+        try {
+            MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+            PublishRegistration annotation = methodSignature.getMethod()
+                    .getAnnotation(PublishRegistration.class);
+            ShelterRegistrationNotification notification = useCaseService
+                    .getRegistrationNotification(ShelterRegistrationFilter.prepareForAdmin());
+            appDestination = Optional.ofNullable(annotation.appDestination())
+                    .orElse(appDestination);
+            messagingTemplate.convertAndSend(appDestination, notification);
+            if(result instanceof ShelterRegistration
+                    && StringUtils.hasText(annotation.userDestination())) {
+                Account account = accountQueryService.findById(((Account) result).accountId());
+                messagingTemplate.convertAndSendToUser(account.email(), annotation.userDestination(), notification);
+            }
+
+        } catch (Throwable e) {
+            throw e;
+        }
+    }
+
+    @AfterReturning(
+            pointcut = "@annotation(com.paw.fund.app.modules.shelter_management.annotation.SendMail)",
+            returning = "result"
+    )
+    public void HandleSendMail(JoinPoint joinPoint, Object result) {
+        if(result instanceof ShelterRegistration shelterRegistration) {
+            Account account = accountQueryService.findById(shelterRegistration.accountId());
+            Shelter shelter = shelterQueryService.findById(shelterRegistration.shelterId());
+            MailSender mailSender = MailSender.builder()
+                    .from(systemMail)
+                    .to(account.email())
+                    .isHTMLSupport(true)
+                    .build();
+            MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+            SendMail annotation = methodSignature.getMethod().getAnnotation(SendMail.class);
+            EShelterRegistrationStatus status = EShelterRegistrationStatus.findByCode(annotation.confirmContent());
+            switch (status) {
+                case RECEIVED -> mailSender = mailSender
+                        .prepareForEmailReceiveShelter(account.lastName(), shelter.shelterName());
+                case APPROVED -> mailSender = mailSender
+                        .prepareForEmailApproveShelter(account.lastName(), shelter.shelterName());
+                case REJECTED -> mailSender = mailSender.prepareForEmailRejectShelter(account.lastName(), shelter.shelterName(),
+                        shelterRegistration.reason());
+                default -> throw new ResourceNotValidException();
+            }
+
+            mailSenderCommandService.sendMail(mailSender);
+        }
+    }
+
+    @Around("@annotation(com.paw.fund.app.modules.shelter_management.annotation.UpdateLocation)")
+    public Object handleUpdateLocation(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object arg = joinPoint.getArgs()[0];
+        if(arg instanceof ShelterRegistrationCreate shelterRegistrationCreate) {
+            if(Objects.isNull(shelterRegistrationCreate.placeId())
+                    || Objects.isNull(shelterRegistrationCreate.shelter())) {
+                throw new IllegalArgumentException("Place ID is required for updating location");
+            }
+            PlaceDetail placeDetail = mapQueryService.getPlaceDetailByPlaceId(shelterRegistrationCreate.placeId());
+            Shelter shelter = shelterRegistrationCreate.shelter()
+                    .withAddress(placeDetail.results().getFirst().address())
+                    .withWard(getWardByComponent(placeDetail.results().getFirst().placeComponents()))
+                    .withDistrict(getDistrictByComponent(placeDetail.results().getFirst().placeComponents()))
+                    .withProvince(getProvinceByComponent(placeDetail.results().getFirst().placeComponents()))
+                    .withLatitude(placeDetail.results().getFirst().placeGeometry().geometry().latitude())
+                    .withLongitude(placeDetail.results().getFirst().placeGeometry().geometry().longitude());
+            return joinPoint.proceed(new Object[]{shelterRegistrationCreate.withShelter(shelter)});
+        }
+
+        throw new IllegalArgumentException("Place ID is required for updating location");
+    }
+
+    private String getWardByComponent(List<PlaceComponent> placeComponents) {
+        return placeComponents.get(1).placeName();
+    }
+
+    private String getDistrictByComponent(List<PlaceComponent> placeComponents) {
+        return placeComponents.get(2).placeName();
+    }
+
+    private String getProvinceByComponent(List<PlaceComponent> placeComponents) {
+        return placeComponents.get(3).placeName();
+    }
+
+    @Around("@annotation(com.paw.fund.app.modules.shelter_management.annotation.CreateShelterMedia)")
+    public Object handleCreateShelterMedia(ProceedingJoinPoint joinPoint) throws Throwable {
+        try {
+          Object result = joinPoint.proceed();
+          Object args = joinPoint.getArgs()[0];
+          if(result instanceof Shelter shelter
+                  && args instanceof ShelterActive shelterActive) {
+            List<CommonMedia> commonMedias = mediaCommandService.saveAllWithShelterId(shelter.shelterId(),
+                    shelterActive.medias());
+
+            return shelter.withMedias(commonMedias);
+          }
+
+          throw new ServiceException();
+        } catch (Throwable e) {
+            throw e;
+        }
+    }
+}

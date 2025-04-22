@@ -1,4 +1,8 @@
 spring:
+  jackson:
+    serialization:
+      write-date-keys-as-timestamps: false
+    date-time-format: yyyy-MM-dd'T'HH:mm:ss.SSSZ
   application:
     name: paw-fund-backend
   main:
@@ -29,7 +33,7 @@ spring:
             enable: true
 
 app:
-  version: v1.2.1
+  version: v1.3.0
   access-token:
     secret-key: ftoLRVxHq82BzLq3stXhnOJRo4azrVab
     expired-duration: 4320
@@ -39,3 +43,12 @@ app:
     username: brokenstar2197@gmail.com
     smtp:
       password: kqwb ipyc gkeh ligm
+  goong:
+    key: gMs7uHEjx646z9dVVjrh60fRPMADssbjc2Z7KYd1
+    domain: https://rsapi.goong.io
+    autocomplete: /Place/AutoComplete
+    geocode: /geocode
+  websocket:
+    shelter-registration-topic: /topic/get-shelter-registration-topic
+    shelter-registration-user-topic: /user/get-shelter-registration-topic
+    sheltter-registration-message: /shelter-registration-message

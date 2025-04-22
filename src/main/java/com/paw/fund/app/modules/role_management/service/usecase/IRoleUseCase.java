@@ -6,6 +6,8 @@ import com.paw.fund.app.modules.role_management.domain.usecase.RoleCode;
 public interface IRoleUseCase {
     Role getRole(RoleCode roleCode);
 
+    Role getShelterOwnerRole();
+
     Role getDonorRole();
 
     Role getAdaptorRole();
