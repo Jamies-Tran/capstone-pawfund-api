@@ -16,6 +16,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -64,6 +68,7 @@ public class ShelterCommandService {
 
         return repository.findById(shelterId)
                 .map(x -> {
+                    x.setShelterCode(generateShelterCode(x));
                     x.setDescription(description);
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
@@ -74,6 +79,12 @@ public class ShelterCommandService {
                     return mapper.toDto(savedShelter);
                 })
                 .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private String generateShelterCode(ShelterEntity shelter) {
+        String createdAtAsText = shelter.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
+        return "SH-%s-%s"
+                .formatted(createdAtAsText, shelter.getShelterId());
     }
 
     private void validateSave(Shelter shelter) {

@@ -41,9 +41,10 @@ public class ShelterRegistrationCommandService {
         return mapper.toDto(saveShelterReg);
     }
 
-    public ShelterRegistration updateStatus(Long shelterRegistrationId,
-                                            EShelterRegistrationStatus status,
-                                            String rejectReason) {
+    public ShelterRegistration updateStatusAndProcessById(Long shelterRegistrationId,
+                                                          Long processById,
+                                                          EShelterRegistrationStatus status,
+                                                          String rejectReason) {
         ValidationUtil.validateArgumentNotNull(shelterRegistrationId);
         ValidationUtil.validateArgumentNotNull(status);
 
@@ -64,6 +65,7 @@ public class ShelterRegistrationCommandService {
         }
         foundRegistration.setStatusCode(status.getCode());
         foundRegistration.setStatusName(status.getName());
+        foundRegistration.setProcessById(processById);
         foundRegistration.prepareUpdate(auditableUseCase.createAuditableForUpdate());
         ShelterRegistrationEntity updatedRegistration = repository.save(foundRegistration);
 

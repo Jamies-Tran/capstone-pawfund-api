@@ -7,7 +7,7 @@ import com.paw.fund.app.modules.mail_management.domain.MailSender;
 import com.paw.fund.app.modules.mail_management.service.MailSenderCommandService;
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaCommandService;
-import com.paw.fund.app.modules.role_management.domain.Role;
+import com.paw.fund.app.modules.media_management.service.common.CommonMediaQueryService;
 import com.paw.fund.app.modules.shelter_management.annotation.PublishRegistration;
 import com.paw.fund.app.modules.shelter_management.annotation.SendMail;
 import com.paw.fund.app.modules.shelter_management.domain.Shelter;
@@ -28,8 +28,8 @@ import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.configuration.handler.exceptions.ServiceException;
 import com.paw.fund.configuration.request.context.RequestContext;
 import com.paw.fund.dto.CurrentAccountLogin;
-import com.paw.fund.enums.ERole;
 import com.paw.fund.enums.EShelterRegistrationStatus;
+import com.paw.fund.utils.websocket.MessageTemplateHandler;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -43,14 +43,12 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Aspect
 @Component
@@ -76,9 +74,6 @@ public class ShelterAspectHandler {
     ShelterQueryService shelterQueryService;
 
     @NonNull
-    SimpMessagingTemplate messagingTemplate;
-
-    @NonNull
     MailSenderCommandService mailSenderCommandService;
 
     @NonNull
@@ -88,15 +83,10 @@ public class ShelterAspectHandler {
     CommonMediaCommandService mediaCommandService;
 
     @NonNull
+    CommonMediaQueryService commonMediaQueryService;
+
+    @NonNull
     RequestContext requestContext;
-
-    @NonFinal
-    @Value("${app.websocket.shelter-registration-topic}")
-    String topic;
-
-    @NonFinal
-    @Value("${app.websocket.shelter-registration-topic}")
-    String appDestination;
 
     @NonFinal
     @Value("${app.mail.username}")
@@ -124,9 +114,9 @@ public class ShelterAspectHandler {
                         .build();
                 ShelterRegistration saveShelterReg = registrationCommandService.save(registration);
                 ShelterRegistrationNotification notification = getRegistrationNotification();
-                messagingTemplate.convertAndSend(topic, notification);
-                return shelter
-                        .withShelterRegistration(saveShelterReg);
+
+                MessageTemplateHandler.sendToTopic("/topic/get-shelter-registration-topic", notification);
+                return shelter.withShelterRegistration(saveShelterReg);
             }
             throw new ResourceNotValidException("Lỗi đăng ký trung tâm cứu trợ");
         } catch (Throwable e) {
@@ -135,21 +125,13 @@ public class ShelterAspectHandler {
     }
 
     private ShelterRegistrationNotification getRegistrationNotification() {
-        List<String> accountRoleCodes = requestContext.getCurrentAccountLogin().roles()
-                .stream()
-                .map(Role::roleCode)
-                .toList();
-        if(accountRoleCodes.contains(ERole.ADMIN.getCode())) {
-            ShelterRegistrationFilter filter = ShelterRegistrationFilter.prepareForAdmin();
-            Page<ShelterRegistration> shelterRegistrations = registrationQueryService
-                    .findAll(filter.searchCriteria(), filter.pageRequestCustom());
-            return ShelterRegistrationNotification.builder()
-                    .registrations(shelterRegistrations.getContent())
-                    .totalRegistrations(shelterRegistrations.getTotalElements())
-                    .build();
-        } else {
-            return ShelterRegistrationNotification.ofEmpty();
-        }
+        ShelterRegistrationFilter filter = ShelterRegistrationFilter.prepareForAdmin();
+        Page<ShelterRegistration> shelterRegistrations = registrationQueryService
+                .findAll(filter.searchCriteria(), filter.pageRequestCustom());
+        return ShelterRegistrationNotification.builder()
+                .registrations(shelterRegistrations.getContent())
+                .totalRegistrations(shelterRegistrations.getTotalElements())
+                .build();
 
     }
 
@@ -177,13 +159,13 @@ public class ShelterAspectHandler {
                     .getAnnotation(PublishRegistration.class);
             ShelterRegistrationNotification notification = useCaseService
                     .getRegistrationNotification(ShelterRegistrationFilter.prepareForAdmin());
-            appDestination = Optional.ofNullable(annotation.appDestination())
-                    .orElse(appDestination);
-            messagingTemplate.convertAndSend(appDestination, notification);
-            if(result instanceof ShelterRegistration
-                    && StringUtils.hasText(annotation.userDestination())) {
-                Account account = accountQueryService.findById(((Account) result).accountId());
-                messagingTemplate.convertAndSendToUser(account.email(), annotation.userDestination(), notification);
+            MessageTemplateHandler.sendToTopic("/topic/get-shelter-registration-topic", notification);
+            if(result instanceof ShelterRegistration shelterRegistration
+                    && StringUtils.hasText(annotation.sendTo())) {
+                Account account = accountQueryService.findById(shelterRegistration.accountId());
+                ShelterRegistration registration = registrationQueryService
+                        .findById(shelterRegistration.shelterRegistrationId());
+                MessageTemplateHandler.sendToUser(account.email(), annotation.sendTo(), registration);
             }
 
         } catch (Throwable e) {
@@ -269,6 +251,21 @@ public class ShelterAspectHandler {
           }
 
           throw new ServiceException();
+        } catch (Throwable e) {
+            throw e;
+        }
+    }
+
+    @Around("@annotation(com.paw.fund.app.modules.shelter_management.annotation.AttachMedia)")
+    public Object handleAttachMedia(ProceedingJoinPoint joinPoint) throws Throwable {
+        try {
+            Object result = joinPoint.proceed();
+            if(result instanceof Shelter shelter) {
+                List<CommonMedia> medias = commonMediaQueryService.findAllByShelterId(shelter.shelterId());
+
+                return shelter.withMedias(medias);
+            }
+            throw new ServiceException();
         } catch (Throwable e) {
             throw e;
         }

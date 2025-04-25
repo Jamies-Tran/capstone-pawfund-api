@@ -3,15 +3,16 @@ package com.paw.fund.app.modules.shelter_management.service;
 import com.paw.fund.app.modules.account_management.service.AccountQueryService;
 import com.paw.fund.app.modules.account_role_management.domain.AccountRole;
 import com.paw.fund.app.modules.account_role_management.service.AccountRoleCommandService;
-import com.paw.fund.app.modules.form_management.service.form.reply.FormReplyQueryService;
+import com.paw.fund.app.modules.account_role_management.service.AccountRoleQueryService;
 import com.paw.fund.app.modules.role_management.domain.Role;
-import com.paw.fund.app.modules.role_management.service.RoleQueryService;
 import com.paw.fund.app.modules.role_management.service.usecase.IRoleUseCase;
+import com.paw.fund.app.modules.shelter_management.annotation.AttachMedia;
 import com.paw.fund.app.modules.shelter_management.annotation.CreateShelterMedia;
 import com.paw.fund.app.modules.shelter_management.annotation.CreateShelterRegistration;
 import com.paw.fund.app.modules.shelter_management.annotation.UpdateLocation;
 import com.paw.fund.app.modules.shelter_management.domain.Shelter;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterActive;
+import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterFilter;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterId;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationCreate;
 import com.paw.fund.app.modules.shelter_management.service.registration.ShelterRegistrationQueryService;
@@ -28,11 +29,13 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -53,6 +56,9 @@ public class ShelterUseCaseService implements IShelterUseCase {
 
     @NonNull
     AccountRoleCommandService accountRoleCommandService;
+
+    @NonNull
+    AccountRoleQueryService accountRoleQueryService;
 
     @NonNull
     ShelterRegistrationQueryService shelterRegistrationQueryService;
@@ -90,13 +96,35 @@ public class ShelterUseCaseService implements IShelterUseCase {
         validateActiveShelter(shelterActive.shelterId());
 
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
-        AccountRole accountRole = accountRoleCommandService.save(currentAccountLogin.accountId(),
-                roleUseCase.getShelterOwnerRole().roleId());
+        Long adminRoleId = roleUseCase.getAdminRole().roleId();
+        Long accountRoleId;
+
+        Optional<AccountRole> existsAccountRole = accountRoleQueryService
+                .findByRoleIdAndAccountIdNullable(adminRoleId, currentAccountLogin.accountId());
+        if(existsAccountRole.isPresent()) {
+            accountRoleId = existsAccountRole.get().accountRoleId();
+        } else {
+            AccountRole accountRole = accountRoleCommandService.save(currentAccountLogin.accountId(),
+                    roleUseCase.getShelterOwnerRole().roleId());
+            accountRoleId = accountRole.accountRoleId();
+        }
 
         return commandService.updateStatusAndAccountRoleIdAndDescription(
                 shelterActive.description(),
                 shelterActive.shelterId(),
-                accountRole.accountRoleId(), EShelterStatus.ENABLE);
+                accountRoleId,
+                EShelterStatus.ENABLE);
+    }
+
+    @Override
+    public Page<Shelter> getShelterList(ShelterFilter shelterFilter) {
+        return queryService.findAll(shelterFilter.searchCriteria(), shelterFilter.pageRequestCustom());
+    }
+
+    @Override
+    @AttachMedia
+    public Shelter getShelterDetail(ShelterId shelterId) {
+        return queryService.findById(shelterId.value());
     }
 
     private void validateActiveShelter(Long shelterId) {

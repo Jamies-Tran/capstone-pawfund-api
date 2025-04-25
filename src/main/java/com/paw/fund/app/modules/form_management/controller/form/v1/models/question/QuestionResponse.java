@@ -12,6 +12,7 @@ public record QuestionResponse(
         String questionText,
         List<OptionResponse> options,
         String questionTypeCode,
-        String questionTypeName
+        String questionTypeName,
+        Boolean isMultipleChoice
 ) {
 }

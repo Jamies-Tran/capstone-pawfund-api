@@ -1,13 +1,16 @@
 package com.paw.fund.app.modules.shelter_management.domain.usecase.registration;
 
 import lombok.Builder;
+import lombok.With;
 import org.springframework.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Builder
 public record ShelterRegistrationSearchCriteria(
+        @With Long processById,
         List<LocalDateTime> requestAtTimeRange,
         List<LocalDateTime> receivedAtTimeRange,
         List<LocalDateTime> approvedAtTimeRange,
@@ -112,5 +115,9 @@ public record ShelterRegistrationSearchCriteria(
 
     public Boolean isStatusCodesNullOrEmpty() {
         return CollectionUtils.isEmpty(statusCodes);
+    }
+
+    public Boolean isProcessByIdNullOrEmpty() {
+        return Objects.isNull(processById);
     }
 }

@@ -9,6 +9,13 @@
 <body>
   <h2>STOMP WebSocket Test Client</h2>
 
+  <h1>Login</h1>
+  <input type="text" id="email"/>
+  <br/><br/>
+
+  <input type="text" id="password"/>
+  <br/><br/>
+
   <label>WebSocket URL: <input type="text" id="wsUrl" value="ws://localhost:8080/pawfund-ws" size="40"/></label>
   <button onclick="connect()">Connect</button>
   <br/><br/>
@@ -28,12 +35,16 @@
 
   <script>
     async function getJwtToken() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      console.log(email);
+      console.log(password);
       const response = await fetch('http://localhost:8080/v1/public/session/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          "email": "admin@gmail.com",
-          "password": "admin"
+          "email": `${email}`,
+          "password": `${password}`
         })
       });
 
@@ -42,15 +53,15 @@
       return resData.data.accessToken;
     }
 
+
+
     let stompClient = null;
 
     function connect(options) {
-      const token = getJwtToken();
-      token.then(token => {
+      getJwtToken().then(token => {
         const socket = new SockJS(`http://localhost:8080/pawfund-sockjs`);
         socket.debug = console.log;
         stompClient = Stomp.over(socket);
-
         stompClient.connect({
           Authorization: `Bearer ${token}`
         }, function (frame) {
@@ -66,12 +77,10 @@
                   {
                     Authorization:`Bearer ${token}`
                   });
-          // stompClient.send('/app/shelter-registration-message', {}, null);
-          }, function (error) {
+        }, function (error) {
           log("❌ Error: " + error);
-          });
+        });
       })
-
     }
 
     function sendMessage() {

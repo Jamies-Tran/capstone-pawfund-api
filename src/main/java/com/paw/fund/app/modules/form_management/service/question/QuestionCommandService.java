@@ -51,7 +51,8 @@ public class QuestionCommandService {
                 .map(x -> {
                     QuestionEntity newQuestion = mapper.toEntity(x.withFormId(formId));
                     newQuestion.prepareSave(auditableUseCase.createAuditableForNew());
-                    if(Objects.equals(x.questionTypeCode(), EQuestionType.MULTIPLE_CHOICE.getCode())) {
+                    if(Objects.equals(x.questionTypeCode(), EQuestionType.MULTIPLE_CHOICE.getCode())
+                            || Objects.equals(x.questionTypeCode(), EQuestionType.SINGLE_CHOICE.getCode())) {
                         if(CollectionUtils.isEmpty(x.options())) {
                             throw new ResourceNotValidException("Câu hỏi trắc nghiệm phải có lựa chọn trả lời");
                         }

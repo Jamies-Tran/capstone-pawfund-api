@@ -9,7 +9,8 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum EQuestionType {
-    MULTIPLE_CHOICE("MULTIPLE_CHOICE", "Câu hỏi trắc nghiệm"),
+    SINGLE_CHOICE("SINGLE_CHOICE", "Câu hỏi trắc nghiệm (một lựa chọn)"),
+    MULTIPLE_CHOICE("MULTIPLE_CHOICE", "Câu hỏi trắc nghiệm (nhiều lựa chọn)"),
     ESSAY("ESSAY", "Câu hỏi tự luận"),;
 
     String code;

@@ -49,4 +49,16 @@ public class ShelterRegistrationQueryService {
         List<String> statusCodes = statuses.stream().map(EShelterRegistrationStatus::getCode).toList();
         return repository.existsByAccountIdAndStatusCodeIn(accountId, statusCodes);
     }
+
+    public ShelterRegistration findByAccountId(Long accountId) {
+        return repository.findByAccountId(accountId)
+                .map(mapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    public ShelterRegistration findById(Long shelterRegistrationId) {
+        return repository.findById(shelterRegistrationId)
+                .map(mapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
+    }
 }

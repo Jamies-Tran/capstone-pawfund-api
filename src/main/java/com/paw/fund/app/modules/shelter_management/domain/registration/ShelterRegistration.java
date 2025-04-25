@@ -10,10 +10,13 @@ public record ShelterRegistration(
         Long shelterRegistrationId,
         @With Long shelterId,
         @With Long accountId,
+        Long processById,
         @With Long formResponseId,
         String reason,
         LocalDateTime approvedAt,
         LocalDateTime rejectedAt,
-        LocalDateTime requestAt
+        LocalDateTime requestAt,
+        String statusCode,
+        String statusName
 ) {
 }

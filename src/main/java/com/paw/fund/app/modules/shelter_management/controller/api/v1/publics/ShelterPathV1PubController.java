@@ -1,11 +1,9 @@
-package com.paw.fund.app.modules.shelter_management.controller.api;
+package com.paw.fund.app.modules.shelter_management.controller.api.v1.publics;
 
-import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.app.modules.shelter_management.controller.api.models.IShelterModelMapper;
-import com.paw.fund.app.modules.shelter_management.controller.api.models.ShelterActiveRequest;
 import com.paw.fund.app.modules.shelter_management.controller.api.models.ShelterResponse;
 import com.paw.fund.app.modules.shelter_management.domain.Shelter;
-import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterActive;
+import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterId;
 import com.paw.fund.app.modules.shelter_management.service.usecase.IShelterUseCase;
 import com.paw.fund.utils.response.ValueResponse;
 import lombok.AccessLevel;
@@ -17,12 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ShelterPathV1Controller implements IShelterPathV1API {
+public class ShelterPathV1PubController implements IShelterPathV1PubAPI {
     @NonNull
     IShelterUseCase useCase;
 
@@ -34,15 +30,8 @@ public class ShelterPathV1Controller implements IShelterPathV1API {
     String API_VERSION;
 
     @Override
-    public ValueResponse<ShelterResponse> activeShelter(Long shelterId, ShelterActiveRequest request) {
-        List<CommonMedia> medias = request.medias().stream()
-                .map(x -> CommonMedia.builder()
-                        .url(x.url())
-                        .isThumbnail(x.isThumbnail())
-                        .build())
-                .toList();
-        ShelterActive shelterActive = ShelterActive.of(request.description(), shelterId, medias);
-        Shelter shelter = useCase.activeShelter(shelterActive);
+    public ValueResponse<ShelterResponse> getShelterId(Long shelterId) {
+        Shelter shelter = useCase.getShelterDetail(ShelterId.of(shelterId));
 
         return ValueResponse.success(modelMapper.toResponse(shelter), HttpStatus.OK, API_VERSION);
     }

@@ -9,6 +9,8 @@ public record ShelterRegistrationResponse(
         Long shelterRegistrationId,
         Long shelterId,
         Long accountId,
+        Long processById,
+        Long formResponseId,
         String reason,
         LocalDateTime approvedAt,
         LocalDateTime rejectedAt,

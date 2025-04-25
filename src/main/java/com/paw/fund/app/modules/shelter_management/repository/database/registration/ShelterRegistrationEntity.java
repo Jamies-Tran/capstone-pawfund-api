@@ -39,6 +39,9 @@ public class ShelterRegistrationEntity extends AuditableEntity {
     Long accountId;
 
     @Column
+    Long processById;
+
+    @Column
     Long formResponseId;
 
     @Column

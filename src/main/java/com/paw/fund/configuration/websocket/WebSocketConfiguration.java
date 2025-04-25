@@ -60,8 +60,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
             @Override
             public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
                 StompHeaderAccessor accessor = StompHeaderAccessor.getAccessor(message,  StompHeaderAccessor.class);
-                if(accessor != null
-                        && Objects.isNull(SecurityContextHolder.getContext().getAuthentication())) {
+                if(accessor != null) {
                     String token = accessor.getFirstNativeHeader("Authorization");
                     if(StringUtils.hasText(token) && token.startsWith("Bearer ")) {
                         token = token.substring(7);
@@ -69,6 +68,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
                         UserDetails userDetails = userDetailsService.loadUserByUsername(identification);
                         UsernamePasswordAuthenticationToken authToken = UsernamePasswordAuthenticationToken.authenticated(
                                 userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
+                        accessor.setUser(authToken);
                         SecurityContext securityContext = SecurityContextHolder.getContext();
                         securityContext.setAuthentication(authToken);
                         SecurityContextHolder.setContext(securityContext);

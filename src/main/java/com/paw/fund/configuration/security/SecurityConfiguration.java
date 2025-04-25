@@ -85,6 +85,7 @@ public class SecurityConfiguration {
                         AntPathRequestMatcher.antMatcher("/v2/public/*"),
                         AntPathRequestMatcher.antMatcher("/pawfund-sockjs/**"),
                         AntPathRequestMatcher.antMatcher("/test.html"),
+                        AntPathRequestMatcher.antMatcher("/test-2.html"),
                         AntPathRequestMatcher.antMatcher("/test-mail.html")).permitAll())
                 .authorizeHttpRequests(httpAuthorization -> httpAuthorization.anyRequest().authenticated())
                 .exceptionHandling(excHandler -> excHandler.authenticationEntryPoint(authenticationEntryPoint))

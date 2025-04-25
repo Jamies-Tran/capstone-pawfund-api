@@ -42,4 +42,6 @@ public interface IShelterRegistrationRepository extends JpaRepository<ShelterReg
             AND sr.statusCode = :#{T(com.paw.fund.enums.EShelterRegistrationStatus).APPROVED.getCode()}
     """)
     Boolean existsByApprovedShelterRegistrationByShelterId(Long shelterId);
+
+    Optional<ShelterRegistrationEntity> findByAccountId(Long accountId);
 }

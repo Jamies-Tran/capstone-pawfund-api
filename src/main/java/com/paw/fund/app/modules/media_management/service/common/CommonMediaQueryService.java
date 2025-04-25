@@ -29,4 +29,10 @@ public class CommonMediaQueryService {
                 .map(mapper::toDto)
                 .toList();
     }
+
+    public List<CommonMedia> findAllByShelterId(Long shelterId) {
+        return repository.findAllByShelterId(shelterId).stream()
+                .map(mapper::toDto)
+                .toList();
+    }
 }
