@@ -67,3 +67,11 @@ V1.2.1
 Features:
 
 - Add find category: form status
+
+V1.3.1
+
+Features:
+
+Refactor code
+- Add get shelter status category
+- Add get shelter registration status category
