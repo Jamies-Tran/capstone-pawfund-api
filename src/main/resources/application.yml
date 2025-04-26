@@ -50,7 +50,3 @@ app:
     domain: https://rsapi.goong.io
     autocomplete: /Place/AutoComplete
     geocode: /geocode
-  websocket:
-    shelter-registration-topic: /topic/get-shelter-registration-topic
-    shelter-registration-user-topic: /user/queue/get-shelter-registration-topic
-    sheltter-registration-message: /shelter-registration-message

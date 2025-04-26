@@ -16,12 +16,10 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,26 +30,18 @@ public class ShelterRegistrationEventHandler {
     @NonNull
     IShelterRegistrationUseCase useCase;
 
-    @NonFinal
-    @Value("${app.websocket.shelter-registration-topic}")
-    String topic;
-
-    @NonFinal
-    @Value("${app.websocket.shelter-registration-user-topic}")
-    String queue;
-
     @EventListener
     public void shelterRegistrationSubscribeEventHandler(SessionSubscribeEvent event) {
         String destination = (String) event.getMessage().getHeaders().get("simpDestination");
-        if(Objects.equals(destination, topic)) {
+        if(Objects.equals(destination, "/topic/get-shelter-registration-topic")) {
             ShelterRegistrationNotification notification = useCase
                     .getRegistrationNotification(prepareFilter());
-            MessageTemplateHandler.sendToTopic(topic, notification);
-        } else if(Objects.equals(destination, queue)) {
+            MessageTemplateHandler.sendToTopic("/topic/get-shelter-registration-topic", notification);
+        } else if(Objects.equals(destination, "/user/queue/get-shelter-registration-topic")) {
             String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             ShelterRegistration shelterRegistration = useCase
                     .getShelterRegistrationDetail(ShelterRegistrationEmail.of(username));
-            MessageTemplateHandler.sendToUser(username, queue, shelterRegistration);
+            MessageTemplateHandler.sendToUser(username, "/user/queue/get-shelter-registration-topic", shelterRegistration);
         }
     }
 
