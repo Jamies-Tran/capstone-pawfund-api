@@ -4,6 +4,7 @@ import com.paw.fund.app.modules.form_management.domain.option.IOptionMapper;
 import com.paw.fund.app.modules.form_management.domain.option.Option;
 import com.paw.fund.app.modules.form_management.repository.database.option.IOptionRepository;
 import com.paw.fund.app.modules.form_management.repository.database.option.OptionEntity;
+import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -23,11 +24,19 @@ public class OptionQueryService {
     IOptionMapper mapper;
 
     public List<Option> findAllByQuestionIdIn(List<Long> questionIds) {
-
         List<OptionEntity> foundOptions = repository
                 .findAllByStatusCodeNotDeletedAndQuestionIdIn(questionIds);
 
         return foundOptions.stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+    public List<Option> findAllByIdIn(List<Long> optionIds) {
+        ValidationUtil.validateArgumentListNotNull(optionIds);
+
+        return repository.findAllByOptionIdIn(optionIds)
+                .stream()
                 .map(mapper::toDto)
                 .toList();
     }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface IOptionRepository extends JpaRepository<OptionEntity, Long> {
@@ -19,4 +20,6 @@ public interface IOptionRepository extends JpaRepository<OptionEntity, Long> {
     List<OptionEntity> findAllByStatusCodeNotDeletedAndQuestionIdIn(List<Long> questionIds);
 
     List<OptionEntity> findAllByQuestionIdIn(List<Long> questionIds);
+
+    List<OptionEntity> findAllByOptionIdIn(List<Long> optionIds);
 }

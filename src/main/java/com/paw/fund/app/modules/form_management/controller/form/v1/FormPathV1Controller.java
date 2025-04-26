@@ -1,8 +1,8 @@
 package com.paw.fund.app.modules.form_management.controller.form.v1;
 
-import com.paw.fund.app.modules.form_management.controller.models.form.FormResponse;
-import com.paw.fund.app.modules.form_management.controller.models.form.FormUpdateRequest;
-import com.paw.fund.app.modules.form_management.controller.models.form.IFormModelMapper;
+import com.paw.fund.app.modules.form_management.controller.form.v1.models.form.FormResponse;
+import com.paw.fund.app.modules.form_management.controller.form.v1.models.form.FormUpdateRequest;
+import com.paw.fund.app.modules.form_management.controller.form.v1.models.form.IFormModelMapper;
 import com.paw.fund.app.modules.form_management.domain.form.Form;
 import com.paw.fund.app.modules.form_management.domain.form.usecase.FormDetail;
 import com.paw.fund.app.modules.form_management.domain.form.usecase.FormId;

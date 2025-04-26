@@ -1,7 +1,7 @@
 package com.paw.fund.app.modules.form_management.controller.form.v1;
 
-import com.paw.fund.app.modules.form_management.controller.models.form.FormRequest;
-import com.paw.fund.app.modules.form_management.controller.models.form.FormResponse;
+import com.paw.fund.app.modules.form_management.controller.form.v1.models.form.FormRequest;
+import com.paw.fund.app.modules.form_management.controller.form.v1.models.form.FormResponse;
 import com.paw.fund.utils.response.PageResponse;
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.Operation;

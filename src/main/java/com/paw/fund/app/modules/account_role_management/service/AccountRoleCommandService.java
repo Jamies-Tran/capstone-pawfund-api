@@ -49,4 +49,15 @@ public class AccountRoleCommandService {
 
         repository.deleteAll(accountRoles);
     }
+
+    public AccountRole save(Long accountId, Long roleId) {
+        AccountRole accountRole = AccountRole.builder()
+                .accountId(accountId)
+                .roleId(roleId)
+                .build();
+        AccountRoleEntity newAccountRole = mapper.toEntity(accountRole);
+        AccountRoleEntity savedAccountRole = repository.save(newAccountRole);
+
+        return mapper.toDto(savedAccountRole);
+    }
 }

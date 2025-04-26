@@ -9,7 +9,7 @@ public record CommonMedia(
         @With Long accountId,
         Long reviewId,
         Long petId,
-        Long shelterId,
+        @With Long shelterId,
         String url,
         Boolean isThumbnail,
         @With String mediaTypeCode,

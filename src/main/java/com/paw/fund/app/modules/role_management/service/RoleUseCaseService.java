@@ -25,6 +25,12 @@ public class RoleUseCaseService implements IRoleUseCase {
     }
 
     @Override
+    public Role getShelterOwnerRole() {
+        ERole donorRole = ERole.SHELTER_OWNER;
+        return getRole(RoleCode.of(donorRole.getCode()));
+    }
+
+    @Override
     public Role getDonorRole() {
         ERole donorRole = ERole.DONOR;
         return getRole(RoleCode.of(donorRole.getCode()));

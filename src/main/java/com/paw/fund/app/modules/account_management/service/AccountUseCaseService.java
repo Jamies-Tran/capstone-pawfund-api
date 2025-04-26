@@ -39,7 +39,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.filter.RequestContextFilter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -114,7 +113,7 @@ public class AccountUseCaseService implements IAccountUseCase {
                     .saveAll(createdAccount.accountId(), roleIds);
             if(Objects.nonNull(createdAccountRoles) && !CollectionUtils.isEmpty(createdAccountRoles)) {
                 if(!CollectionUtils.isEmpty(account.medias())) {
-                    List<CommonMedia> commonMedias = commonMediaCommandService.saveAllForAccount(createdAccount.accountId(),
+                    List<CommonMedia> commonMedias = commonMediaCommandService.saveAllWithAccountId(createdAccount.accountId(),
                             account.medias());
                     return createdAccount
                             .withMedias(commonMedias)
@@ -128,7 +127,7 @@ public class AccountUseCaseService implements IAccountUseCase {
             Account createdAccount = commandService.save(account);
 
             if(!CollectionUtils.isEmpty(account.medias())) {
-                List<CommonMedia> commonMedias = commonMediaCommandService.saveAllForAccount(createdAccount.accountId(),
+                List<CommonMedia> commonMedias = commonMediaCommandService.saveAllWithAccountId(createdAccount.accountId(),
                         account.medias());
                 return createdAccount
                         .withMedias(commonMedias);
@@ -182,7 +181,7 @@ public class AccountUseCaseService implements IAccountUseCase {
         Account updatedAccount = commandService.update(currentAccountLogin.accountId(), account);
         commonMediaCommandService.deleteAllByAccountId(updatedAccount.accountId());
         List<CommonMedia> commonMedia = commonMediaCommandService
-                .saveAllForAccount(currentAccountLogin.accountId(), account.medias());
+                .saveAllWithAccountId(currentAccountLogin.accountId(), account.medias());
 
         return updatedAccount.withMedias(commonMedia);
     }

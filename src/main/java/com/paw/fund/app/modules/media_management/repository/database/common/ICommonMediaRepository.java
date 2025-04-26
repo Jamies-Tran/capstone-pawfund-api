@@ -8,4 +8,6 @@ import java.util.List;
 @Repository
 public interface ICommonMediaRepository extends JpaRepository<CommonMediaEntity, Long> {
     List<CommonMediaEntity> findAllByAccountId(Long accountId);
+
+    List<CommonMediaEntity> findAllByShelterId(Long shelterId);
 }

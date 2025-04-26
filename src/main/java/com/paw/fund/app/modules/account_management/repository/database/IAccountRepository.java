@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -43,4 +44,22 @@ public interface IAccountRepository extends JpaRepository<AccountEntity, Long> {
                     OR a.identification ILIKE %:#{#searchCriteria.search()}%))
     """)
     Page<AccountEntity> findAll(AccountSearchCriteria searchCriteria, Pageable pageable);
+
+    @Query("""
+        SELECT COUNT(a) > 0
+        FROM AccountEntity a
+        INNER JOIN AccountRoleEntity ar ON a.accountId = ar.accountId
+        INNER JOIN ShelterEntity se ON se.accountRoleId = ar.accountRoleId
+        WHERE a.accountId = :accountId
+    """)
+    Boolean existsAnyShelterByAccountId(Long accountId);
+
+    @Query("""
+        SELECT COUNT(a) > 0
+        FROM AccountEntity a
+        INNER JOIN ShelterRegistrationEntity sr ON a.accountId = sr.accountId
+        WHERE a.accountId = :accountId
+            AND sr.statusCode != :statusCode
+    """)
+    Boolean existsByAnyShelterRegistrationByIdAndStatusCodeNot(Long accountId, String statusCode);
 }

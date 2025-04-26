@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>STOMP WebSocket Test Client</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+<h2>STOMP WebSocket Test Client</h2>
+
+<h1>Login</h1>
+<input type="text" id="email"/>
+<br/><br/>
+
+<input type="text" id="password"/>
+<br/><br/>
+
+<label>WebSocket URL: <input type="text" id="wsUrl" value="http://localhost:8080/pawfund-sockjs" size="40"/></label>
+<button onclick="connect()">Connect</button>
+<br/><br/>
+
+<label>Subscribe Topic: <input type="text" id="subscribeTopic" value="/user/queue/shelter-registration-detail"/></label>
+<button onclick="subscribe()">Subscribe</button>
+<br/><br/>
+
+<label>Send Destination: <input type="text" id="sendDestination" value="/app/topic/shelter-registration-detail"/></label><br/>
+<label>Message Body (JSON):</label><br/>
+<button onclick="sendMessage()">Send Message</button>
+
+<hr/>
+
+<h3>Received Messages:</h3>
+<pre id="messages" style="background: #f4f4f4; padding: 10px; border: 1px solid #ccc; max-height: 300px; overflow-y: scroll;"></pre>
+
+<script>
+    async function getAccount() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const response = await fetch('http://localhost:8080/v1/public/session/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "email": `${email}`,
+                "password": `${password}`
+            })
+        });
+
+        const resData = await response.json();
+        console.log(resData.data);
+        return resData.data;
+    }
+
+    let stompClient = null;
+
+    function connect(options) {
+
+        getAccount().then(account => {
+            const wsUrl = document.getElementById("wsUrl").value;
+            const socket = new SockJS(wsUrl);
+            socket.debug = console.log;
+            stompClient = Stomp.over(socket);
+
+            stompClient.connect({
+                Authorization: `Bearer ${account.accessToken}`
+            }, function (frame) {
+
+                log("✅ Connected: " + frame);
+            }, function (error) {
+                log("❌ Error: " + error);
+            });
+        })
+
+    }
+
+    function subscribe() {
+        getAccount().then(account => {
+            const subscribeTopic = document.getElementById('subscribeTopic').value;
+            stompClient.subscribe(
+                subscribeTopic,
+                function (message) {
+                    const notification = JSON.parse(message.body);
+                    log2(notification);
+                    console.log(notification);
+                    alert("New notification");
+                },
+                {
+                    Authorization:`Bearer ${account.accessToken}`
+                });
+        })
+
+    }
+
+    function sendMessage() {
+
+        getAccount().then(account => {
+            const sendDestination = document.getElementById('sendDestination').value;
+            console.log(account.account.email);
+            let email = account.account.email;
+            stompClient.send(sendDestination, {
+                Authorization:`Bearer ${account.accessToken}`
+            }, email);
+        });
+
+    }
+
+    function log(message) {
+        const messages = document.getElementById('messages');
+        messages.textContent += message + "\n";
+    }
+
+    function log2(message) {
+        const messages = document.getElementById('messages');
+        messages.textContent += `\nShelter Register ID: ${message.shelterRegistrationId}\n`;
+        messages.textContent += `\nShelter ID: ${message.shelterId}\n`;
+        messages.textContent += `\nAccount ID: ${message.accountId}\n`;
+        messages.textContent += `\nForm Response ID: ${message.formResponseId}\n`;
+        messages.textContent += `\nReason: ${message.reason}\n`;
+        messages.textContent += `\nApprove: ${message.approvedAt}\n`;
+        messages.textContent += `\nRejected: ${message.rejectedAt}\n`;
+        messages.textContent += `\nRequestAt: ${message.requestAt}\n`;
+        messages.textContent += `\nStatust Code: ${message.statusCode}\n`;
+        messages.textContent += `\nStatust Name: ${message.statusName}\n`;
+    }
+</script>
+</body>
+</html>
