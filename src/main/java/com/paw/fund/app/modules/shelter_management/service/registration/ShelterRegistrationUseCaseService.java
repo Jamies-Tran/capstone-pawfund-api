@@ -139,6 +139,11 @@ public class ShelterRegistrationUseCaseService implements IShelterRegistrationUs
         return queryService.findAll(searchCriteria, filter.pageRequestCustom());
     }
 
+    @Override
+    public ShelterRegistration getShelterRegistrationDetail(ShelterRegistrationId shelterRegistrationId) {
+        return queryService.findById(shelterRegistrationId.value());
+    }
+
     private Long getProcessById() {
         CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         Role adminRole = currentAccountLogin.roles().stream()

@@ -37,6 +37,12 @@ public interface IShelterRegistrationV1API {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Xem danh sách các yêu cầu đăng ký trung tâm cứu trợ đang xử lý",
+            description = """
+                    - Admin xem danh sách các yêu cầu đăng ký trung tâm cứu trợ đang xử lý
+                    - [ADMIN - Quản trị viên]
+                    """)
     PageResponse<ShelterRegistrationResponse> getShelterRegistrationProcessingByAccount(
             @RequestParam(required = false, value = "requestAtTimeRange", defaultValue = "")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

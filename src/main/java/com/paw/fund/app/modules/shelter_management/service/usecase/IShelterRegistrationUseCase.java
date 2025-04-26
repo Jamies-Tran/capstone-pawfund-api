@@ -21,4 +21,6 @@ public interface IShelterRegistrationUseCase {
     ShelterRegistration rejectedShelterRegistration(ShelterRegistrationReject shelterRegistrationReject);
 
     Page<ShelterRegistration> getShelterRegistrationListProcessingByAccount(ShelterRegistrationFilter filter);
+
+    ShelterRegistration getShelterRegistrationDetail(ShelterRegistrationId shelterRegistrationId);
 }

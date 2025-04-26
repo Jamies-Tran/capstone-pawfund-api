@@ -32,27 +32,35 @@ public class ShelterRegistrationPathV1Controller implements IShelterRegisterPath
     String API_VERSION;
 
     @Override
-    public ValueResponse<ShelterRegistrationResponse> receiveShelter(Long shelterRegisterId) {
+    public ValueResponse<ShelterRegistrationResponse> receiveShelter(Long shelterRegistrationId) {
         ShelterRegistration shelterRegistration = useCase
-                .receiveShelterRegistration(ShelterRegistrationId.of(shelterRegisterId));
+                .receiveShelterRegistration(ShelterRegistrationId.of(shelterRegistrationId));
 
         return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK, API_VERSION);
     }
 
     @Override
-    public ValueResponse<ShelterRegistrationResponse> approveShelter(Long shelterRegisterId) {
+    public ValueResponse<ShelterRegistrationResponse> approveShelter(Long shelterRegistrationId) {
         ShelterRegistration shelterRegistration = useCase
-                .approveShelterRegistration(ShelterRegistrationId.of(shelterRegisterId));
+                .approveShelterRegistration(ShelterRegistrationId.of(shelterRegistrationId));
 
         return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK, API_VERSION);
     }
 
     @Override
-    public ValueResponse<ShelterRegistrationResponse> rejectShelter(Long shelterRegisterId, ShelterRegistrationRejectRequest request) {
+    public ValueResponse<ShelterRegistrationResponse> rejectShelter(Long shelterRegistrationId, ShelterRegistrationRejectRequest request) {
         ShelterRegistrationReject registrationReject = ShelterRegistrationReject
-                .of(shelterRegisterId, request.rejectReason());
+                .of(shelterRegistrationId, request.rejectReason());
         ShelterRegistration shelterRegistration = useCase
                 .rejectedShelterRegistration(registrationReject);
+
+        return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK, API_VERSION);
+    }
+
+    @Override
+    public ValueResponse<ShelterRegistrationResponse> getShelterRegistrationDetail(Long shelterRegistrationId) {
+        ShelterRegistration shelterRegistration = useCase
+                .getShelterRegistrationDetail(ShelterRegistrationId.of(shelterRegistrationId));
 
         return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK, API_VERSION);
     }
