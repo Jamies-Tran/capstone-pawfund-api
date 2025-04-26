@@ -16,15 +16,15 @@
 <input type="text" id="password"/>
 <br/><br/>
 
-<label>WebSocket URL: <input type="text" id="wsUrl" value="ws://localhost:8080/pawfund-ws" size="40"/></label>
+<label>WebSocket URL: <input type="text" id="wsUrl" value="http://localhost:8080/pawfund-sockjs" size="40"/></label>
 <button onclick="connect()">Connect</button>
 <br/><br/>
 
-<label>Subscribe Topic: <input type="text" id="subscribeTopic" value="/user/queue/get-shelter-registration-topic"/></label>
+<label>Subscribe Topic: <input type="text" id="subscribeTopic" value="/user/queue/shelter-registration-detail"/></label>
 <button onclick="subscribe()">Subscribe</button>
 <br/><br/>
 
-<label>Send Destination: <input type="text" id="sendDestination" value="/app/shelter-registration-message"/></label><br/>
+<label>Send Destination: <input type="text" id="sendDestination" value="/app/topic/shelter-registration-detail"/></label><br/>
 <label>Message Body (JSON):</label><br/>
 <button onclick="sendMessage()">Send Message</button>
 
@@ -54,8 +54,10 @@
     let stompClient = null;
 
     function connect(options) {
+
         getAccount().then(account => {
-            const socket = new SockJS(`http://localhost:8080/pawfund-sockjs`);
+            const wsUrl = document.getElementById("wsUrl").value;
+            const socket = new SockJS(wsUrl);
             socket.debug = console.log;
             stompClient = Stomp.over(socket);
 
@@ -73,8 +75,9 @@
 
     function subscribe() {
         getAccount().then(account => {
+            const subscribeTopic = document.getElementById('subscribeTopic').value;
             stompClient.subscribe(
-                '/user/queue/shelter-registration-detail',
+                subscribeTopic,
                 function (message) {
                     const notification = JSON.parse(message.body);
                     log2(notification);
@@ -89,10 +92,12 @@
     }
 
     function sendMessage() {
+
         getAccount().then(account => {
+            const sendDestination = document.getElementById('sendDestination').value;
             console.log(account.account.email);
             let email = account.account.email;
-            stompClient.send('/app/topic/shelter-registration-detail', {
+            stompClient.send(sendDestination, {
                 Authorization:`Bearer ${account.accessToken}`
             }, email);
         });

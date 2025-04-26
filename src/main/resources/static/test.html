@@ -16,7 +16,7 @@
   <input type="text" id="password"/>
   <br/><br/>
 
-  <label>WebSocket URL: <input type="text" id="wsUrl" value="ws://localhost:8080/pawfund-ws" size="40"/></label>
+  <label>WebSocket URL: <input type="text" id="wsUrl" value="http://localhost:8080/pawfund-sockjs" size="40"/></label>
   <button onclick="connect()">Connect</button>
   <br/><br/>
 
@@ -59,7 +59,11 @@
 
     function connect(options) {
       getJwtToken().then(token => {
-        const socket = new SockJS(`http://localhost:8080/pawfund-sockjs`);
+        const wsUrl = document.getElementById("wsUrl").value;
+        const subscribeTopic = document.getElementById("subscribeTopic").value;
+        const sendDestination = document.getElementById('sendDestination').value;
+
+        const socket = new SockJS(wsUrl);
         socket.debug = console.log;
         stompClient = Stomp.over(socket);
         stompClient.connect({
@@ -68,7 +72,7 @@
 
           log("✅ Connected: " + frame);
           stompClient.subscribe(
-                  '/topic/get-shelter-registration-topic',
+                  subscribeTopic,
                   function (message) {
                     const notification = JSON.parse(message.body);
                     log2(notification);
@@ -83,19 +87,19 @@
       })
     }
 
-    function sendMessage() {
-      const requestAtTimeRange = [
-        "2025-04-08T00:00:00Z",
-        "2025-04-14T21:05:00Z"
-      ];
-      const payload = {
-        requestAtTimeRange: requestAtTimeRange
-      };
-      const destination = '/app/shelter-registration-message';
-      stompClient.send(destination, {
-        Authorization:`Bearer ${token}`
-      }, JSON.stringify(payload));
-    }
+    // function sendMessage() {
+    //   const requestAtTimeRange = [
+    //     "2025-04-08T00:00:00Z",
+    //     "2025-04-14T21:05:00Z"
+    //   ];
+    //   const payload = {
+    //     requestAtTimeRange: requestAtTimeRange
+    //   };
+    //   const destination = '/app/shelter-registration-message';
+    //   stompClient.send(destination, {
+    //     Authorization:`Bearer ${token}`
+    //   }, JSON.stringify(payload));
+    // }
 
     function log(message) {
       const messages = document.getElementById('messages');
