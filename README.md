@@ -67,3 +67,14 @@ V1.2.1
 Features:
 
 - Add find category: form status
+
+V1.3.0
+
+Features:
+
+- QL đăng ký trung tâm cứu trợ
+- QL biểu mẫu phản hồi
+- QL trung tâm cứu trợ
+- Thông báo realtime data:
+ + đăng ký trung tâm cứu trợ,
+ + tiếp nhận/duyệt/từ chối yêu cầu tạo trung tâm cứu trợ
