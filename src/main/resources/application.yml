@@ -35,7 +35,7 @@ spring:
     active: dev
 
 app:
-  version: v1.3.0
+  version: v1.3.1
   access-token:
     secret-key: ftoLRVxHq82BzLq3stXhnOJRo4azrVab
     expired-duration: 4320
