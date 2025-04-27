@@ -1,4 +1,4 @@
-package com.paw.fund.app.modules.role_management;
+package com.paw.fund.app.modules.pet_management;
 
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @Slf4j
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class RoleModuleConstant {
-    static String MODULE_NAME = "ROLE";
+public class PetModuleConstant {
+    static String MODULE_NAME = "MEDIA";
 
     @NonFinal
     @Value("${app.version}")
