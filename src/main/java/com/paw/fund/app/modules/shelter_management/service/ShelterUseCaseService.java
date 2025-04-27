@@ -1,11 +1,11 @@
 package com.paw.fund.app.modules.shelter_management.service;
 
-import com.paw.fund.app.modules.account_management.service.AccountQueryService;
-import com.paw.fund.app.modules.account_role_management.domain.AccountRole;
-import com.paw.fund.app.modules.account_role_management.service.AccountRoleCommandService;
-import com.paw.fund.app.modules.account_role_management.service.AccountRoleQueryService;
-import com.paw.fund.app.modules.role_management.domain.Role;
-import com.paw.fund.app.modules.role_management.service.usecase.IRoleUseCase;
+import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
+import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
+import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleCommandService;
+import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
+import com.paw.fund.app.modules.account_management.domain.role.Role;
+import com.paw.fund.app.modules.account_management.service.role.usecase.IRoleUseCase;
 import com.paw.fund.app.modules.shelter_management.annotation.AttachMedia;
 import com.paw.fund.app.modules.shelter_management.annotation.CreateShelterMedia;
 import com.paw.fund.app.modules.shelter_management.annotation.CreateShelterRegistration;
@@ -35,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

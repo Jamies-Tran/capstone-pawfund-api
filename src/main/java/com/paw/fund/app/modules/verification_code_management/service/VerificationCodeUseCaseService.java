@@ -1,7 +1,7 @@
 package com.paw.fund.app.modules.verification_code_management.service;
 
-import com.paw.fund.app.modules.account_management.domain.Account;
-import com.paw.fund.app.modules.account_management.service.AccountQueryService;
+import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
 import com.paw.fund.app.modules.log_management.domain.account.AccountActivityLog;
 import com.paw.fund.app.modules.log_management.service.account.AccountActivityLogCommandService;
 import com.paw.fund.app.modules.mail_management.domain.MailSender;

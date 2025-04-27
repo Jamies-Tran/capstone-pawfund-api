@@ -1,7 +1,7 @@
 package com.paw.fund.dto;
 
-import com.paw.fund.app.modules.account_management.domain.Account;
-import com.paw.fund.app.modules.role_management.domain.Role;
+import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.role.Role;
 import lombok.Builder;
 import lombok.With;
 

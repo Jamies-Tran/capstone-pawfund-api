@@ -1,6 +1,5 @@
 package com.paw.fund.app.modules.session_management.service;
 
-import com.paw.fund.app.modules.account_management.domain.Account;
 import com.paw.fund.app.modules.session_management.domain.ISessionMapper;
 import com.paw.fund.app.modules.session_management.domain.Session;
 import com.paw.fund.app.modules.session_management.repository.database.ISessionRepository;

@@ -1,7 +1,7 @@
 package com.paw.fund.app.modules.account_management.controller.models;
 
-import com.paw.fund.app.modules.account_management.domain.Account;
-import com.paw.fund.app.modules.role_management.domain.Role;
+import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.role.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 

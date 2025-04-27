@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.log_management.annotation;
 
-import com.paw.fund.app.modules.account_management.domain.Account;
+import com.paw.fund.app.modules.account_management.domain.account.Account;
 import com.paw.fund.app.modules.log_management.domain.account.AccountActivityLog;
 import com.paw.fund.app.modules.log_management.service.account.AccountActivityLogCommandService;
 import com.paw.fund.configuration.request.context.RequestContext;
