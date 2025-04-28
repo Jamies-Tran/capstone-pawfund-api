@@ -41,7 +41,7 @@ public class LicenseCommandService {
         ValidationUtil.validateArgumentNotNull(licenseId);
         ValidationUtil.validateNotNullPointerException(license);
 
-        return repository.findById(licenseId)
+        return repository.findByStatusCodeNotDeletedAndLicenseId(licenseId)
                 .map(x -> {
                     mapper.update(x, license);
                     x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
@@ -56,7 +56,7 @@ public class LicenseCommandService {
         ValidationUtil.validateArgumentNotNull(licenseId);
         ValidationUtil.validateArgumentNotNull(status);
 
-        return repository.findById(licenseId)
+        return repository.findByStatusCodeNotDeletedAndLicenseId(licenseId)
                 .map(x -> {
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
@@ -71,7 +71,7 @@ public class LicenseCommandService {
     public void delete(Long licenseId) {
         ValidationUtil.validateArgumentNotNull(licenseId);
 
-        repository.findById(licenseId)
+        repository.findByStatusCodeNotDeletedAndLicenseId(licenseId)
                 .map(x -> {
                     x.setStatusCode(EDeleteStatus.DELETED.getCode());
                     x.setStatusName(EDeleteStatus.DELETED.getName());

@@ -9,7 +9,13 @@ import java.util.Optional;
 
 @Repository
 public interface IOptionRepository extends JpaRepository<OptionEntity, Long> {
-    List<OptionEntity> findAllByQuestionId(Long questionId);
+    @Query("""
+        SELECT o
+        FROM OptionEntity o
+        WHERE o.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
+            AND o.questionId = :questionId
+    """)
+    List<OptionEntity> findAllStatusCodeNotDeletedByQuestionId(Long questionId);
 
     @Query("""
         SELECT o
@@ -18,8 +24,4 @@ public interface IOptionRepository extends JpaRepository<OptionEntity, Long> {
             AND o.questionId IN :#{#questionIds}
     """)
     List<OptionEntity> findAllByStatusCodeNotDeletedAndQuestionIdIn(List<Long> questionIds);
-
-    List<OptionEntity> findAllByQuestionIdIn(List<Long> questionIds);
-
-    List<OptionEntity> findAllByOptionIdIn(List<Long> optionIds);
 }
