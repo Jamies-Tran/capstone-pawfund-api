@@ -32,7 +32,7 @@ public class QuestionQueryService {
 
     public List<Question> findAllByFormId(Long formId, FormQuestionSearchCriteria searchCriteria) {
         List<QuestionEntity> foundQuestions = repository
-                .findAllByStatusNotDeletedFormIdAndQuestionTextOrQuestionTypeCodeIn(formId, searchCriteria);
+                .findAllByFormIdAndQuestionTextOrQuestionTypeCodeIn(formId, searchCriteria);
         List<Long> questionIds = foundQuestions.stream()
                 .map(QuestionEntity::getQuestionId)
                 .toList();

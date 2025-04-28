@@ -13,14 +13,13 @@ public interface IQuestionRepository extends JpaRepository<QuestionEntity, Long>
     @Query("""
         SELECT q
         FROM QuestionEntity q
-        WHERE (q.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()})
-            AND (q.formId = :formId)
+        WHERE (q.formId = :formId)
             AND (:#{#searchCriteria.isQuestionTextEmptyOrNull()} = TRUE
                 OR q.questionText ILIKE %:#{#searchCriteria.questionText()}%)
             AND (:#{#searchCriteria.isQuestionTypeCodesEmptyOrNull()} = TRUE
                 OR q.questionTypeCode IN :#{#searchCriteria.questionTypeCodes()})
     """)
-    List<QuestionEntity> findAllByStatusNotDeletedFormIdAndQuestionTextOrQuestionTypeCodeIn(
+    List<QuestionEntity> findAllByFormIdAndQuestionTextOrQuestionTypeCodeIn(
             Long formId,
             FormQuestionSearchCriteria searchCriteria);
 
