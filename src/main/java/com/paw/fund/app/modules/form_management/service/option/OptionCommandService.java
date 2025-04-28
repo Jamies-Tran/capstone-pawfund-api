@@ -45,7 +45,7 @@ public class OptionCommandService {
         ValidationUtil.validateArgumentNotNull(questionId);
         ValidationUtil.validateArgumentListNotNull(options);
 
-        List<OptionEntity> foundOptions = repository.findAllByQuestionId(questionId);
+        List<OptionEntity> foundOptions = repository.findAllStatusCodeNotDeletedByQuestionId(questionId);
 
         List<Long> newOptionId = options.stream().map(Option::optionId).toList();
         List<Long> deleteIdList = foundOptions.stream()
@@ -80,7 +80,7 @@ public class OptionCommandService {
     }
 
     public void deleteAllByQuestionIdIn(List<Long> questionIds) {
-        List<OptionEntity> foundOptions = repository.findAllByQuestionIdIn(questionIds)
+        List<OptionEntity> foundOptions = repository.findAllByStatusCodeNotDeletedAndQuestionIdIn(questionIds)
                 .stream()
                 .peek(x -> {
                     x.setStatusCode(EDeleteStatus.DELETED.getCode());

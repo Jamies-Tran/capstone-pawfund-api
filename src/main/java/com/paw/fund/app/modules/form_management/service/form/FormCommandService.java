@@ -45,7 +45,7 @@ public class FormCommandService {
         ValidationUtil.validateArgumentNotNull(formId);
         ValidationUtil.validateArgumentNotNull(status);
 
-        return repository.findById(formId)
+        return repository.findByStatusCodeNotDeletedAndById(formId)
                 .map(x -> {
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
@@ -60,7 +60,8 @@ public class FormCommandService {
     public Form update(Long formId, Form form) {
         ValidationUtil.validateArgumentNotNull(formId);
         ValidationUtil.validateNotNullPointerException(form);
-        FormEntity foundForm = repository.findById(formId).orElseThrow(ResourceNotFoundException::new);
+        FormEntity foundForm = repository.findByStatusCodeNotDeletedAndById(formId)
+                .orElseThrow(ResourceNotFoundException::new);
         mapper.update(foundForm, form);
         foundForm.prepareSave(auditableUseCase.createAuditableForNew());
         FormEntity savedForm = repository.save(foundForm);
@@ -70,7 +71,8 @@ public class FormCommandService {
 
     public Long delete(Long formId) {
         ValidationUtil.validateArgumentNotNull(formId);
-        FormEntity foundForm = repository.findById(formId).orElseThrow(ResourceNotFoundException::new);
+        FormEntity foundForm = repository.findByStatusCodeNotDeletedAndById(formId)
+                .orElseThrow(ResourceNotFoundException::new);
         foundForm.setStatusCode(EDeleteStatus.DELETED.getCode());
         foundForm.setStatusName(EDeleteStatus.DELETED.getName());
         foundForm.prepareUpdate(auditableUseCase.createAuditableForUpdate());
