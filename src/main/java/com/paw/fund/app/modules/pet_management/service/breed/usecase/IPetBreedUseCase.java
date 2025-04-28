@@ -14,4 +14,6 @@ public interface IPetBreedUseCase {
     Page<PetBreed> getPetBreedList(PetBreedFilter filter);
 
     PetBreed updatePetBreed(PetBreedUpdate petBreedUpdate);
+
+    void deletePetBreed(PetBreedId petBreedId);
 }

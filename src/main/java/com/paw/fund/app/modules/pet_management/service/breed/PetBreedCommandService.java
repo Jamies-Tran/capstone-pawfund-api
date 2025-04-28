@@ -6,6 +6,7 @@ import com.paw.fund.app.modules.pet_management.repository.database.breed.IPetBre
 import com.paw.fund.app.modules.pet_management.repository.database.breed.PetBreedEntity;
 import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
+import com.paw.fund.enums.EDeleteStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -36,13 +37,16 @@ public class PetBreedCommandService {
     }
 
     private void validateSave(PetBreed petBreed) {
-        if(repository.existsByBreedCode(petBreed.breedCode())) {
+        if(repository.existsStatusCodeNotDeletedByBreedCode(petBreed.breedCode())) {
             throw new ResourceDuplicateException("Mã thú cưng đã tồn tại");
         }
     }
 
     public PetBreed update(Long petBreedId, PetBreed petBreed) {
-        return repository.findById(petBreedId)
+        ValidationUtil.validateArgumentNotNull(petBreedId);
+        ValidationUtil.validateNotNullPointerException(petBreed);
+
+        return repository.findStatusCodeNotDeletedByPetBreedId(petBreedId)
                 .map(x -> {
                     validateUpdate(x, petBreed);
                     mapper.update(x, petBreed);
@@ -55,8 +59,24 @@ public class PetBreedCommandService {
 
     private void validateUpdate(PetBreedEntity existedPetBreed, PetBreed newPetBreed) {
         if(!Objects.equals(existedPetBreed.getBreedCode(), newPetBreed.breedCode())
-                && repository.existsByBreedCode(newPetBreed.breedCode())) {
+                && repository.existsStatusCodeNotDeletedByBreedCode(newPetBreed.breedCode())) {
             throw new ResourceDuplicateException("Mã thú cưng đã tồn tại");
         }
+    }
+
+    public void delete(Long petBreedId) {
+        ValidationUtil.validateArgumentNotNull(petBreedId);
+
+        repository.findStatusCodeNotDeletedByPetBreedId(petBreedId)
+                .ifPresentOrElse(
+                        x -> {
+                            x.setStatusCode(EDeleteStatus.DELETED.getCode());
+                            x.setStatusName(EDeleteStatus.DELETED.getName());
+
+                            repository.save(x);
+                        },
+                        () -> {
+                            throw new ResourceNotFoundException();
+                        });
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface IPetBreedRepository extends JpaRepository<PetBreedEntity, Long> {
     @Query("""
@@ -21,5 +23,19 @@ public interface IPetBreedRepository extends JpaRepository<PetBreedEntity, Long>
     """)
     Page<PetBreedEntity> findAll(PetBreedSearchCriteria searchCriteria, Pageable pageable);
 
-    Boolean existsByBreedCode(String breedCode);
+    @Query("""
+        SELECT p
+        FROM PetBreedEntity p
+        WHERE p.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
+            AND p.petBreedId = :petBreedId
+    """)
+    Optional<PetBreedEntity> findStatusCodeNotDeletedByPetBreedId(Long petBreedId);
+
+    @Query("""
+        SELECT COUNT(p) > 0
+        FROM PetBreedEntity p
+        WHERE p.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
+            AND p.breedCode = :breedCode
+    """)
+    Boolean existsStatusCodeNotDeletedByBreedCode(String breedCode);
 }

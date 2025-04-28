@@ -5,6 +5,7 @@ import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedR
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,4 +21,7 @@ public interface IPetBreedPathV1API {
 
             @RequestBody @Valid
             PetBreedRequest request);
+
+    @DeleteMapping
+    ValueResponse<?> deletePetBreed(@PathVariable Long petBreedId);
 }

@@ -4,6 +4,7 @@ import com.paw.fund.app.modules.pet_management.controller.breed.models.IPetBreed
 import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedRequest;
 import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedResponse;
 import com.paw.fund.app.modules.pet_management.domain.breed.PetBreed;
+import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedId;
 import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedUpdate;
 import com.paw.fund.app.modules.pet_management.service.breed.usecase.IPetBreedUseCase;
 import com.paw.fund.utils.response.ValueResponse;
@@ -32,5 +33,12 @@ public class PetBreedPathV1Controller implements IPetBreedPathV1API {
         PetBreed petBreed = useCase.updatePetBreed(PetBreedUpdate.of(petBreedId, modelMapper.toDto(request)));
 
         return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK, API_VERSION);
+    }
+
+    @Override
+    public ValueResponse<?> deletePetBreed(Long petBreedId) {
+        useCase.deletePetBreed(PetBreedId.of(petBreedId));
+
+        return ValueResponse.success(null, HttpStatus.NO_CONTENT, API_VERSION);
     }
 }

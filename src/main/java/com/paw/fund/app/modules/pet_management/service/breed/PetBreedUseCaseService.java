@@ -44,4 +44,10 @@ public class PetBreedUseCaseService implements IPetBreedUseCase {
     public PetBreed updatePetBreed(PetBreedUpdate petBreedUpdate) {
         return commandService.update(petBreedUpdate.petBreedId(), petBreedUpdate.petBreed());
     }
+
+    @Override
+    @Transactional
+    public void deletePetBreed(PetBreedId petBreedId) {
+        commandService.delete(petBreedId.value());
+    }
 }
