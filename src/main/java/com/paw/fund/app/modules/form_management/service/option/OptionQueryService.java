@@ -24,7 +24,8 @@ public class OptionQueryService {
     IOptionMapper mapper;
 
     public List<Option> findAllByQuestionIdIn(List<Long> questionIds) {
-        List<OptionEntity> foundOptions = repository.findAllByQuestionIdIn(questionIds);
+        List<OptionEntity> foundOptions = repository
+                .findAllByStatusCodeNotDeletedAndQuestionIdIn(questionIds);
 
         return foundOptions.stream()
                 .map(mapper::toDto)
