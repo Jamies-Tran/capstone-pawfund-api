@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.session_management.domain;
 
-import com.paw.fund.app.modules.account_management.domain.Account;
+import com.paw.fund.app.modules.account_management.domain.account.Account;
 import lombok.Builder;
 import lombok.With;
 

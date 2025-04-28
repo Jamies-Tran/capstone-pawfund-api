@@ -74,6 +74,7 @@ public class SecurityConfiguration {
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(httpAuthorization -> httpAuthorization.requestMatchers(
                         AntPathRequestMatcher.antMatcher("/swagger-ui/index.html"),
+                        AntPathRequestMatcher.antMatcher("/favicon.ico"),
                         AntPathRequestMatcher.antMatcher("/swagger-ui/*"),
                         AntPathRequestMatcher.antMatcher("/v3/api-docs/*"),
                         AntPathRequestMatcher.antMatcher("/v3/api-docs"),

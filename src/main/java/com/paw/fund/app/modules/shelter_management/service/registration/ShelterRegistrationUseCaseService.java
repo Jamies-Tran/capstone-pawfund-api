@@ -1,14 +1,13 @@
 package com.paw.fund.app.modules.shelter_management.service.registration;
 
-import com.paw.fund.app.modules.account_management.domain.Account;
-import com.paw.fund.app.modules.account_management.service.AccountQueryService;
-import com.paw.fund.app.modules.account_role_management.domain.AccountRole;
-import com.paw.fund.app.modules.account_role_management.service.AccountRoleQueryService;
-import com.paw.fund.app.modules.role_management.domain.Role;
+import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
+import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
+import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
+import com.paw.fund.app.modules.account_management.domain.role.Role;
 import com.paw.fund.app.modules.shelter_management.annotation.PublishRegistration;
 import com.paw.fund.app.modules.shelter_management.annotation.SendMail;
 import com.paw.fund.app.modules.shelter_management.domain.registration.ShelterRegistration;
-import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterFilter;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationEmail;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationFilter;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationId;
@@ -17,7 +16,6 @@ import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.S
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationSearchCriteria;
 import com.paw.fund.app.modules.shelter_management.service.usecase.IShelterRegistrationUseCase;
 import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
-import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.configuration.request.context.RequestContext;
 import com.paw.fund.dto.CurrentAccountLogin;
 import com.paw.fund.enums.ERole;

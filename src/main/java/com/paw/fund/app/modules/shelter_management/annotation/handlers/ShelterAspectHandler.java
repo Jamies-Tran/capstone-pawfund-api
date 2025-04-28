@@ -1,7 +1,7 @@
 package com.paw.fund.app.modules.shelter_management.annotation.handlers;
 
-import com.paw.fund.app.modules.account_management.domain.Account;
-import com.paw.fund.app.modules.account_management.service.AccountQueryService;
+import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
 import com.paw.fund.app.modules.form_management.service.form.reply.FormReplyQueryService;
 import com.paw.fund.app.modules.mail_management.domain.MailSender;
 import com.paw.fund.app.modules.mail_management.service.MailSenderCommandService;

@@ -1,7 +1,5 @@
 package com.paw.fund.app.modules.auditable_management.service;
 
-import com.paw.fund.app.modules.account_management.domain.Account;
-import com.paw.fund.app.modules.account_management.service.AccountQueryService;
 import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
 import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
 import com.paw.fund.configuration.request.context.RequestContext;

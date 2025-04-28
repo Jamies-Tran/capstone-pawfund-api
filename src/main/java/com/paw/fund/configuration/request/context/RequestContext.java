@@ -1,9 +1,7 @@
 package com.paw.fund.configuration.request.context;
 
-import com.paw.fund.app.modules.account_management.domain.usecase.AccountEmail;
-import com.paw.fund.app.modules.account_management.service.AccountQueryService;
-import com.paw.fund.app.modules.account_management.service.usecase.IAccountUseCase;
-import com.paw.fund.app.modules.role_management.service.RoleQueryService;
+import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
+import com.paw.fund.app.modules.account_management.service.role.RoleQueryService;
 import com.paw.fund.dto.CurrentAccountLogin;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -12,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service

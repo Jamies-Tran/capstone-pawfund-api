@@ -1,13 +1,11 @@
 package com.paw.fund.app.modules.account_management.controller.v2.pub;
 
-import com.paw.fund.app.modules.account_management.controller.models.AccountRequest;
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
 import com.paw.fund.app.modules.account_management.controller.models.AccountV2Request;
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
-import com.paw.fund.app.modules.account_management.domain.Account;
-import com.paw.fund.app.modules.account_management.service.usecase.IAccountUseCase;
-import com.paw.fund.app.modules.role_management.domain.Role;
-import com.paw.fund.app.modules.role_management.service.usecase.IRoleUseCase;
+import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.service.account.usecase.IAccountUseCase;
+import com.paw.fund.app.modules.account_management.service.role.usecase.IRoleUseCase;
 import com.paw.fund.utils.response.ValueResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -17,8 +15,6 @@ import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

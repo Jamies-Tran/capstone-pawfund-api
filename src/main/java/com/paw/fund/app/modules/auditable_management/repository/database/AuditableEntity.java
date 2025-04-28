@@ -1,6 +1,5 @@
 package com.paw.fund.app.modules.auditable_management.repository.database;
 
-import com.paw.fund.app.modules.account_management.domain.Account;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
