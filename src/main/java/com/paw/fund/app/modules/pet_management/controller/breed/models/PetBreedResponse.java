@@ -6,6 +6,8 @@ import lombok.Builder;
 public record PetBreedResponse(
         Long petBreedId,
         String breedCode,
-        String breedName
+        String breedName,
+        String statusCode,
+        String statusName
 ) {
 }

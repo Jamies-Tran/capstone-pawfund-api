@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/pawfund-v1.3.2.jar
+web: java -Dserver.port=$PORT $JAVA_OPTS -jar target/pawfund-v1.4.0.jar

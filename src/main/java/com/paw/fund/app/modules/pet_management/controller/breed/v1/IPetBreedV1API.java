@@ -5,6 +5,7 @@ import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedR
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface IPetBreedV1API {
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     ValueResponse<PetBreedResponse> createPetBreed(
             @RequestBody @Valid
             PetBreedRequest request);
