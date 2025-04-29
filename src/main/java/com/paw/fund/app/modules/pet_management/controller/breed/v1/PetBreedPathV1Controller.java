@@ -41,4 +41,18 @@ public class PetBreedPathV1Controller implements IPetBreedPathV1API {
 
         return ValueResponse.success(null, HttpStatus.NO_CONTENT, API_VERSION);
     }
+
+    @Override
+    public ValueResponse<PetBreedResponse> activePetBreed(Long petBreedId) {
+        PetBreed petBreed = useCase.activePetBreed(PetBreedId.of(petBreedId));
+
+        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK, API_VERSION);
+    }
+
+    @Override
+    public ValueResponse<PetBreedResponse> blockPetBreed(Long petBreedId) {
+        PetBreed petBreed = useCase.blockPetBreed(PetBreedId.of(petBreedId));
+
+        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK, API_VERSION);
+    }
 }

@@ -16,4 +16,8 @@ public interface IPetBreedUseCase {
     PetBreed updatePetBreed(PetBreedUpdate petBreedUpdate);
 
     void deletePetBreed(PetBreedId petBreedId);
+
+    PetBreed activePetBreed(PetBreedId petBreedId);
+
+    PetBreed blockPetBreed(PetBreedId petBreedId);
 }

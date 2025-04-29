@@ -5,6 +5,7 @@ import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedFilt
 import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedId;
 import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedUpdate;
 import com.paw.fund.app.modules.pet_management.service.breed.usecase.IPetBreedUseCase;
+import com.paw.fund.enums.EPetInformationStatus;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -49,5 +50,15 @@ public class PetBreedUseCaseService implements IPetBreedUseCase {
     @Transactional
     public void deletePetBreed(PetBreedId petBreedId) {
         commandService.delete(petBreedId.value());
+    }
+
+    @Override
+    public PetBreed activePetBreed(PetBreedId petBreedId) {
+        return commandService.updateStatus(petBreedId.value(), EPetInformationStatus.ACTIVE);
+    }
+
+    @Override
+    public PetBreed blockPetBreed(PetBreedId petBreedId) {
+        return commandService.updateStatus(petBreedId.value(), EPetInformationStatus.BLOCK);
     }
 }

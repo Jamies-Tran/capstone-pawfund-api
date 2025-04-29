@@ -7,6 +7,7 @@ import com.paw.fund.app.modules.pet_management.repository.database.breed.PetBree
 import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.enums.EDeleteStatus;
+import com.paw.fund.enums.EPetInformationStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -78,5 +79,17 @@ public class PetBreedCommandService {
                         () -> {
                             throw new ResourceNotFoundException();
                         });
+    }
+
+    public PetBreed updateStatus(Long petBreedId, EPetInformationStatus status) {
+        return repository.findStatusCodeNotDeletedByPetBreedId(petBreedId)
+                .map(x -> {
+                    x.setStatusCode(status.getCode());
+                    x.setStatusName(status.getName());
+                    PetBreedEntity updatePetBreed = repository.save(x);
+
+                    return mapper.toDto(updatePetBreed);
+                })
+                .orElseThrow(ResourceNotFoundException::new);
     }
 }

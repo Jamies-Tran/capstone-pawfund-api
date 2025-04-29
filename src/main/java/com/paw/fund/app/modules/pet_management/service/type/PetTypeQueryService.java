@@ -5,6 +5,7 @@ import com.paw.fund.app.modules.pet_management.domain.type.PetType;
 import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeSearchCriteria;
 import com.paw.fund.app.modules.pet_management.repository.database.type.IPetTypeRepository;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
+import com.paw.fund.enums.EPetInformationStatus;
 import com.paw.fund.utils.request.PageRequestCustom;
 import lombok.AccessLevel;
 import lombok.NonNull;

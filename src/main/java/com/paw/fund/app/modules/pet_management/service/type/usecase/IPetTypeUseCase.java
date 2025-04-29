@@ -16,4 +16,8 @@ public interface IPetTypeUseCase {
     void deletePetType(PetTypeId petTypeId);
 
     Page<PetType> getPetTypeList(PetTypeFilter filter);
+
+    PetType activePetType(PetTypeId petTypeId);
+
+    PetType blockPetType(PetTypeId petTypeId);
 }

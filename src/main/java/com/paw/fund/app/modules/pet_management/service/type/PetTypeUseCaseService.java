@@ -5,6 +5,7 @@ import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeFilter
 import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeId;
 import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeUpdate;
 import com.paw.fund.app.modules.pet_management.service.type.usecase.IPetTypeUseCase;
+import com.paw.fund.enums.EPetInformationStatus;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,15 @@ public class PetTypeUseCaseService implements IPetTypeUseCase {
     @Override
     public Page<PetType> getPetTypeList(PetTypeFilter filter) {
         return queryService.findAll(filter.searchCriteria(), filter.pageRequestCustom());
+    }
+
+    @Override
+    public PetType activePetType(PetTypeId petTypeId) {
+        return commandService.updateStatus(petTypeId.value(), EPetInformationStatus.ACTIVE);
+    }
+
+    @Override
+    public PetType blockPetType(PetTypeId petTypeId) {
+        return commandService.updateStatus(petTypeId.value(), EPetInformationStatus.BLOCK);
     }
 }

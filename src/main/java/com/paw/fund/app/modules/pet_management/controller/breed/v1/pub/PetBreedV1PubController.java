@@ -5,6 +5,7 @@ import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedR
 import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedFilter;
 import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedSearchCriteria;
 import com.paw.fund.app.modules.pet_management.service.breed.usecase.IPetBreedUseCase;
+import com.paw.fund.enums.EPetInformationStatus;
 import com.paw.fund.utils.request.PageRequestCustom;
 import com.paw.fund.utils.response.Meta;
 import com.paw.fund.utils.response.PageResponse;
@@ -36,9 +37,9 @@ public class PetBreedV1PubController implements IPetBreedV1PubAPI {
 
     @Override
     public PageResponse<PetBreedResponse> getPetBreedList(String search,
-                                                          List<String> statusCodes,
                                                           Integer current, Integer pageSize) {
-        PetBreedSearchCriteria searchCriteria = PetBreedSearchCriteria.of(search, statusCodes);
+        PetBreedSearchCriteria searchCriteria = PetBreedSearchCriteria.of(search,
+                List.of(EPetInformationStatus.ACTIVE.getCode()));
         PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSize);
         Page<PetBreedResponse> responses = useCase.getPetBreedList(PetBreedFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);

@@ -17,9 +17,6 @@ public interface IPetBreedV1PubAPI {
             @RequestParam(required = false, value = "search", defaultValue = "")
             String search,
 
-            @RequestParam(required = false, value = "statusCodes", defaultValue = "")
-            List<String> statusCodes,
-
             @RequestParam(required = false, value = "current", defaultValue = "0")
             Integer current,
 

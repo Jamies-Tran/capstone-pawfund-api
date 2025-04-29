@@ -7,6 +7,7 @@ import com.paw.fund.app.modules.pet_management.repository.database.type.PetTypeE
 import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.enums.EDeleteStatus;
+import com.paw.fund.enums.EPetInformationStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -79,5 +80,20 @@ public class PetTypeCommandService {
                             throw new ResourceNotFoundException();
                         }
                 );
+    }
+
+    public PetType updateStatus(Long petTypeId, EPetInformationStatus status) {
+        ValidationUtil.validateArgumentNotNull(petTypeId);
+        ValidationUtil.validateArgumentNotNull(status);
+
+        return repository.findByStatusCodeNotDeletedAndPetTypeId(petTypeId)
+                .map(x -> {
+                    x.setStatusCode(status.getCode());
+                    x.setStatusName(status.getName());
+                    PetTypeEntity updatePetType = repository.save(x);
+
+                    return mapper.toDto(updatePetType);
+                })
+                .orElseThrow(ResourceNotFoundException::new);
     }
 }

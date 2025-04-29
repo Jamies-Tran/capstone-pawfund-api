@@ -45,4 +45,18 @@ public class PetTypePathV1Controller implements IPetTypePathV1API {
 
         return ValueResponse.success(null, HttpStatus.NO_CONTENT, API_VERSION);
     }
+
+    @Override
+    public ValueResponse<PetTypeResponse> activePetType(Long petTypeId) {
+        PetType petType = useCase.activePetType(PetTypeId.of(petTypeId));
+
+        return ValueResponse.success(modelMapper.toResponse(petType), HttpStatus.OK, API_VERSION);
+    }
+
+    @Override
+    public ValueResponse<PetTypeResponse> blockPetType(Long petTypeId) {
+        PetType petType = useCase.blockPetType(PetTypeId.of(petTypeId));
+
+        return ValueResponse.success(modelMapper.toResponse(petType), HttpStatus.OK, API_VERSION);
+    }
 }

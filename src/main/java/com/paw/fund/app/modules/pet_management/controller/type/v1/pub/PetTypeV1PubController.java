@@ -1,4 +1,4 @@
-package com.paw.fund.app.modules.pet_management.controller.type.v2.pub;
+package com.paw.fund.app.modules.pet_management.controller.type.v1.pub;
 
 import com.paw.fund.app.modules.pet_management.controller.type.models.IPetTypeModelMapper;
 import com.paw.fund.app.modules.pet_management.controller.type.models.PetTypeResponse;
@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class PetTypeV2PubController implements IPetTypeV2PubAPI {
+public class PetTypeV1PubController implements IPetTypeV1PubAPI {
     @NonNull
     IPetTypeUseCase useCase;
 

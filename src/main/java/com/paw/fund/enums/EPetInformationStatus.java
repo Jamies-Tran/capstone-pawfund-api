@@ -9,7 +9,9 @@ import lombok.experimental.FieldDefaults;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum EPetInformationStatus {
-    ACTIVE("ACTIVE", "Kích hoạt");
+    ACTIVE("ACTIVE", "Kích hoạt"),
+    BLOCK("BLOCK", "Tạm khóa");
+
 
     String code;
     String name;
