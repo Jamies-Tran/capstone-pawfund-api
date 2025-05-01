@@ -10,4 +10,6 @@ public interface ICommonMediaRepository extends JpaRepository<CommonMediaEntity,
     List<CommonMediaEntity> findAllByAccountId(Long accountId);
 
     List<CommonMediaEntity> findAllByShelterId(Long shelterId);
+
+    List<CommonMediaEntity> findAllByPetId(Long petId);
 }

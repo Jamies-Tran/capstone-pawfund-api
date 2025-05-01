@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -38,4 +39,12 @@ public interface IPetTypeRepository extends JpaRepository<PetTypeEntity, Long> {
                 OR p.statusCode IN :#{#searchCriteria.statusCodes()})
     """)
     Page<PetTypeEntity> findAll(PetTypeSearchCriteria searchCriteria, Pageable pageable);
+
+    @Query("""
+        SELECT COUNT(p) > 0
+        FROM PetTypeEntity p
+        WHERE p.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
+            AND p.petTypeCode IN :petTypeCodes
+    """)
+    Boolean existsByStatusCodeNotDeletedAndPetTypeCodeIn(List<String> petTypeCodes);
 }

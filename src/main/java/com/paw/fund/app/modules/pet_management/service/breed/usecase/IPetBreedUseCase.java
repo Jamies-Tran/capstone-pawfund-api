@@ -3,8 +3,11 @@ package com.paw.fund.app.modules.pet_management.service.breed.usecase;
 import com.paw.fund.app.modules.pet_management.domain.breed.PetBreed;
 import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedFilter;
 import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedId;
+import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedList;
 import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedUpdate;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 public interface IPetBreedUseCase {
     PetBreed createPetBreed(PetBreed petBreed);
@@ -20,4 +23,6 @@ public interface IPetBreedUseCase {
     PetBreed activePetBreed(PetBreedId petBreedId);
 
     PetBreed blockPetBreed(PetBreedId petBreedId);
+
+    List<PetBreed> createPetBreedList(PetBreedList petBreedList);
 }

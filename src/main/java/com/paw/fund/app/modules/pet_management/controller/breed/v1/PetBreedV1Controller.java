@@ -1,14 +1,17 @@
 package com.paw.fund.app.modules.pet_management.controller.breed.v1;
 
 import com.paw.fund.app.modules.pet_management.controller.breed.models.IPetBreedModelMapper;
+import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedListRequest;
 import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedRequest;
 import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedResponse;
 import com.paw.fund.app.modules.pet_management.domain.breed.PetBreed;
 import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedFilter;
+import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedList;
 import com.paw.fund.app.modules.pet_management.domain.breed.usecase.PetBreedSearchCriteria;
 import com.paw.fund.app.modules.pet_management.service.breed.usecase.IPetBreedUseCase;
 import com.paw.fund.enums.EPetInformationStatus;
 import com.paw.fund.utils.request.PageRequestCustom;
+import com.paw.fund.utils.response.ListResponse;
 import com.paw.fund.utils.response.Meta;
 import com.paw.fund.utils.response.PageResponse;
 import com.paw.fund.utils.response.ValueResponse;
@@ -44,6 +47,19 @@ public class PetBreedV1Controller implements IPetBreedV1API {
         PetBreed savedPetBreed = useCase.createPetBreed(petBreed);
 
         return ValueResponse.success(modelMapper.toResponse(savedPetBreed), HttpStatus.CREATED, API_VERSION);
+    }
+
+    @Override
+    public ListResponse<PetBreedResponse> createPetBreedList(PetBreedListRequest request) {
+        List<PetBreed> petBreeds = request.list().stream()
+                .map(modelMapper::toDto)
+                .toList();
+        List<PetBreedResponse> savedResponses = useCase.createPetBreedList(PetBreedList.of(petBreeds))
+                .stream()
+                .map(modelMapper::toResponse)
+                .toList();
+
+        return ListResponse.success(savedResponses, HttpStatus.CREATED, API_VERSION);
     }
 
     @Override

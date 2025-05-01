@@ -3,6 +3,7 @@ package com.paw.fund.app.modules.pet_management.service.type;
 import com.paw.fund.app.modules.pet_management.domain.type.PetType;
 import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeFilter;
 import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeId;
+import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeList;
 import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeUpdate;
 import com.paw.fund.app.modules.pet_management.service.type.usecase.IPetTypeUseCase;
 import com.paw.fund.enums.EPetInformationStatus;
@@ -13,6 +14,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +45,7 @@ public class PetTypeUseCaseService implements IPetTypeUseCase {
     }
 
     @Override
+    @Transactional
     public void deletePetType(PetTypeId petTypeId) {
         commandService.delete(petTypeId.value());
     }
@@ -52,12 +56,20 @@ public class PetTypeUseCaseService implements IPetTypeUseCase {
     }
 
     @Override
+    @Transactional
     public PetType activePetType(PetTypeId petTypeId) {
         return commandService.updateStatus(petTypeId.value(), EPetInformationStatus.ACTIVE);
     }
 
     @Override
+    @Transactional
     public PetType blockPetType(PetTypeId petTypeId) {
         return commandService.updateStatus(petTypeId.value(), EPetInformationStatus.BLOCK);
+    }
+
+    @Override
+    @Transactional
+    public List<PetType> createPetTypeList(PetTypeList petTypeList) {
+        return commandService.saveAll(petTypeList.list());
     }
 }

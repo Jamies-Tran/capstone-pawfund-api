@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -95,5 +96,26 @@ public class PetTypeCommandService {
                     return mapper.toDto(updatePetType);
                 })
                 .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    public List<PetType> saveAll(List<PetType> petTypes) {
+        ValidationUtil.validateArgumentListNotNull(petTypes);
+        validateSaveList(petTypes);
+
+        List<PetTypeEntity> newPetTypes = petTypes.stream().map(mapper::toEntity).toList();
+        List<PetTypeEntity> savedPetTypes = repository.saveAll(newPetTypes);
+
+        return savedPetTypes.stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+    private void validateSaveList(List<PetType> petTypes) {
+        List<String> petTypeCodes = petTypes.stream()
+                .map(PetType::petTypeCode)
+                .toList();
+        if(repository.existsByStatusCodeNotDeletedAndPetTypeCodeIn(petTypeCodes)) {
+            throw new ResourceDuplicateException("Mã loại thú cưng đã tồn tại");
+        }
     }
 }

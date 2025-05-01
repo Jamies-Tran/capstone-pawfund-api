@@ -35,4 +35,10 @@ public class CommonMediaQueryService {
                 .map(mapper::toDto)
                 .toList();
     }
+
+    public List<CommonMedia> findAllByPetId(Long petId) {
+        return repository.findAllByPetId(petId).stream()
+                .map(mapper::toDto)
+                .toList();
+    }
 }

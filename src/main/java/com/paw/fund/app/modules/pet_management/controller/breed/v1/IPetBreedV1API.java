@@ -1,7 +1,9 @@
 package com.paw.fund.app.modules.pet_management.controller.breed.v1;
 
+import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedListRequest;
 import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedRequest;
 import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedResponse;
+import com.paw.fund.utils.response.ListResponse;
 import com.paw.fund.utils.response.PageResponse;
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,6 +26,12 @@ public interface IPetBreedV1API {
     ValueResponse<PetBreedResponse> createPetBreed(
             @RequestBody @Valid
             PetBreedRequest request);
+
+    @PostMapping("/list")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    ListResponse<PetBreedResponse> createPetBreedList(
+            @RequestBody @Valid
+            PetBreedListRequest request);
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")

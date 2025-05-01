@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,7 +30,7 @@ public interface IPetBreedRepository extends JpaRepository<PetBreedEntity, Long>
         WHERE p.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
             AND p.petBreedId = :petBreedId
     """)
-    Optional<PetBreedEntity> findStatusCodeNotDeletedByPetBreedId(Long petBreedId);
+    Optional<PetBreedEntity> findByStatusCodeNotDeletedAndPetBreedId(Long petBreedId);
 
     @Query("""
         SELECT COUNT(p) > 0
@@ -37,5 +38,13 @@ public interface IPetBreedRepository extends JpaRepository<PetBreedEntity, Long>
         WHERE p.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
             AND p.breedCode = :breedCode
     """)
-    Boolean existsStatusCodeNotDeletedByBreedCode(String breedCode);
+    Boolean existsByStatusCodeNotDeletedAndBreedCode(String breedCode);
+
+    @Query("""
+        SELECT COUNT(p) > 0
+        FROM PetBreedEntity p
+        WHERE p.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
+            AND p.breedCode IN :breedCodes
+    """)
+    Boolean existsByStatusCodeNotDeletedAndBreedCodeIn(List<String> breedCodes);
 }

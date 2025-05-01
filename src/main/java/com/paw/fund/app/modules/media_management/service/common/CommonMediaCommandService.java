@@ -67,4 +67,21 @@ public class CommonMediaCommandService {
                 .map(mapper::toDto)
                 .toList();
     };
+
+    public List<CommonMedia> saveAllWithPetId(Long petId, List<CommonMedia> medias) {
+        List<CommonMediaEntity> newMedias = medias.stream()
+                .map(x -> {
+                    EMimeType mimeType = ImageUtil.findMimeType(x.url());
+                    return x.withPetId(petId)
+                            .withMediaTypeCode(mimeType.getType())
+                            .withMediaTypeName(mimeType.getName());
+                })
+                .map(mapper::toEntity)
+                .toList();
+        List<CommonMediaEntity> saveMedias = repository.saveAll(newMedias);
+
+        return saveMedias.stream()
+                .map(mapper::toDto)
+                .toList();
+    }
 }

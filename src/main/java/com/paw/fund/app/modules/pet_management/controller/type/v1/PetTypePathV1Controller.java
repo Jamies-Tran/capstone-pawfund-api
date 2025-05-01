@@ -32,6 +32,13 @@ public class PetTypePathV1Controller implements IPetTypePathV1API {
     String API_VERSION;
 
     @Override
+    public ValueResponse<PetTypeResponse> getPetTypeDetail(Long petTypeId) {
+        PetType petType = useCase.getPetTypeDetail(PetTypeId.of(petTypeId));
+
+        return ValueResponse.success(modelMapper.toResponse(petType), HttpStatus.OK, API_VERSION);
+    }
+
+    @Override
     public ValueResponse<PetTypeResponse> updatePetType(Long petTypeId, PetTypeRequest request) {
         PetType petType = modelMapper.toDto(request);
         PetType savedPetType = useCase.updatePetType(PetTypeUpdate.of(petTypeId, petType));

@@ -1,13 +1,16 @@
 package com.paw.fund.app.modules.pet_management.controller.type.v1;
 
 import com.paw.fund.app.modules.pet_management.controller.type.models.IPetTypeModelMapper;
+import com.paw.fund.app.modules.pet_management.controller.type.models.PetTypeListRequest;
 import com.paw.fund.app.modules.pet_management.controller.type.models.PetTypeRequest;
 import com.paw.fund.app.modules.pet_management.controller.type.models.PetTypeResponse;
 import com.paw.fund.app.modules.pet_management.domain.type.PetType;
 import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeFilter;
+import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeList;
 import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeSearchCriteria;
 import com.paw.fund.app.modules.pet_management.service.type.usecase.IPetTypeUseCase;
 import com.paw.fund.utils.request.PageRequestCustom;
+import com.paw.fund.utils.response.ListResponse;
 import com.paw.fund.utils.response.Meta;
 import com.paw.fund.utils.response.PageResponse;
 import com.paw.fund.utils.response.ValueResponse;
@@ -43,6 +46,19 @@ public class PetTypeV1Controller implements IPetTypeV1API {
         PetType savePetType = useCase.createPetType(petType);
 
         return ValueResponse.success(modelMapper.toResponse(savePetType), HttpStatus.CREATED, API_VERSION);
+    }
+
+    @Override
+    public ListResponse<PetTypeResponse> createPetTypeList(PetTypeListRequest request) {
+        List<PetType> list = request.list().stream()
+                .map(modelMapper::toDto)
+                .toList();
+        List<PetTypeResponse> responseList = useCase.createPetTypeList(PetTypeList.of(list))
+                .stream()
+                .map(modelMapper::toResponse)
+                .toList();
+
+        return ListResponse.success(responseList, HttpStatus.OK, API_VERSION);
     }
 
     @Override

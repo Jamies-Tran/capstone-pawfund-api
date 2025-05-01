@@ -29,6 +29,13 @@ public class PetBreedPathV1Controller implements IPetBreedPathV1API {
     String API_VERSION;
 
     @Override
+    public ValueResponse<PetBreedResponse> getPetBreedDetail(Long petBreedId) {
+        PetBreed petBreed = useCase.getPetBreedDetail(PetBreedId.of(petBreedId));
+
+        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK, API_VERSION);
+    }
+
+    @Override
     public ValueResponse<PetBreedResponse> updatePetBreed(Long petBreedId, PetBreedRequest request) {
         PetBreed petBreed = useCase.updatePetBreed(PetBreedUpdate.of(petBreedId, modelMapper.toDto(request)));
 

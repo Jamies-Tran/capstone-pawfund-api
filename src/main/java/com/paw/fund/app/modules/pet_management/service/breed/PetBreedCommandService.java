@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -38,8 +39,8 @@ public class PetBreedCommandService {
     }
 
     private void validateSave(PetBreed petBreed) {
-        if(repository.existsStatusCodeNotDeletedByBreedCode(petBreed.breedCode())) {
-            throw new ResourceDuplicateException("Mã thú cưng đã tồn tại");
+        if(repository.existsByStatusCodeNotDeletedAndBreedCode(petBreed.breedCode())) {
+            throw new ResourceDuplicateException("Mã giống thú cưng đã tồn tại");
         }
     }
 
@@ -47,7 +48,7 @@ public class PetBreedCommandService {
         ValidationUtil.validateArgumentNotNull(petBreedId);
         ValidationUtil.validateNotNullPointerException(petBreed);
 
-        return repository.findStatusCodeNotDeletedByPetBreedId(petBreedId)
+        return repository.findByStatusCodeNotDeletedAndPetBreedId(petBreedId)
                 .map(x -> {
                     validateUpdate(x, petBreed);
                     mapper.update(x, petBreed);
@@ -60,15 +61,15 @@ public class PetBreedCommandService {
 
     private void validateUpdate(PetBreedEntity existedPetBreed, PetBreed newPetBreed) {
         if(!Objects.equals(existedPetBreed.getBreedCode(), newPetBreed.breedCode())
-                && repository.existsStatusCodeNotDeletedByBreedCode(newPetBreed.breedCode())) {
-            throw new ResourceDuplicateException("Mã thú cưng đã tồn tại");
+                && repository.existsByStatusCodeNotDeletedAndBreedCode(newPetBreed.breedCode())) {
+            throw new ResourceDuplicateException("Mã giống thú cưng đã tồn tại");
         }
     }
 
     public void delete(Long petBreedId) {
         ValidationUtil.validateArgumentNotNull(petBreedId);
 
-        repository.findStatusCodeNotDeletedByPetBreedId(petBreedId)
+        repository.findByStatusCodeNotDeletedAndPetBreedId(petBreedId)
                 .ifPresentOrElse(
                         x -> {
                             x.setStatusCode(EDeleteStatus.DELETED.getCode());
@@ -82,7 +83,7 @@ public class PetBreedCommandService {
     }
 
     public PetBreed updateStatus(Long petBreedId, EPetInformationStatus status) {
-        return repository.findStatusCodeNotDeletedByPetBreedId(petBreedId)
+        return repository.findByStatusCodeNotDeletedAndPetBreedId(petBreedId)
                 .map(x -> {
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
@@ -91,5 +92,26 @@ public class PetBreedCommandService {
                     return mapper.toDto(updatePetBreed);
                 })
                 .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    List<PetBreed> saveAll(List<PetBreed> petBreeds) {
+        ValidationUtil.validateArgumentListNotNull(petBreeds);
+        validateSaveList(petBreeds);
+
+        List<PetBreedEntity> newPetBreeds = petBreeds.stream().map(mapper::toEntity).toList();
+        List<PetBreedEntity> savedPetBreeds = repository.saveAll(newPetBreeds);
+
+        return savedPetBreeds.stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
+    private void validateSaveList(List<PetBreed> petBreeds) {
+        List<String> codes = petBreeds.stream()
+                .map(PetBreed::breedCode)
+                .toList();
+        if(repository.existsByStatusCodeNotDeletedAndBreedCodeIn(codes)) {
+            throw new ResourceDuplicateException("Mã giống thú cưng đã tồn tại");
+        }
     }
 }

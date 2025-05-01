@@ -33,7 +33,6 @@ public class OptionQueryService {
     }
 
     public List<Option> findAllByIdIn(List<Long> optionIds) {
-        ValidationUtil.validateArgumentListNotNull(optionIds);
 
         return repository.findAllByStatusCodeNotDeletedAndQuestionIdIn(optionIds)
                 .stream()

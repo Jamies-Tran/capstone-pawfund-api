@@ -24,7 +24,7 @@ public class PetBreedQueryService {
     IPetBreedMapper mapper;
 
     public PetBreed findById(Long petBreedId) {
-        return repository.findStatusCodeNotDeletedByPetBreedId(petBreedId)
+        return repository.findByStatusCodeNotDeletedAndPetBreedId(petBreedId)
                 .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
     }
