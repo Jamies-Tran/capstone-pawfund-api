@@ -8,5 +8,7 @@ import org.mapstruct.ReportingPolicy;
 public interface IPetModelMapper {
     Pet toDto(PetRequest request);
 
+    Pet toDto(PetUpdateRequest request);
+
     PetResponse toResponse(Pet dto);
 }

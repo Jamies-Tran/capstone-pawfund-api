@@ -5,6 +5,7 @@ import com.paw.fund.app.modules.media_management.service.common.CommonMediaComma
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaQueryService;
 import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
 import com.paw.fund.app.modules.pet_management.domain.pet.hobby.PetHobby;
+import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetUpdate;
 import com.paw.fund.app.modules.pet_management.service.pet.hobby.PetHobbyCommandService;
 import com.paw.fund.app.modules.pet_management.service.pet.hobby.PetHobbyQueryService;
 import com.paw.fund.configuration.handler.exceptions.ServiceException;
@@ -30,13 +31,13 @@ public class PetManagerHandler {
     PetHobbyCommandService petHobbyCommandService;
 
     @NonNull
+    PetHobbyQueryService petHobbyQueryService;
+
+    @NonNull
     CommonMediaCommandService mediaCommandService;
 
     @NonNull
     CommonMediaQueryService mediaQueryService;
-
-    @NonNull
-    PetHobbyQueryService petHobbyQueryService;
 
     @Around("@annotation(com.paw.fund.app.modules.pet_management.aspect.CreatePetHelper)")
     public Object createPetHelper(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -77,6 +78,28 @@ public class PetManagerHandler {
         } catch (Throwable e) {
             throw e;
         }
+    }
 
+    @Around("@annotation(com.paw.fund.app.modules.pet_management.aspect.UpdatePetHelper)")
+    public Object updatePetHelper(ProceedingJoinPoint joinPoint) throws Throwable {
+        try {
+            Object result = joinPoint.proceed();
+            Object arg = joinPoint.getArgs()[0];
+            if(result instanceof Pet updatedPet && arg instanceof PetUpdate petUpdate) {
+                Pet newPet = petUpdate.pet();
+                List<CommonMedia> medias = mediaCommandService
+                        .updateAllByPetId(updatedPet.petId(), newPet.medias());
+                List<PetHobby> petHobbies = petHobbyCommandService
+                        .updateAllByPetId(updatedPet.petId(), newPet.hobbies());
+
+                return updatedPet
+                        .withMedias(medias)
+                        .withHobbies(petHobbies);
+            }
+
+            throw new ServiceException();
+        } catch (Throwable e) {
+            throw e;
+        }
     }
 }

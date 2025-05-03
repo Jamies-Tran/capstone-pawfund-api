@@ -11,6 +11,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,5 +33,40 @@ public class PetHobbyCommandService {
         List<PetHobbyEntity> savePetHobby = repository.saveAll(newPetHobby);
 
         return savePetHobby.stream().map(mapper::toDto).toList();
+    }
+
+    public List<PetHobby> updateAllByPetId(Long petId, List<PetHobby> petHobbies) {
+        List<PetHobbyEntity> existedPetHobby = repository.findAllByPetId(petId);
+        List<Long> deletedIds = existedPetHobby.stream()
+                .map(PetHobbyEntity::getPetHobbyId)
+                .filter(x -> petHobbies.stream().noneMatch(xx -> Optional.ofNullable(xx.petHobbyId())
+                        .orElse(Long.MIN_VALUE).equals(x)))
+                .toList();
+        repository.deleteAllById(deletedIds);
+
+        Map<Long, PetHobbyEntity> existedPetHobbyMap = existedPetHobby.stream()
+                .collect(Collectors.toMap(PetHobbyEntity::getPetHobbyId, x -> x));
+        List<PetHobbyEntity> newPetHobbies = petHobbies.stream()
+                .map(x -> {
+                    PetHobbyEntity petHobby;
+                    if(Objects.nonNull(x.petHobbyId())) {
+                        petHobby = existedPetHobbyMap.computeIfAbsent(x.petHobbyId(), _ -> {
+                            PetHobbyEntity altPetHobby = mapper.toEntity(x.withPetId(petId));
+                            altPetHobby.setPetHobbyId(null);
+
+                            return altPetHobby;
+                        });
+                    } else {
+                        petHobby = mapper.toEntity(x.withPetId(petId));
+                    }
+                    mapper.update(petHobby, x);
+                    return petHobby;
+                })
+                .toList();
+        List<PetHobbyEntity> savePetHobbies = repository.saveAll(newPetHobbies);
+
+        return savePetHobbies.stream()
+                .map(mapper::toDto)
+                .toList();
     }
 }

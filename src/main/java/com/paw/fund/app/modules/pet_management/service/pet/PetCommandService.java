@@ -1,9 +1,12 @@
 package com.paw.fund.app.modules.pet_management.service.pet;
 
+import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
 import com.paw.fund.app.modules.pet_management.domain.pet.IPetMapper;
 import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
 import com.paw.fund.app.modules.pet_management.repository.database.pet.IPetRepository;
 import com.paw.fund.app.modules.pet_management.repository.database.pet.PetEntity;
+import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
+import com.paw.fund.enums.EDeleteStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -21,12 +24,48 @@ public class PetCommandService {
     @NonNull
     IPetMapper mapper;
 
+    @NonNull
+    IAuditableUseCase auditService;
+
     public Pet save(Pet pet) {
         ValidationUtil.validateNotNullPointerException(pet);
 
         PetEntity newPet = mapper.toEntity(pet);
         PetEntity savedPet = repository.save(newPet);
+        savedPet.prepareSave(auditService.createAuditableForNew());
 
         return mapper.toDto(savedPet);
+    }
+
+    public Pet update(Long petId, Pet pet) {
+        ValidationUtil.validateNotNullPointerException(pet);
+
+        return repository.findByStatusCodeNotDeletedAndPetId(petId)
+                .map(x -> {
+                    mapper.update(x, pet);
+                    x.prepareUpdate(auditService.createAuditableForUpdate());
+                    PetEntity savePet = repository.save(x);
+
+                    return mapper.toDto(savePet);
+                })
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    public void delete(Long petId) {
+        ValidationUtil.validateArgumentNotNull(petId);
+
+        repository.findByStatusCodeNotDeletedAndPetId(petId)
+                .ifPresentOrElse(
+                        x -> {
+                            x.setStatusCode(EDeleteStatus.DELETED.getCode());
+                            x.setStatusName(EDeleteStatus.DELETED.getName());
+                            x.prepareUpdate(auditService.createAuditableForUpdate());
+
+                            repository.save(x);
+                        },
+                        () -> {
+                            throw new ResourceNotFoundException();
+                        }
+                );
     }
 }

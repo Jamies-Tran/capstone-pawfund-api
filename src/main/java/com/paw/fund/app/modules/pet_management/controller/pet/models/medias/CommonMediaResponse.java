@@ -4,6 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record CommonMediaResponse(
+        Long commonMediaId,
         String url,
         Boolean isThumbnail,
         String mediaTypeCode,
