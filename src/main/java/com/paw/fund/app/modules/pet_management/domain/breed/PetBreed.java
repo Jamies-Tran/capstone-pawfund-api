@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record PetBreed(
         Long petBreedId,
+        Long petTypeId,
         String breedCode,
         String breedName,
         String statusCode,

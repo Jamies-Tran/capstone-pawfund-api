@@ -16,6 +16,8 @@ public interface IPetBreedRepository extends JpaRepository<PetBreedEntity, Long>
         SELECT p
         FROM PetBreedEntity p
         WHERE (p.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()})
+            AND (:#{#searchCriteria.isPetTypeIdNullOrEmpty()} = TRUE
+                OR p.petTypeId = :#{#searchCriteria.petTypeId()})
             AND (:#{#searchCriteria.isSearchNullOrEmpty()} = TRUE
                 OR (p.breedCode ILIKE %:#{#searchCriteria.search()}%
                     OR p.breedName ILIKE %:#{#searchCriteria.search()}%))

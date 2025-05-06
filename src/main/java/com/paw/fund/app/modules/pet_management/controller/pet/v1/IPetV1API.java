@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Tag(name = "PET V1", description = "QL thú cưng")
 public interface IPetV1API {
     @PostMapping
-    @PreAuthorize("hasAnyRole({'ROLE_SHELTER_OWNER', 'ROLE_STAFF'})")
+    @PreAuthorize("hasAnyRole('ROLE_SHELTER_OWNER', 'ROLE_STAFF')")
     ValueResponse<PetResponse> createPet(
             @Valid @RequestBody
             PetRequest request);

@@ -10,7 +10,5 @@ import java.util.Optional;
 public interface IAccountRoleRepository extends JpaRepository<AccountRoleEntity, Long> {
     List<AccountRoleEntity> findAllByAccountId(Long accountId);
 
-    Boolean existsByRoleIdAndAccountId(Long roleId, Long accountId);
-
     Optional<AccountRoleEntity> findByAccountIdAndRoleId(Long accountId, Long roleId);
 }

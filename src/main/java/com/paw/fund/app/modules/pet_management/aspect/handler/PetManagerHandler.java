@@ -1,14 +1,25 @@
 package com.paw.fund.app.modules.pet_management.aspect.handler;
 
+import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
+import com.paw.fund.app.modules.account_management.domain.role.Role;
+import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
+import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaCommandService;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaQueryService;
+import com.paw.fund.app.modules.pet_management.domain.health.record.PetHealthRecord;
 import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
 import com.paw.fund.app.modules.pet_management.domain.pet.hobby.PetHobby;
 import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetUpdate;
+import com.paw.fund.app.modules.pet_management.service.pet.PetQueryService;
 import com.paw.fund.app.modules.pet_management.service.pet.hobby.PetHobbyCommandService;
 import com.paw.fund.app.modules.pet_management.service.pet.hobby.PetHobbyQueryService;
+import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.configuration.handler.exceptions.ServiceException;
+import com.paw.fund.configuration.request.context.RequestContext;
+import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.enums.ERole;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +31,18 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import java.util.Currency;
 import java.util.List;
+import java.util.Objects;
 
 @Aspect
 @Component
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PetManagerHandler {
+    @NonNull
+    PetQueryService petQueryService;
+
     @NonNull
     PetHobbyCommandService petHobbyCommandService;
 
@@ -38,6 +54,9 @@ public class PetManagerHandler {
 
     @NonNull
     CommonMediaQueryService mediaQueryService;
+
+    @NonNull
+    AccountQueryService accountQueryService;
 
     @Around("@annotation(com.paw.fund.app.modules.pet_management.aspect.CreatePetHelper)")
     public Object createPetHelper(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -95,6 +114,23 @@ public class PetManagerHandler {
                 return updatedPet
                         .withMedias(medias)
                         .withHobbies(petHobbies);
+            }
+
+            throw new ServiceException();
+        } catch (Throwable e) {
+            throw e;
+        }
+    }
+
+    @Around("@annotation(com.paw.fund.app.modules.pet_management.aspect.GetPetHealthRecordDetailHelper)")
+    public Object getPetHealthRecordDetailHelper(ProceedingJoinPoint joinPoint) throws Throwable{
+        try {
+            Object result = joinPoint.proceed();
+            if(result instanceof PetHealthRecord petHealthRecord) {
+                Pet pet = petQueryService.findById(petHealthRecord.petId());
+                Account staff = accountQueryService.findById(petHealthRecord.createdById());
+
+                return petHealthRecord.withPet(pet).withStaffLoggedRecord(staff);
             }
 
             throw new ServiceException();

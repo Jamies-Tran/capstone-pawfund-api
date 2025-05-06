@@ -5,6 +5,7 @@ import com.paw.fund.app.modules.account_management.controller.models.AccountResp
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
 import com.paw.fund.app.modules.account_management.controller.models.verification.code.AccountVerificationCodeRequest;
 import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.AccountSave;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountFilter;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountSearchCriteria;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountVerification;
@@ -48,7 +49,7 @@ public class AccountV1PubController implements IAccountV1PubAPI {
     @Override
     public ValueResponse<AccountResponse> createAccount(AccountRequest accountRequest) {
         Account account = modelMapper.toDto(accountRequest);
-        Account createdAccount = useCase.createAccount(account);
+        Account createdAccount = useCase.createAccount(AccountSave.of(account));
 
         return ValueResponse.success(modelMapper.toResponse(createdAccount), HttpStatus.CREATED, API_VERSION);
     }

@@ -6,6 +6,8 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface IHobbyModelMapper {
+    Hobby toDto(HobbyRequest request, Long petTypeId);
+
     Hobby toDto(HobbyRequest request);
 
     HobbyResponse toResponse(Hobby dto);

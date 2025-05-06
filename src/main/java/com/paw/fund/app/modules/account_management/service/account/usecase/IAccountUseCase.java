@@ -1,6 +1,7 @@
 package com.paw.fund.app.modules.account_management.service.account.usecase;
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.AccountSave;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountEmail;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountFilter;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountId;
@@ -15,7 +16,7 @@ public interface IAccountUseCase {
 
     Account getAccountForAuth(AccountEmail accountEmail);
 
-    Account createAccount(Account account);
+    Account createAccount(AccountSave accountSave);
 
     Account verifyCreatedAccount(AccountVerification accountVerification);
 

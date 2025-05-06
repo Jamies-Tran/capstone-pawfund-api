@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,15 +41,21 @@ public interface IHobbyV1API {
             Integer pageSize
     );
 
-    @PostMapping
+    @PostMapping("/{petTypeId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     ValueResponse<HobbyResponse> createHobby(
+            @PathVariable
+            Long petTypeId,
+
             @Valid @RequestBody
             HobbyRequest request);
 
-    @PostMapping("/list")
+    @PostMapping("/{petTypeId}/list")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     ListResponse<HobbyResponse> createHobbyList(
+            @PathVariable
+            Long petTypeId,
+
             @Valid @RequestBody
             HobbyListRequest request);
 }

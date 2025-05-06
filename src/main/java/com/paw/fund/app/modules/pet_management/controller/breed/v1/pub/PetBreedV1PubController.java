@@ -37,8 +37,10 @@ public class PetBreedV1PubController implements IPetBreedV1PubAPI {
 
     @Override
     public PageResponse<PetBreedResponse> getPetBreedList(String search,
-                                                          Integer current, Integer pageSize) {
-        PetBreedSearchCriteria searchCriteria = PetBreedSearchCriteria.of(search,
+                                                          Long petTypeId,
+                                                          Integer current,
+                                                          Integer pageSize) {
+        PetBreedSearchCriteria searchCriteria = PetBreedSearchCriteria.of(search, petTypeId,
                 List.of(EPetInformationStatus.ACTIVE.getCode()));
         PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSize);
         Page<PetBreedResponse> responses = useCase.getPetBreedList(PetBreedFilter.of(searchCriteria, pageRequestCustom))

@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,15 +22,21 @@ import java.util.List;
 @Tag(name = "Pet Breed V1", description = "QL giống thú cưng")
 public interface IPetBreedV1API {
 
-    @PostMapping
+    @PostMapping("/{petTypeId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     ValueResponse<PetBreedResponse> createPetBreed(
+            @PathVariable
+            Long petTypeId,
+
             @RequestBody @Valid
             PetBreedRequest request);
 
-    @PostMapping("/list")
+    @PostMapping("/{petTypeId}/list")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     ListResponse<PetBreedResponse> createPetBreedList(
+            @PathVariable
+            Long petTypeId,
+
             @RequestBody @Valid
             PetBreedListRequest request);
 
@@ -38,6 +45,9 @@ public interface IPetBreedV1API {
     PageResponse<PetBreedResponse> getPetBreedList(
             @RequestParam(required = false, value = "search", defaultValue = "")
             String search,
+
+            @RequestParam(required = false, value = "petTypeId", defaultValue = "")
+            Long petTypeId,
 
             @RequestParam(required = false, value = "statusCodes", defaultValue = "")
             List<String> statusCodes,

@@ -17,6 +17,9 @@ public interface IPetBreedV1PubAPI {
             @RequestParam(required = false, value = "search", defaultValue = "")
             String search,
 
+            @RequestParam(required = false, value = "petTypeId", defaultValue = "-1")
+            Long petTypeId,
+
             @RequestParam(required = false, value = "current", defaultValue = "0")
             Integer current,
 

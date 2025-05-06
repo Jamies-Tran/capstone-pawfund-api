@@ -31,6 +31,9 @@ public class PetBreedEntity {
     Long petBreedId;
 
     @Column
+    Long petTypeId;
+
+    @Column
     String breedCode;
 
     @Column

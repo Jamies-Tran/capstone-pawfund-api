@@ -32,4 +32,7 @@ public class AccountRoleEntity {
 
     @Column
     Long roleId;
+
+    @Column
+    Long shelterId;
 }

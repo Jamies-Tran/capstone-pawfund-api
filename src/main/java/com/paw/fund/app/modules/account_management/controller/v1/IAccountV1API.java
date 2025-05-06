@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,15 +32,20 @@ public interface IAccountV1API {
                     """)
     ValueResponse<AccountResponse> createAdmin(@RequestBody @Valid AccountRequest accountRequest);
 
-    @PostMapping("/staff")
-    @PreAuthorize("hasRole({'ROLE_SHELTER_OWNER'})")
+    @PostMapping("/{shelterId}/staff")
+    @PreAuthorize("hasRole('ROLE_SHELTER_OWNER')")
     @Operation(
             summary = "Tạo tài khoản Admin",
             description = """
                     - Chủ trung tâm cứu hộ tạo tài khoản nhân viên
                     - [SHELTER_OWNER - Chủ trung tâm cứu hộ]
                     """)
-    ValueResponse<AccountResponse> createStaff(@RequestBody @Valid AccountRequest accountRequest);
+    ValueResponse<AccountResponse> createStaff(
+            @PathVariable
+            Long shelterId,
+
+            @RequestBody @Valid
+            AccountRequest accountRequest);
 
     @PutMapping
     @Operation(

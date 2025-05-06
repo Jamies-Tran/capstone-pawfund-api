@@ -53,16 +53,18 @@ public class HobbyV1Controller implements IHobbyV1API {
     }
 
     @Override
-    public ValueResponse<HobbyResponse> createHobby(HobbyRequest request) {
-        Hobby hobby = modelMapper.toDto(request);
+    public ValueResponse<HobbyResponse> createHobby(Long petTypeId, HobbyRequest request) {
+        Hobby hobby = modelMapper.toDto(request, petTypeId);
         Hobby savedHobby = useCase.createHobby(hobby);
 
         return ValueResponse.success(modelMapper.toResponse(savedHobby), HttpStatus.CREATED, API_VERSION);
     }
 
     @Override
-    public ListResponse<HobbyResponse> createHobbyList(HobbyListRequest request) {
-        List<Hobby> list = request.list().stream().map(modelMapper::toDto).toList();
+    public ListResponse<HobbyResponse> createHobbyList(Long petTypeId, HobbyListRequest request) {
+        List<Hobby> list = request.list().stream()
+                .map(x -> modelMapper.toDto(x, petTypeId))
+                .toList();
         List<HobbyResponse> responses = useCase.createHobbyList(HobbyList.of(list))
                 .stream()
                 .map(modelMapper::toResponse)

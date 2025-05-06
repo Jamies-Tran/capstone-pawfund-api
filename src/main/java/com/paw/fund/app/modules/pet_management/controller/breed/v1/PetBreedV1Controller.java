@@ -42,17 +42,17 @@ public class PetBreedV1Controller implements IPetBreedV1API {
     String API_VERSION;
 
     @Override
-    public ValueResponse<PetBreedResponse> createPetBreed(PetBreedRequest request) {
-        PetBreed petBreed = modelMapper.toDto(request);
+    public ValueResponse<PetBreedResponse> createPetBreed(Long petTypeId, PetBreedRequest request) {
+        PetBreed petBreed = modelMapper.toDto(request, petTypeId);
         PetBreed savedPetBreed = useCase.createPetBreed(petBreed);
 
         return ValueResponse.success(modelMapper.toResponse(savedPetBreed), HttpStatus.CREATED, API_VERSION);
     }
 
     @Override
-    public ListResponse<PetBreedResponse> createPetBreedList(PetBreedListRequest request) {
+    public ListResponse<PetBreedResponse> createPetBreedList(Long petTypeId, PetBreedListRequest request) {
         List<PetBreed> petBreeds = request.list().stream()
-                .map(modelMapper::toDto)
+                .map(x -> modelMapper.toDto(x, petTypeId))
                 .toList();
         List<PetBreedResponse> savedResponses = useCase.createPetBreedList(PetBreedList.of(petBreeds))
                 .stream()
@@ -64,9 +64,11 @@ public class PetBreedV1Controller implements IPetBreedV1API {
 
     @Override
     public PageResponse<PetBreedResponse> getPetBreedList(String search,
+                                                          Long petTypeId,
                                                           List<String> statusCodes,
                                                           Integer current, Integer pageSize) {
-        PetBreedSearchCriteria searchCriteria = PetBreedSearchCriteria.of(search, statusCodes);
+        PetBreedSearchCriteria searchCriteria = PetBreedSearchCriteria
+                .of(search, petTypeId, statusCodes);
         PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSize);
         Page<PetBreedResponse> responses = useCase.getPetBreedList(PetBreedFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);

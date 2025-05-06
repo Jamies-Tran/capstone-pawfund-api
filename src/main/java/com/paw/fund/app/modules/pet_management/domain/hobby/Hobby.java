@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record Hobby(
         Long hobbyId,
+        Long petTypeId,
         String hobbyCode,
         String hobbyName,
         String statusCode,

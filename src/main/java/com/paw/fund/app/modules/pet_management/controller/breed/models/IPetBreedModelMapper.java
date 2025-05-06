@@ -6,6 +6,8 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface IPetBreedModelMapper {
+    PetBreed toDto(PetBreedRequest request, Long petTypeId);
+
     PetBreed toDto(PetBreedRequest request);
 
     PetBreedResponse toResponse(PetBreed dto);

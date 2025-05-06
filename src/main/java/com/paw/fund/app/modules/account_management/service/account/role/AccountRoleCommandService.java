@@ -38,6 +38,23 @@ public class AccountRoleCommandService {
                 .map(mapper::toDto)
                 .toList();
     }
+    public List<AccountRole> saveAll(Long shelterId, Long accountId, List<Long> roleIds) {
+        ValidationUtil.validateArgumentNotNull(accountId);
+        ValidationUtil.validateArgumentListNotNull(roleIds);
+        List<AccountRoleEntity> newAccountRoles = roleIds.stream()
+                .map(x -> AccountRoleEntity.builder()
+                        .accountId(accountId)
+                        .roleId(x)
+                        .shelterId(shelterId)
+                        .build())
+                .toList();
+        List<AccountRoleEntity> savedAccountRoles = repository.saveAll(newAccountRoles);
+
+        return savedAccountRoles.stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
 
 
     public void deleteByAccountId(Long accountId) {

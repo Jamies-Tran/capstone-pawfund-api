@@ -29,6 +29,9 @@ public class HobbyEntity {
     Long hobbyId;
 
     @Column
+    Long petTypeId;
+
+    @Column
     String hobbyCode;
 
     @Column

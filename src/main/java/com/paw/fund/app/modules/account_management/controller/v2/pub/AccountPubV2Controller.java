@@ -4,6 +4,7 @@ import com.paw.fund.app.modules.account_management.controller.models.AccountResp
 import com.paw.fund.app.modules.account_management.controller.models.AccountV2Request;
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
 import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.AccountSave;
 import com.paw.fund.app.modules.account_management.service.account.usecase.IAccountUseCase;
 import com.paw.fund.app.modules.account_management.service.role.usecase.IRoleUseCase;
 import com.paw.fund.utils.response.ValueResponse;
@@ -37,7 +38,7 @@ public class AccountPubV2Controller implements IAccountPubV2API {
     @Override
     public ValueResponse<AccountResponse> createAccount(AccountV2Request request) {
         Account newAccount = modelMapper.toDto(request);
-        Account savedAccount = useCase.createAccount(newAccount);
+        Account savedAccount = useCase.createAccount(AccountSave.of(newAccount));
 
         return ValueResponse.success(
                 modelMapper.toResponse(savedAccount),

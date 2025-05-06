@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PetModuleConstant {
-    static String MODULE_NAME = "MEDIA";
+    static String MODULE_NAME = "PET";
 
     @NonFinal
     @Value("${app.version}")

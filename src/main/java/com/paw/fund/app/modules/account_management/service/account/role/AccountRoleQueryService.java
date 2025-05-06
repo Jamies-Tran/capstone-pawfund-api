@@ -22,10 +22,6 @@ public class AccountRoleQueryService {
     @NonNull
     IAccountRoleMapper mapper;
 
-    public Boolean existsRoleIdByAccountId(Long roleId, Long accountId) {
-        return repository.existsByRoleIdAndAccountId(roleId, accountId);
-    }
-
     public Optional<AccountRole> findByRoleIdAndAccountIdNullable(Long roleId, Long accountId) {
         return repository.findByAccountIdAndRoleId(accountId, roleId)
                 .map(mapper::toDto);

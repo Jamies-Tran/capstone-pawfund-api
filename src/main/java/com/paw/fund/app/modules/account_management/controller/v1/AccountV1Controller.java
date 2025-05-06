@@ -7,6 +7,7 @@ import com.paw.fund.app.modules.account_management.controller.models.AccountUpda
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
 import com.paw.fund.app.modules.account_management.controller.models.verification.code.EmailVerificationCodeRequest;
 import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.AccountSave;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountPassword;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountVerification;
 import com.paw.fund.app.modules.account_management.service.account.usecase.IAccountUseCase;
@@ -46,16 +47,16 @@ public class AccountV1Controller implements IAccountV1API {
     public ValueResponse<AccountResponse> createAdmin(AccountRequest accountRequest) {
         List<Role> roles = List.of(roleUseCase.getAdminRole());
         Account account = modelMapper.toDto(accountRequest, roles);
-        Account createdAccount = useCase.createAccount(account);
+        Account createdAccount = useCase.createAccount(AccountSave.of(account));
 
         return ValueResponse.success(modelMapper.toResponse(createdAccount), HttpStatus.CREATED, API_VERSION);
     }
 
     @Override
-    public ValueResponse<AccountResponse> createStaff(AccountRequest accountRequest) {
+    public ValueResponse<AccountResponse> createStaff(Long shelterId, AccountRequest accountRequest) {
         List<Role> roles = List.of(roleUseCase.getStaffRole());
         Account account = modelMapper.toDto(accountRequest, roles);
-        Account createdAccount = useCase.createAccount(account);
+        Account createdAccount = useCase.createAccount(AccountSave.of(shelterId, account));
 
         return ValueResponse.success(modelMapper.toResponse(createdAccount), HttpStatus.CREATED, API_VERSION);
     }

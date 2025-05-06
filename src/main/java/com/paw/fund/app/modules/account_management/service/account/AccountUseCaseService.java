@@ -1,6 +1,8 @@
 package com.paw.fund.app.modules.account_management.service.account;
 
+import com.paw.fund.app.modules.account_management.aspect.CreateAccountHelper;
 import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.AccountSave;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountEmail;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountFilter;
 import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountId;
@@ -94,48 +96,11 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @Override
     @Transactional
+    @CreateAccountHelper
     @LogAction(action = EAction.CREATED)
-    public Account createAccount(Account account) {
-        ValidationUtil.validateNotNullPointerException(account);
-
-        if(!CollectionUtils.isEmpty(account.roles())) {
-            List<String> roleCodes = account.roles()
-                    .stream()
-                    .map(Role::roleCode)
-                    .toList();
-            List<Role> roles = roleQueryService.findAllByCodeIn(roleCodes);
-            List<Long> roleIds = roles
-                    .stream()
-                    .map(Role::roleId)
-                    .toList();
-            Account createdAccount = commandService.save(account);
-            List<AccountRole> createdAccountRoles = accountRoleCommandService
-                    .saveAll(createdAccount.accountId(), roleIds);
-            if(Objects.nonNull(createdAccountRoles) && !CollectionUtils.isEmpty(createdAccountRoles)) {
-                if(!CollectionUtils.isEmpty(account.medias())) {
-                    List<CommonMedia> commonMedias = commonMediaCommandService.saveAllWithAccountId(createdAccount.accountId(),
-                            account.medias());
-                    return createdAccount
-                            .withMedias(commonMedias)
-                            .withRoles(roles);
-                }
-                return createdAccount.withRoles(roles);
-            } else {
-                throw new ServiceException();
-            }
-        } else {
-            Account createdAccount = commandService.save(account);
-
-            if(!CollectionUtils.isEmpty(account.medias())) {
-                List<CommonMedia> commonMedias = commonMediaCommandService.saveAllWithAccountId(createdAccount.accountId(),
-                        account.medias());
-                return createdAccount
-                        .withMedias(commonMedias);
-            }
-
-            return createdAccount;
-        }
-
+    public Account createAccount(AccountSave accountSave) {
+        ValidationUtil.validateNotNullPointerException(accountSave);
+        return commandService.save(accountSave.account());
     }
 
     @Override
