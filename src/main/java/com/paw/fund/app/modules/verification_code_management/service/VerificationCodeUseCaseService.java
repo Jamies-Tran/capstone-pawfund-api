@@ -12,7 +12,7 @@ import com.paw.fund.app.modules.verification_code_management.service.usecase.IVe
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.configuration.request.context.RequestContext;
 import com.paw.fund.dto.CurrentAccountLogin;
-import com.paw.fund.enums.EAction;
+import com.paw.fund.enums.EAccountAction;
 import com.paw.fund.enums.EAccountStatus;
 import com.paw.fund.enums.EVerificationCodeType;
 import com.paw.fund.utils.validation.ValidationUtil;
@@ -72,8 +72,8 @@ public class VerificationCodeUseCaseService implements IVerificationCodeUseCase 
         mailSenderCommandService.sendMail(mailSender.prepareForAccountVerification(account.lastName()));
         AccountActivityLog log = AccountActivityLog.builder()
                 .accountId(account.accountId())
-                .actionCode(EAction.SEND_VERIFIED_ACCOUNT.getCode())
-                .actionName(EAction.SEND_VERIFIED_ACCOUNT.getName())
+                .actionCode(EAccountAction.SEND_VERIFIED_ACCOUNT.getCode())
+                .actionName(EAccountAction.SEND_VERIFIED_ACCOUNT.getName())
                 .build();
         accountActivityLogCommandService.save(log);
 

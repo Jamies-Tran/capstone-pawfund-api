@@ -1,13 +1,13 @@
 package com.paw.fund.app.modules.pet_management.service.health.record;
 
-import com.paw.fund.app.modules.pet_management.aspect.CreatePetHealthRecordParamHelper;
+import com.paw.fund.app.modules.log_management.annotation.CreatePetActivityLogHelper;
 import com.paw.fund.app.modules.pet_management.aspect.GetPetHealthRecordDetailHelper;
 import com.paw.fund.app.modules.pet_management.domain.health.record.PetHealthRecord;
 import com.paw.fund.app.modules.pet_management.domain.health.record.usecase.PetHealthRecordFilter;
 import com.paw.fund.app.modules.pet_management.domain.health.record.usecase.PetHealthRecordId;
 import com.paw.fund.app.modules.pet_management.domain.health.record.usecase.PetHealthRecordUpdate;
 import com.paw.fund.app.modules.pet_management.service.health.record.usecase.IPetHealthRecordUseCase;
-import com.paw.fund.configuration.request.context.RequestContext;
+import com.paw.fund.enums.EPetAction;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class PetHealthRecordUseCaseService implements IPetHealthRecordUseCase {
 
     @Override
     @Transactional
-    @CreatePetHealthRecordParamHelper
+    @CreatePetActivityLogHelper(action = EPetAction.UPDATED_HEALTH_STATUS)
     public PetHealthRecord createPetHealthRecord(PetHealthRecord petHealthRecord) {
         return commandService.save(petHealthRecord);
     }
@@ -46,6 +46,7 @@ public class PetHealthRecordUseCaseService implements IPetHealthRecordUseCase {
     }
 
     @Override
+    @CreatePetActivityLogHelper(action = EPetAction.UPDATED_HEALTH_STATUS)
     public PetHealthRecord updatePetHealthRecord(PetHealthRecordUpdate petHealthRecordUpdate) {
 
         return commandService.update(petHealthRecordUpdate.petHealthRecordId(), petHealthRecordUpdate.petHealthRecord());

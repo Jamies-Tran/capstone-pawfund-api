@@ -9,8 +9,8 @@ import com.paw.fund.app.modules.form_management.domain.question.Question;
 import com.paw.fund.app.modules.form_management.service.form.usecase.IFormUseCase;
 import com.paw.fund.app.modules.form_management.service.question.QuestionCommandService;
 import com.paw.fund.app.modules.form_management.service.question.QuestionQueryService;
-import com.paw.fund.app.modules.log_management.annotation.LogAction;
-import com.paw.fund.enums.EAction;
+import com.paw.fund.app.modules.log_management.annotation.CreateAccountActivityLogHelper;
+import com.paw.fund.enums.EAccountAction;
 import com.paw.fund.enums.EFormStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
@@ -41,7 +41,7 @@ public class FormUseCaseService implements IFormUseCase {
 
     @Override
     @Transactional
-    @LogAction(action = EAction.CREATE_SHELTER_FORM, isCurrentLogin = true)
+    @CreateAccountActivityLogHelper(action = EAccountAction.CREATE_SHELTER_FORM, isCurrentLogin = true)
     public Form createForm(Form form) {
         ValidationUtil.validateNotNullPointerException(form);
         Form savedForm = commandService.save(form);
@@ -63,7 +63,7 @@ public class FormUseCaseService implements IFormUseCase {
 
     @Override
     @Transactional
-    @LogAction(action = EAction.UPDATE_SHELTER_FORM, isCurrentLogin = true)
+    @CreateAccountActivityLogHelper(action = EAccountAction.UPDATE_SHELTER_FORM, isCurrentLogin = true)
     public Form updateForm(FormUpdate formUpdate) {
         ValidationUtil.validateNotNullPointerException(formUpdate);
         Form form = commandService.update(formUpdate.formId(), formUpdate.form());
@@ -82,21 +82,21 @@ public class FormUseCaseService implements IFormUseCase {
 
     @Override
     @Transactional
-    @LogAction(action = EAction.ACTIVE_SHELTER_FORM, isCurrentLogin = true)
+    @CreateAccountActivityLogHelper(action = EAccountAction.ACTIVE_SHELTER_FORM, isCurrentLogin = true)
     public Form activeForm(FormId formId) {
         return commandService.updateStatus(formId.value(), EFormStatus.ENABLE);
     }
 
     @Override
     @Transactional
-    @LogAction(action = EAction.INACTIVE_SHELTER_FORM, isCurrentLogin = true)
+    @CreateAccountActivityLogHelper(action = EAccountAction.INACTIVE_SHELTER_FORM, isCurrentLogin = true)
     public Form inactiveForm(FormId formId) {
         return commandService.updateStatus(formId.value(), EFormStatus.DISABLE);
     }
 
     @Override
     @Transactional
-    @LogAction(action = EAction.DELETE_SHELTER_FORM, isCurrentLogin = true)
+    @CreateAccountActivityLogHelper(action = EAccountAction.DELETE_SHELTER_FORM, isCurrentLogin = true)
     public void deleteForm(FormId formId) {
         Long deletedId = commandService.delete(formId.value());
         questionCommandService.deleteAllByFormId(deletedId);

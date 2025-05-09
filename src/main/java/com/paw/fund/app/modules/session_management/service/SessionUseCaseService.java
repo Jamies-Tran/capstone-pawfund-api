@@ -12,7 +12,7 @@ import com.paw.fund.app.modules.session_management.service.usecase.ISessionUseCa
 import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.enums.EAccountStatus;
-import com.paw.fund.enums.EAction;
+import com.paw.fund.enums.EAccountAction;
 import com.paw.fund.utils.password.encoder.PawFundPasswordEncoder;
 import com.paw.fund.utils.token.TokenUtil;
 import lombok.AccessLevel;
@@ -77,8 +77,8 @@ public class SessionUseCaseService implements ISessionUseCase {
         }
         AccountActivityLog log = AccountActivityLog.builder()
                 .accountId(account.accountId())
-                .actionCode(EAction.LOGIN.getCode())
-                .actionName(EAction.LOGIN.getName())
+                .actionCode(EAccountAction.LOGIN.getCode())
+                .actionName(EAccountAction.LOGIN.getName())
                 .build();
         accountActivityLogCommandService.save(log);
 
@@ -110,8 +110,8 @@ public class SessionUseCaseService implements ISessionUseCase {
         Long deletedSessionAccountId = commandService.delete();
         AccountActivityLog log = AccountActivityLog.builder()
                 .accountId(deletedSessionAccountId)
-                .actionCode(EAction.LOGOUT.getCode())
-                .actionName(EAction.LOGOUT.getName())
+                .actionCode(EAccountAction.LOGOUT.getCode())
+                .actionName(EAccountAction.LOGOUT.getName())
                 .build();
         accountActivityLogCommandService.save(log);
     }

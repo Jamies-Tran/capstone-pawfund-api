@@ -3,7 +3,7 @@ package com.paw.fund.app.modules.category_management.controller.question.type;
 import com.paw.fund.app.modules.category_management.controller.question.type.models.IQuestionTypeCategoryModelMapper;
 import com.paw.fund.app.modules.category_management.controller.question.type.models.QuestionTypeCategoryResponse;
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
-import com.paw.fund.app.modules.category_management.service.usecase.IQuestionTypeCategoryUseCase;
+import com.paw.fund.app.modules.category_management.service.question.type.usecase.IQuestionTypeCategoryUseCase;
 import com.paw.fund.utils.response.ListResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;

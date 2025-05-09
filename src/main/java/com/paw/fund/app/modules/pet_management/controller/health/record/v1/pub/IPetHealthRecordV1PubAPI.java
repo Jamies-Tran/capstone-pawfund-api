@@ -2,6 +2,7 @@ package com.paw.fund.app.modules.pet_management.controller.health.record.v1.pub;
 
 import com.paw.fund.app.modules.pet_management.controller.health.record.models.PetHealthRecordResponse;
 import com.paw.fund.utils.response.PageResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,12 @@ import java.util.List;
 @Tag(name = "Pet Health Record V1", description = "QL hồ sơ sức khỏe thú cưng")
 public interface IPetHealthRecordV1PubAPI {
     @GetMapping("/{petId}/list")
+    @Operation(
+            summary = "Xem danh sách hồ sơ sức khỏe của một thú cưng",
+            description = """
+                    - Xem danh sách hồ sơ sức khỏe của một thú cưng
+                    - [USER - Người dùng]
+                    """)
     PageResponse<PetHealthRecordResponse> getPetHealthRecordList(
             @PathVariable
             Long petId,

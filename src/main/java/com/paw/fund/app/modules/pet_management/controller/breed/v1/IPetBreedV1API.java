@@ -6,6 +6,7 @@ import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedR
 import com.paw.fund.utils.response.ListResponse;
 import com.paw.fund.utils.response.PageResponse;
 import com.paw.fund.utils.response.ValueResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,12 @@ public interface IPetBreedV1API {
 
     @PostMapping("/{petTypeId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Tạo giống thú cưng",
+            description = """
+                    - Tạo giống thú cưng
+                    - [ADMIN - Quản trị viên]
+                    """)
     ValueResponse<PetBreedResponse> createPetBreed(
             @PathVariable
             Long petTypeId,
@@ -33,6 +40,12 @@ public interface IPetBreedV1API {
 
     @PostMapping("/{petTypeId}/list")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Tạo danh sách giống thú cưng",
+            description = """
+                    - Tạo danh sách giống thú cưng bằng ID
+                    - [ADMIN - Quản trị viên]
+                    """)
     ListResponse<PetBreedResponse> createPetBreedList(
             @PathVariable
             Long petTypeId,
@@ -42,6 +55,12 @@ public interface IPetBreedV1API {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Danh sách giống thú cưng",
+            description = """
+                    - Danh sách giống thú cưng
+                    - [ADMIN - Quản trị viên]
+                    """)
     PageResponse<PetBreedResponse> getPetBreedList(
             @RequestParam(required = false, value = "search", defaultValue = "")
             String search,

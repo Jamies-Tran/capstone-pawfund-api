@@ -6,6 +6,7 @@ import com.paw.fund.app.modules.pet_management.controller.hobby.models.HobbyResp
 import com.paw.fund.utils.response.ListResponse;
 import com.paw.fund.utils.response.PageResponse;
 import com.paw.fund.utils.response.ValueResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +25,12 @@ public interface IHobbyV1API {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Danh sách sở thích thú cưng",
+            description = """
+                    - Danh sách sở thích thú cưng
+                    - [ADMIN - Quản trị viên]
+                    """)
     PageResponse<HobbyResponse> getHobbyList(
             @RequestParam(required = false, value = "search", defaultValue = "")
             String search,
@@ -43,6 +50,12 @@ public interface IHobbyV1API {
 
     @PostMapping("/{petTypeId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Tạo sở thích thú cưng",
+            description = """
+                    - Tạo sở thích thú cưng
+                    - [ADMIN - Quản trị viên]
+                    """)
     ValueResponse<HobbyResponse> createHobby(
             @PathVariable
             Long petTypeId,
@@ -52,6 +65,12 @@ public interface IHobbyV1API {
 
     @PostMapping("/{petTypeId}/list")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Tạo danh sách sở thích thú cưng",
+            description = """
+                    - Tạo danh sách sở thích thú cưng
+                    - [ADMIN - Quản trị viên]
+                    """)
     ListResponse<HobbyResponse> createHobbyList(
             @PathVariable
             Long petTypeId,

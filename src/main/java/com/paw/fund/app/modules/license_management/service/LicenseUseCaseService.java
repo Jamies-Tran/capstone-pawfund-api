@@ -8,8 +8,8 @@ import com.paw.fund.app.modules.license_management.domain.usecase.LicenseUpdate;
 import com.paw.fund.app.modules.license_management.service.section.LicenseSectionCommandService;
 import com.paw.fund.app.modules.license_management.service.section.LicenseSectionQueryService;
 import com.paw.fund.app.modules.license_management.service.usecase.ILicenseUseCase;
-import com.paw.fund.app.modules.log_management.annotation.LogAction;
-import com.paw.fund.enums.EAction;
+import com.paw.fund.app.modules.log_management.annotation.CreateAccountActivityLogHelper;
+import com.paw.fund.enums.EAccountAction;
 import com.paw.fund.enums.ELicenseStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
@@ -40,7 +40,7 @@ public class LicenseUseCaseService implements ILicenseUseCase {
 
     @Override
     @Transactional
-    @LogAction(action = EAction.CREATED, isCurrentLogin = true)
+    @CreateAccountActivityLogHelper(action = EAccountAction.CREATED, isCurrentLogin = true)
     public License createLicense(License license) {
         ValidationUtil.validateNotNullPointerException(license);
         License savedLicense = commandService.save(license);
@@ -67,7 +67,7 @@ public class LicenseUseCaseService implements ILicenseUseCase {
 
     @Override
     @Transactional
-    @LogAction(action = EAction.UPDATE_LICENSE, isCurrentLogin = true)
+    @CreateAccountActivityLogHelper(action = EAccountAction.UPDATE_LICENSE, isCurrentLogin = true)
     public License updateLicense(LicenseUpdate licenseUpdate) {
         ValidationUtil.validateNotNullPointerException(licenseUpdate);
         License updatedLicense = commandService.update(licenseUpdate.licenseId(), licenseUpdate.license());
@@ -79,21 +79,21 @@ public class LicenseUseCaseService implements ILicenseUseCase {
 
     @Override
     @Transactional
-    @LogAction(action = EAction.ACTIVE_LICENSE, isCurrentLogin = true)
+    @CreateAccountActivityLogHelper(action = EAccountAction.ACTIVE_LICENSE, isCurrentLogin = true)
     public License activeLicense(LicenseId licenseId) {
         return commandService.updateStatus(licenseId.value(), ELicenseStatus.ACTIVE);
     }
 
     @Override
     @Transactional
-    @LogAction(action = EAction.INACTIVE_LICENSE, isCurrentLogin = true)
+    @CreateAccountActivityLogHelper(action = EAccountAction.INACTIVE_LICENSE, isCurrentLogin = true)
     public License inactiveLicense(LicenseId licenseId) {
         return commandService.updateStatus(licenseId.value(), ELicenseStatus.INACTIVE);
     }
 
     @Override
     @Transactional
-    @LogAction(action = EAction.DELETE_ACCOUNT, isCurrentLogin = true)
+    @CreateAccountActivityLogHelper(action = EAccountAction.DELETE_ACCOUNT, isCurrentLogin = true)
     public void deleteLicense(LicenseId licenseId) {
         commandService.delete(licenseId.value());
     }

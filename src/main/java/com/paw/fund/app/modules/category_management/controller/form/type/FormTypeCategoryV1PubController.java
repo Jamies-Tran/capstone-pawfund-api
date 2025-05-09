@@ -3,7 +3,7 @@ package com.paw.fund.app.modules.category_management.controller.form.type;
 import com.paw.fund.app.modules.category_management.controller.form.models.type.FormTypeCategoryResponse;
 import com.paw.fund.app.modules.category_management.controller.form.models.type.IFormTypeCategoryModelMapper;
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
-import com.paw.fund.app.modules.category_management.service.usecase.IFormTypeCategoryUseCase;
+import com.paw.fund.app.modules.category_management.service.form.type.usecase.IFormTypeCategoryUseCase;
 import com.paw.fund.utils.response.ListResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;

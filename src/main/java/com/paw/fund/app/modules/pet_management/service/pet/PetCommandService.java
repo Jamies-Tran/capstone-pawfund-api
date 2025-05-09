@@ -7,6 +7,7 @@ import com.paw.fund.app.modules.pet_management.repository.database.pet.IPetRepos
 import com.paw.fund.app.modules.pet_management.repository.database.pet.PetEntity;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.enums.EDeleteStatus;
+import com.paw.fund.enums.EPetStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -47,6 +48,22 @@ public class PetCommandService {
                     PetEntity savePet = repository.save(x);
 
                     return mapper.toDto(savePet);
+                })
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    public Pet updateStatus(Long petId, EPetStatus status) {
+        ValidationUtil.validateArgumentNotNull(petId);
+        ValidationUtil.validateArgumentNotNull(status);
+
+        return repository.findByStatusCodeNotDeletedAndPetId(petId)
+                .map(pet -> {
+                    pet.setStatusCode(status.getCode());
+                    pet.setStatusName(status.getName());
+                    pet.prepareUpdate(auditService.createAuditableForUpdate());
+                    PetEntity updatedPet = repository.save(pet);
+
+                    return mapper.toDto(updatedPet);
                 })
                 .orElseThrow(ResourceNotFoundException::new);
     }

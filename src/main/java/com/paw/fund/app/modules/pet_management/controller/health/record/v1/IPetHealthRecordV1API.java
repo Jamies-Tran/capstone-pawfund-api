@@ -3,6 +3,7 @@ package com.paw.fund.app.modules.pet_management.controller.health.record.v1;
 import com.paw.fund.app.modules.pet_management.controller.health.record.models.PetHealthRecordRequest;
 import com.paw.fund.app.modules.pet_management.controller.health.record.models.PetHealthRecordResponse;
 import com.paw.fund.utils.response.ValueResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,6 +16,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface IPetHealthRecordV1API {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_STAFF')")
+    @Operation(
+            summary = "Tạo hồ sơ sức khỏe của một thú cưng",
+            description = """
+                    - Tạo hồ sơ sức khỏe của một thú cưng
+                    - [STAFF - Nhân viên trung tâm cứu trợ]
+                    """)
     ValueResponse<PetHealthRecordResponse> createPetHealthRecord(
             @Valid @RequestBody
             PetHealthRecordRequest request);

@@ -3,6 +3,7 @@ package com.paw.fund.app.modules.pet_management.controller.breed.v1;
 import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedRequest;
 import com.paw.fund.app.modules.pet_management.controller.breed.models.PetBreedResponse;
 import com.paw.fund.utils.response.ValueResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,10 +20,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface IPetBreedPathV1API {
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Xem chi tiết giống thú cưng",
+            description = """
+                    - Xem chi tiết going thú cưng bằng ID
+                    - [USER - Người dùng]
+                    """)
     ValueResponse<PetBreedResponse> getPetBreedDetail(@PathVariable Long petBreedId);
 
     @PutMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Cập nhật giống thú cưng",
+            description = """
+                    - Cập nhật giống thú cưng bằng ID
+                    - [ADMIN - Quản trị viên]
+                    """)
     ValueResponse<PetBreedResponse> updatePetBreed(
             @PathVariable
             Long petBreedId,
@@ -32,13 +45,31 @@ public interface IPetBreedPathV1API {
 
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Xóa giống thú cưng",
+            description = """
+                    - Xóa giống thú cưng bằng ID
+                    - [ADMIN - Quản trị viên]
+                    """)
     ValueResponse<?> deletePetBreed(@PathVariable Long petBreedId);
 
     @PatchMapping("/active")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Kích hoạt giống thú cưng",
+            description = """
+                    - Kích hoạt giống thú cưng bằng ID
+                    - [ADMIN - Quản trị viên]
+                    """)
     ValueResponse<PetBreedResponse> activePetBreed(@PathVariable Long petBreedId);
 
     @PatchMapping("/block")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Khóa giống thú cưng",
+            description = """
+                    - Khóa giống thú cưng bằng ID
+                    - [ADMIN - Quản trị viên]
+                    """)
     ValueResponse<PetBreedResponse> blockPetBreed(@PathVariable Long petBreedId);
 }

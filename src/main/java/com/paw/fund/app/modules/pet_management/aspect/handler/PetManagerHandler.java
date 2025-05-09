@@ -1,25 +1,24 @@
 package com.paw.fund.app.modules.pet_management.aspect.handler;
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
-import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
-import com.paw.fund.app.modules.account_management.domain.role.Role;
 import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
-import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaCommandService;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaQueryService;
+import com.paw.fund.app.modules.log_management.annotation.CreatePetActivityLogHelper;
 import com.paw.fund.app.modules.pet_management.domain.health.record.PetHealthRecord;
+import com.paw.fund.app.modules.log_management.domain.pet.PetActivityLog;
 import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
 import com.paw.fund.app.modules.pet_management.domain.pet.hobby.PetHobby;
 import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetUpdate;
+import com.paw.fund.app.modules.log_management.service.pet.PetActivityLogCommandService;
 import com.paw.fund.app.modules.pet_management.service.pet.PetQueryService;
 import com.paw.fund.app.modules.pet_management.service.pet.hobby.PetHobbyCommandService;
 import com.paw.fund.app.modules.pet_management.service.pet.hobby.PetHobbyQueryService;
-import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.configuration.handler.exceptions.ServiceException;
-import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
-import com.paw.fund.enums.ERole;
+import com.paw.fund.enums.EHealthStatus;
+import com.paw.fund.enums.EPetAction;
+import com.paw.fund.enums.EPetStatus;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +28,9 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
-import java.util.Currency;
 import java.util.List;
 import java.util.Objects;
 

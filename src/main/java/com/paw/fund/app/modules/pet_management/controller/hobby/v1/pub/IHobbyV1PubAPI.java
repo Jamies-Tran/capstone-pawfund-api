@@ -2,6 +2,7 @@ package com.paw.fund.app.modules.pet_management.controller.hobby.v1.pub;
 
 import com.paw.fund.app.modules.pet_management.controller.hobby.models.HobbyResponse;
 import com.paw.fund.utils.response.PageResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,12 @@ import java.util.List;
 @Tag(name = "Hobby V1", description = "QL sở thích")
 public interface IHobbyV1PubAPI {
     @GetMapping
+    @Operation(
+            summary = "Xem danh sách giống thú cưng",
+            description = """
+                    - Xem danh sách giống thú cưng
+                    - [USER - Người dùng]
+                    """)
     PageResponse<HobbyResponse> getHobbyList(
             @RequestParam(required = false, value = "search", defaultValue = "")
             String search,

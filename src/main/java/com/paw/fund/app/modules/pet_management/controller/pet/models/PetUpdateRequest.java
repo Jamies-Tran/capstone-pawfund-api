@@ -20,8 +20,6 @@ public record PetUpdateRequest(
         LocalDate dateOfBirth,
         LocalDate receivedAt,
         List<PetHobbyUpdateRequest> hobbies,
-        List<CommonMediaUpdateRequest> medias,
-        String statusCode,
-        String statusName
+        List<CommonMediaUpdateRequest> medias
 ) {
 }

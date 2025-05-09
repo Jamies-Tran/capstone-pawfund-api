@@ -2,7 +2,7 @@ package com.paw.fund.app.modules.category_management.service.account.status;
 
 import com.paw.fund.app.modules.category_management.domain.AccountStatusCategory;
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
-import com.paw.fund.app.modules.category_management.service.usecase.IAccountStatusCategoryUseCase;
+import com.paw.fund.app.modules.category_management.service.account.status.usecase.IAccountStatusCategoryUseCase;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

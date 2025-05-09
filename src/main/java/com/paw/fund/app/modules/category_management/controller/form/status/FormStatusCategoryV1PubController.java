@@ -3,7 +3,7 @@ package com.paw.fund.app.modules.category_management.controller.form.status;
 import com.paw.fund.app.modules.category_management.controller.form.models.status.FormStatusCategoryResponse;
 import com.paw.fund.app.modules.category_management.controller.form.models.status.IFormStatusCategoryModelMapper;
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
-import com.paw.fund.app.modules.category_management.service.usecase.IFormStatusCategoryUseCase;
+import com.paw.fund.app.modules.category_management.service.form.status.usecase.IFormStatusCategoryUseCase;
 import com.paw.fund.utils.response.ListResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;

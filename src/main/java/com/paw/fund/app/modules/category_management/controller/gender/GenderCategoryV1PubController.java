@@ -3,7 +3,7 @@ package com.paw.fund.app.modules.category_management.controller.gender;
 import com.paw.fund.app.modules.category_management.controller.gender.models.GenderCategoryResponse;
 import com.paw.fund.app.modules.category_management.controller.gender.models.IGenderCategoryModelMapper;
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
-import com.paw.fund.app.modules.category_management.service.usecase.IGenderCategoryUseCase;
+import com.paw.fund.app.modules.category_management.service.gender.usecase.IGenderCategoryUseCase;
 import com.paw.fund.utils.response.ListResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;

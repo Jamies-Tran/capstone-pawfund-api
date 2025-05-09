@@ -3,7 +3,7 @@ package com.paw.fund.app.modules.category_management.controller.license.status;
 import com.paw.fund.app.modules.category_management.controller.license.models.status.ILicenseStatusCategoryModelMapper;
 import com.paw.fund.app.modules.category_management.controller.license.models.status.LicenseStatusCategoryResponse;
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
-import com.paw.fund.app.modules.category_management.service.usecase.ILicenseStatusCategoryUseCase;
+import com.paw.fund.app.modules.category_management.service.license.status.usecase.ILicenseStatusCategoryUseCase;
 import com.paw.fund.utils.response.ListResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;

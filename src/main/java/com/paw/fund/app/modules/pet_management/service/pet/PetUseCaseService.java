@@ -1,5 +1,6 @@
 package com.paw.fund.app.modules.pet_management.service.pet;
 
+import com.paw.fund.app.modules.log_management.annotation.CreatePetActivityLogHelper;
 import com.paw.fund.app.modules.pet_management.aspect.CreatePetHelper;
 import com.paw.fund.app.modules.pet_management.aspect.GetPetDetailHelper;
 import com.paw.fund.app.modules.pet_management.aspect.UpdatePetHelper;
@@ -8,6 +9,8 @@ import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetFilter;
 import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetId;
 import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetUpdate;
 import com.paw.fund.app.modules.pet_management.service.pet.usecase.IPetUseCase;
+import com.paw.fund.enums.EPetAction;
+import com.paw.fund.enums.EPetStatus;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +34,7 @@ public class PetUseCaseService implements IPetUseCase {
     @Override
     @Transactional
     @CreatePetHelper
+    @CreatePetActivityLogHelper(action = EPetAction.CREATED)
     public Pet createPet(Pet pet) {
         return commandService.save(pet.withPetCode(UUID.randomUUID().toString()));
     }
@@ -44,6 +48,7 @@ public class PetUseCaseService implements IPetUseCase {
     @Override
     @Transactional
     @UpdatePetHelper
+    @CreatePetActivityLogHelper(action = EPetAction.UPDATED)
     public Pet updatePet(PetUpdate petUpdate) {
         return commandService.update(petUpdate.petId(), petUpdate.pet());
     }
@@ -55,8 +60,22 @@ public class PetUseCaseService implements IPetUseCase {
 
     @Override
     @Transactional
+    @CreatePetActivityLogHelper(action = EPetAction.DELETED)
     public void deletePet(PetId petId) {
         commandService.delete(petId.value());
+    }
+
+    @Override
+    @Transactional
+    @CreatePetActivityLogHelper(action = EPetAction.UPDATED_STATUS, status = EPetStatus.ADOPTABLE)
+    public Pet setAdoptablePet(PetId petId) {
+        return commandService.updateStatus(petId.value(), EPetStatus.ADOPTABLE);
+    }
+
+    @Override
+    @CreatePetActivityLogHelper(action = EPetAction.UPDATED_STATUS, status = EPetStatus.NOT_ADOPTABLE)
+    public Pet setNotadoptablePet(PetId petId) {
+        return commandService.updateStatus(petId.value(), EPetStatus.NOT_ADOPTABLE);
     }
 
 

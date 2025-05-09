@@ -2,7 +2,7 @@ package com.paw.fund.app.modules.category_management.service.shelter.registratio
 
 import com.paw.fund.app.modules.category_management.domain.ShelterRegistrationStatusCategory;
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
-import com.paw.fund.app.modules.category_management.service.usecase.IShelterRegistrationStatusCategoryUseCase;
+import com.paw.fund.app.modules.category_management.service.shelter.registration.usecase.IShelterRegistrationStatusCategoryUseCase;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

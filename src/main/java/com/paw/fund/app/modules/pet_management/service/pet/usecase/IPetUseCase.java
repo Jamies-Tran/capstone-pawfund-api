@@ -16,4 +16,8 @@ public interface IPetUseCase {
     Page<Pet> getPetList(PetFilter filter);
 
     void deletePet(PetId petId);
+
+    Pet setAdoptablePet(PetId petId);
+
+    Pet setNotadoptablePet(PetId petId);
 }

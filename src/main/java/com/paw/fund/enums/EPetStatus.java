@@ -10,7 +10,9 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public enum EPetStatus {
     ADOPTABLE("ADOPTABLE", "Có thể nhận nuôi"),
-    NOT_ADOPTABLE("NOT_ADOPTABLE", "Chưa thể nhận nuôi"),;
+    NOT_ADOPTABLE("NOT_ADOPTABLE", "Chưa thể nhận nuôi"),
+    ADOPTED("ADOPTED", "Đã nhận nuôi"),
+    NONE("NONE", ""),;
 
     String code;
     String name;

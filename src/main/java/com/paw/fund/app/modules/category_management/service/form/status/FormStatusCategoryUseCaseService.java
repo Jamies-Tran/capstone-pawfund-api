@@ -2,7 +2,7 @@ package com.paw.fund.app.modules.category_management.service.form.status;
 
 import com.paw.fund.app.modules.category_management.domain.FormStatusCategory;
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
-import com.paw.fund.app.modules.category_management.service.usecase.IFormStatusCategoryUseCase;
+import com.paw.fund.app.modules.category_management.service.form.status.usecase.IFormStatusCategoryUseCase;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

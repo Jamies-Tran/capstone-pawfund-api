@@ -2,7 +2,7 @@ package com.paw.fund.app.modules.category_management.service.map;
 
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
 import com.paw.fund.app.modules.category_management.repository.feign.data.place.Prediction;
-import com.paw.fund.app.modules.category_management.service.usecase.IMapUseCase;
+import com.paw.fund.app.modules.category_management.service.map.uscase.IMapUseCase;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

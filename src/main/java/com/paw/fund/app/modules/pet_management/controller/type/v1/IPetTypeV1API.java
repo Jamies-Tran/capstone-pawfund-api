@@ -6,6 +6,7 @@ import com.paw.fund.app.modules.pet_management.controller.type.models.PetTypeRes
 import com.paw.fund.utils.response.ListResponse;
 import com.paw.fund.utils.response.PageResponse;
 import com.paw.fund.utils.response.ValueResponse;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,18 +23,36 @@ import java.util.List;
 public interface IPetTypeV1API {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Tạo loại thú cưng",
+            description = """
+                    - Tạo loại thú cưng
+                    - [ADMIN - Quản trị viên]
+                    """)
     ValueResponse<PetTypeResponse> createPetType(
             @Valid @RequestBody
             PetTypeRequest request);
 
     @PostMapping("/list")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Tạo danh sách loại thú cưng",
+            description = """
+                    - Tạo danh sách loại thú cưng
+                    - [ADMIN - Quản trị viên]
+                    """)
     ListResponse<PetTypeResponse> createPetTypeList(
             @Valid @RequestBody
             PetTypeListRequest request);
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(
+            summary = "Xem danh sách loại thú cưng",
+            description = """
+                    - Xem danh sách loại thú cưng
+                    - [ADMIN - Quản trị viên]
+                    """)
     PageResponse<PetTypeResponse> getPetTypeList(
             @RequestParam(required = false, value = "search", defaultValue = "")
             String search,

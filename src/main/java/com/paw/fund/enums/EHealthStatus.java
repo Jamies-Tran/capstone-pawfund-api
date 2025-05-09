@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Objects;
+import java.util.stream.Stream;
+
 @Getter
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -24,10 +27,18 @@ public enum EHealthStatus {
     DISABLE("DISABLE", "Bị khuyết tật"),
     CRITICAL_CONDITION("CRITICAL_CONDITION", "Tình trạng nguy kịch"),
     DYING("DYING", "Hấp hối"),
-    DECEASED("DECEASED", "Đã chết"),;
+    DECEASED("DECEASED", "Đã chết"),
+    NONE("NONE", "");
 
 
     String code;
 
     String name;
+
+    public static EHealthStatus getValueOf(String code) {
+        return Stream.of(values())
+                .filter(healthStatus -> Objects.equals(healthStatus.getCode(), code))
+                .findAny()
+                .orElse(EHealthStatus.NONE);
+    }
 }

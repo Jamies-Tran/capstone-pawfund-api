@@ -2,7 +2,7 @@ package com.paw.fund.app.modules.category_management.service.license.status;
 
 import com.paw.fund.app.modules.category_management.domain.LicenseStatusCategory;
 import com.paw.fund.app.modules.category_management.domain.usecase.CategorySearch;
-import com.paw.fund.app.modules.category_management.service.usecase.ILicenseStatusCategoryUseCase;
+import com.paw.fund.app.modules.category_management.service.license.status.usecase.ILicenseStatusCategoryUseCase;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
