@@ -12,7 +12,8 @@ public interface IPetActivityLogRepository extends JpaRepository<PetActivityLogE
     @Query("""
         SELECT pal
         FROM PetActivityLogEntity pal
-        WHERE (pal.createdAt BETWEEN :#{#searchCriteria.timeRange().get(0)} AND :#{#searchCriteria.timeRange().get(0)})
+        WHERE (pal.petId = :#{#searchCriteria.petId()})
+            AND (pal.createdAt BETWEEN :#{#searchCriteria.timeRange().get(0)} AND :#{#searchCriteria.timeRange().get(1)})
             AND (:#{#searchCriteria.isAccountSearchNullOrEmpty()} = TRUE
                 OR pal.createdByName ILIKE %:#{#searchCriteria.accountSearch()}%)
             AND (:#{#searchCriteria.isDescriptionSearchNullOrEmpty()} = TRUE

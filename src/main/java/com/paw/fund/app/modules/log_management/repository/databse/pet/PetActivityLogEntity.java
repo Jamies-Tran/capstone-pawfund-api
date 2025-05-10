@@ -19,7 +19,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table
+@Table(name = "pet_activity_logs")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PetActivityLogEntity extends AuditableEntity {
     @Id

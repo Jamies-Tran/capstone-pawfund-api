@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @RequestMapping("/v1/public/pet-activity-log")
 @Tag(name = "Log V1", description = "QL nhật ký hoạt động")
 public interface IPetActivityLogV1PubAPI {
-    @GetMapping
+    @GetMapping("/{petId}")
     @Operation(
             summary = "Xem danh sách nhật ký hoạt động của pet",
             description = """
@@ -23,6 +24,9 @@ public interface IPetActivityLogV1PubAPI {
                     - [USER - Người dùng]
                     """)
     PageResponse<PetActivityLogResponse> getPetActivityLogList(
+            @PathVariable
+            Long petId,
+
             @RequestParam(required = false, value = "accountSearch", defaultValue = "")
             String accountSearch,
 

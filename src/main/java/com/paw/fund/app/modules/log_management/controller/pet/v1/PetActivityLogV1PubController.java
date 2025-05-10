@@ -36,13 +36,14 @@ public class PetActivityLogV1PubController implements IPetActivityLogV1PubAPI {
     String API_VERSION;
 
     @Override
-    public PageResponse<PetActivityLogResponse> getPetActivityLogList(String accountSearch,
+    public PageResponse<PetActivityLogResponse> getPetActivityLogList(Long petId,
+                                                                      String accountSearch,
                                                                       String descriptionSearch,
                                                                       List<LocalDateTime> timeRange,
                                                                       List<String> actionCodes,
                                                                       String sorter, Integer current, Integer pageSize) {
         PetActivityLogSearchCriteria searchCriteria = PetActivityLogSearchCriteria
-                .of(accountSearch, descriptionSearch, timeRange, actionCodes);
+                .of(petId, accountSearch, descriptionSearch, timeRange, actionCodes);
         PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSize, sorter);
         Page<PetActivityLogResponse> responses = useCase.getPetActivityLogList(PetActivityLogFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);

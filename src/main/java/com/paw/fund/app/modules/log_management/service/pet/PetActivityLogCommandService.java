@@ -19,10 +19,10 @@ public class PetActivityLogCommandService {
     @NonNull
     IPetActivityLogRepository repository;
 
-    @NonFinal
+    @NonNull
     IPetActivityLogMapper mapper;
 
-    @NonFinal
+    @NonNull
     IAuditableUseCase auditableUseCase;
 
     public void save(PetActivityLog petActivityLog) {

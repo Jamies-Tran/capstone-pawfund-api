@@ -10,16 +10,19 @@ import java.util.List;
 
 @Builder
 public record PetActivityLogSearchCriteria(
+        Long petId,
         String accountSearch,
         String descriptionSearch,
         List<LocalDateTime> timeRange,
         List<String> actionCodes
 ) {
-    public static PetActivityLogSearchCriteria of(String accountSearch,
+    public static PetActivityLogSearchCriteria of(Long petId,
+                                                  String accountSearch,
                                                   String descriptionSearch,
                                                   List<LocalDateTime> timeRange,
                                                   List<String> actionCodes) {
         return PetActivityLogSearchCriteria.builder()
+                .petId(petId)
                 .accountSearch(accountSearch)
                 .descriptionSearch(descriptionSearch)
                 .timeRange(ValidationUtil.validateNotNullOrDefaultTimeRange(timeRange))

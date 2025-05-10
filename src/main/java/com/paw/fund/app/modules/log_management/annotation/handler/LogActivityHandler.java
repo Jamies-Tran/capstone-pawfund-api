@@ -65,9 +65,9 @@ public class LogActivityHandler {
     }
 
     @AfterReturning(
-            returning = "result",
-            pointcut = "@annotation(com.paw.fund.app.modules.log_management.annotation.CreatePetActivityLogHelper)")
-    public void createPetActivityLogHelper(Object result, JoinPoint joinPoint) {
+            pointcut = "@annotation(com.paw.fund.app.modules.log_management.annotation.CreatePetActivityLogHelper)",
+            returning = "result")
+    public void createPetActivityLogHelper(JoinPoint joinPoint, Object result) {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         CreatePetActivityLogHelper annotation = methodSignature.getMethod()
                 .getAnnotation(CreatePetActivityLogHelper.class);
