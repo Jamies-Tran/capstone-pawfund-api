@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 @Service
@@ -13,6 +14,7 @@ public class PetStatusCategoryQueryService {
     public List<PetStatusCategory> findAll(String search) {
         return Stream.of(EPetStatus.values())
                 .map(PetStatusCategory::of)
+                .filter(x -> !Objects.equals(x, EPetStatus.NONE))
                 .filter(x -> {
                     if(StringUtils.hasText(search)) {
                         return x.name().toLowerCase().contains(search.toLowerCase());
