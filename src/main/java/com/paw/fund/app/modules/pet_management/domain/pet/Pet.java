@@ -1,7 +1,10 @@
 package com.paw.fund.app.modules.pet_management.domain.pet;
 
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
+import com.paw.fund.app.modules.pet_management.domain.breed.PetBreed;
 import com.paw.fund.app.modules.pet_management.domain.pet.hobby.PetHobby;
+import com.paw.fund.app.modules.pet_management.domain.type.PetType;
+import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeList;
 import lombok.Builder;
 import lombok.With;
 
@@ -13,7 +16,9 @@ public record Pet(
         Long petId,
         Long shelterId,
         Long petBreedId,
+        @With PetBreed petBreed,
         Long petTypeId,
+        @With PetType petType,
         @With String petCode,
         String petName,
         String colorCode,
@@ -25,6 +30,8 @@ public record Pet(
         LocalDate receivedAt,
         @With List<PetHobby> hobbies,
         @With List<CommonMedia> medias,
+        @With String receiveSourceCode,
+        @With String receiveSourceName,
         String statusCode,
         String statusName
 ) {

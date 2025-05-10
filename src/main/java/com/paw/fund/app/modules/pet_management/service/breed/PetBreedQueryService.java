@@ -13,6 +13,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -32,5 +34,11 @@ public class PetBreedQueryService {
     public Page<PetBreed> findAll(PetBreedSearchCriteria searchCriteria, PageRequestCustom pageRequestCustom) {
         return repository.findAll(searchCriteria, pageRequestCustom.pageRequest())
                 .map(mapper::toDto);
+    }
+
+    public List<PetBreed> findAllByPetBreedIdIn(List<Long> petBreedIds) {
+        return repository.findAllByPetBreedIdIn(petBreedIds).stream()
+                .map(mapper::toDto)
+                .toList();
     }
 }

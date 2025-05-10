@@ -47,4 +47,6 @@ public interface IPetTypeRepository extends JpaRepository<PetTypeEntity, Long> {
             AND p.petTypeCode IN :petTypeCodes
     """)
     Boolean existsByStatusCodeNotDeletedAndPetTypeCodeIn(List<String> petTypeCodes);
+
+    List<PetTypeEntity> findAllByPetTypeIdIn(List<Long> petTypeIds);
 }

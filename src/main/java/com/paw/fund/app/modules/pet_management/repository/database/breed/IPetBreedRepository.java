@@ -49,4 +49,6 @@ public interface IPetBreedRepository extends JpaRepository<PetBreedEntity, Long>
             AND p.breedCode IN :breedCodes
     """)
     Boolean existsByStatusCodeNotDeletedAndBreedCodeIn(List<String> breedCodes);
+
+    List<PetBreedEntity> findAllByPetBreedIdIn(List<Long> petBreedIds);
 }

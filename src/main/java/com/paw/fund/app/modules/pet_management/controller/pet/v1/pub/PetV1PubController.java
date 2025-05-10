@@ -50,6 +50,7 @@ public class PetV1PubController implements IPetV1PubAPI {
                                                 List<String> petBreedCodes,
                                                 List<String> petHobbyCodes,
                                                 List<String> statusCodes,
+                                                List<String> receiveSourceCodes,
                                                 String sorter, Integer current, Integer pageSized) {
         PetSearchCriteria searchCriteria = PetSearchCriteria.of(
                 search,
@@ -60,7 +61,8 @@ public class PetV1PubController implements IPetV1PubAPI {
                 petTypeCodes,
                 petBreedCodes,
                 petHobbyCodes,
-                statusCodes);
+                statusCodes,
+                receiveSourceCodes);
         PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSized, sorter);
         Page<PetResponse> responses = useCase.getPetList(PetFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);
