@@ -3,6 +3,7 @@ package com.paw.fund.app.modules.pet_management.service.pet;
 import com.paw.fund.app.modules.log_management.annotation.CreatePetActivityLogHelper;
 import com.paw.fund.app.modules.pet_management.aspect.CreatePetHelper;
 import com.paw.fund.app.modules.pet_management.aspect.GetPetDetailHelper;
+import com.paw.fund.app.modules.pet_management.aspect.GetPetListHelper;
 import com.paw.fund.app.modules.pet_management.aspect.UpdatePetHelper;
 import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
 import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetFilter;
@@ -11,6 +12,7 @@ import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetUpdate;
 import com.paw.fund.app.modules.pet_management.service.pet.usecase.IPetUseCase;
 import com.paw.fund.enums.EPetAction;
 import com.paw.fund.enums.EPetStatus;
+import com.paw.fund.enums.EReceiveSource;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +38,11 @@ public class PetUseCaseService implements IPetUseCase {
     @CreatePetHelper
     @CreatePetActivityLogHelper(action = EPetAction.CREATED)
     public Pet createPet(Pet pet) {
-        return commandService.save(pet.withPetCode(UUID.randomUUID().toString()));
+        return commandService.save(
+                pet
+                        .withPetCode(UUID.randomUUID().toString())
+                        .withReceiveSourceCode(EReceiveSource.STAFF.getCode())
+                        .withReceiveSourceName(EReceiveSource.STAFF.getName()));
     }
 
     @Override
@@ -54,6 +60,7 @@ public class PetUseCaseService implements IPetUseCase {
     }
 
     @Override
+    @GetPetListHelper
     public Page<Pet> getPetList(PetFilter filter) {
         return queryService.findAll(filter.searchCriteria(), filter.pageRequestCustom());
     }

@@ -65,6 +65,12 @@ public class PetEntity extends AuditableEntity {
     LocalDate receivedAt;
 
     @Column
+    String receiveSourceCode;
+
+    @Column
+    String receiveSourceName;
+
+    @Column
     String statusCode;
 
     @Column

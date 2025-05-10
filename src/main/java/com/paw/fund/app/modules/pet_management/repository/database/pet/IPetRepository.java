@@ -40,6 +40,8 @@ public interface IPetRepository extends JpaRepository<PetEntity, Long> {
                 OR pt.petTypeCode IN :#{#searchCriteria.petTypeCodes()})
             AND (:#{#searchCriteria.isPetBreedCodesNullOrEmpty()} = TRUE
                 OR pb.breedCode IN :#{#searchCriteria.petBreedCodes()})
+            AND (:#{#searchCriteria.isReceiveSourceCodesNullOrEmpty()} = TRUE
+                OR p.receiveSourceCode IN :#{#searchCriteria.receiveSourceCodes()})
             AND (:#{#searchCriteria.isPetHobbyCodesNullOrEmpty()} = TRUE
                 OR EXISTS 
                 (

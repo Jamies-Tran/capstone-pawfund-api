@@ -20,7 +20,8 @@ public record PetSearchCriteria(
         List<String> petTypeCodes,
         List<String> petBreedCodes,
         List<String> petHobbyCodes,
-        List<String> statusCodes
+        List<String> statusCodes,
+        List<String> receiveSourceCodes
 ) {
     public static PetSearchCriteria of(String search,
                                        Long shelterId,
@@ -30,7 +31,8 @@ public record PetSearchCriteria(
                                        List<String> petTypeCodes,
                                        List<String> petBreedCodes,
                                        List<String> petHobbyCodes,
-                                       List<String> statusCodes) {
+                                       List<String> statusCodes,
+                                       List<String> receiveSourceCodes) {
         return PetSearchCriteria.builder()
                 .search(search)
                 .shelterId(shelterId)
@@ -41,6 +43,7 @@ public record PetSearchCriteria(
                 .petBreedCodes(petBreedCodes)
                 .petHobbyCodes(petHobbyCodes)
                 .statusCodes(statusCodes)
+                .receiveSourceCodes(receiveSourceCodes)
                 .build();
     }
 
@@ -74,6 +77,10 @@ public record PetSearchCriteria(
 
     public Boolean isPetHobbyCodesNullOrEmpty() {
         return CollectionUtils.isEmpty(petHobbyCodes);
+    }
+
+    public Boolean isReceiveSourceCodesNullOrEmpty() {
+        return CollectionUtils.isEmpty(receiveSourceCodes);
     }
 
     public LocalDate getReceivedAtMin() {

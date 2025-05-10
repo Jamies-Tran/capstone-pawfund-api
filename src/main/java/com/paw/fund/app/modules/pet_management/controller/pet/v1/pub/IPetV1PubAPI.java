@@ -51,6 +51,9 @@ public interface IPetV1PubAPI {
             @RequestParam(required = false, value = "statusCodes", defaultValue = "")
             List<String> statusCodes,
 
+            @RequestParam(required = false, value = "receiveSourceCodes", defaultValue = "")
+            List<String> receiveSourceCodes,
+
             @RequestParam(required = false, value = "sorter", defaultValue = "petName")
             String sorter,
 
