@@ -31,7 +31,8 @@ spring:
           auth: true
           starttls:
             enable: true
-
+  profiles:
+    active: dev
 app:
   version: v1.4.0
   access-token:
