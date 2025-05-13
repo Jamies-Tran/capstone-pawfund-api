@@ -1,6 +1,6 @@
-package com.paw.fund.app.modules.shelter_management.repository.feign;
+package com.paw.fund.app.modules.map_management.repository.feign;
 
-import com.paw.fund.app.modules.shelter_management.repository.feign.data.PlaceDetail;
+import com.paw.fund.app.modules.map_management.repository.feign.data.PlaceDetail;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;

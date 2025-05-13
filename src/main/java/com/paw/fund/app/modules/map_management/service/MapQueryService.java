@@ -1,7 +1,7 @@
-package com.paw.fund.app.modules.shelter_management.service.map;
+package com.paw.fund.app.modules.map_management.service;
 
-import com.paw.fund.app.modules.shelter_management.repository.feign.IMapServicePlaceHolder;
-import com.paw.fund.app.modules.shelter_management.repository.feign.data.PlaceDetail;
+import com.paw.fund.app.modules.map_management.repository.feign.IMapServicePlaceHolder;
+import com.paw.fund.app.modules.map_management.repository.feign.data.PlaceDetail;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class ShelterMapQueryService {
+public class MapQueryService {
     @NonNull
     IMapServicePlaceHolder placeHolder;
 

@@ -8,6 +8,6 @@ public class ResourceNotValidException extends RuntimeException {
     }
 
     public ResourceNotValidException() {
-        super("Tài nguyên không hợp lệ");
+        super("yêu cầu không thể thực hiện");
     }
 }

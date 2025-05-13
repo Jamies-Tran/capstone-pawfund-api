@@ -5,6 +5,9 @@ import com.paw.fund.app.modules.account_management.service.account.AccountQueryS
 import com.paw.fund.app.modules.form_management.service.form.reply.FormReplyQueryService;
 import com.paw.fund.app.modules.mail_management.domain.MailSender;
 import com.paw.fund.app.modules.mail_management.service.MailSenderCommandService;
+import com.paw.fund.app.modules.map_management.repository.feign.data.PlaceComponent;
+import com.paw.fund.app.modules.map_management.repository.feign.data.PlaceDetail;
+import com.paw.fund.app.modules.map_management.service.MapQueryService;
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaCommandService;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaQueryService;
@@ -16,10 +19,7 @@ import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterActive;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationCreate;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationFilter;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationNotification;
-import com.paw.fund.app.modules.shelter_management.repository.feign.data.PlaceComponent;
-import com.paw.fund.app.modules.shelter_management.repository.feign.data.PlaceDetail;
 import com.paw.fund.app.modules.shelter_management.service.ShelterQueryService;
-import com.paw.fund.app.modules.shelter_management.service.map.ShelterMapQueryService;
 import com.paw.fund.app.modules.shelter_management.service.registration.ShelterRegistrationCommandService;
 import com.paw.fund.app.modules.shelter_management.service.registration.ShelterRegistrationQueryService;
 import com.paw.fund.app.modules.shelter_management.service.registration.ShelterRegistrationUseCaseService;
@@ -77,7 +77,7 @@ public class ShelterAspectHandler {
     MailSenderCommandService mailSenderCommandService;
 
     @NonNull
-    ShelterMapQueryService mapQueryService;
+    MapQueryService mapQueryService;
 
     @NonNull
     CommonMediaCommandService mediaCommandService;
