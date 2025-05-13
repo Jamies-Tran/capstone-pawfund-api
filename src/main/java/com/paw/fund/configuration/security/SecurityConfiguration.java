@@ -49,6 +49,7 @@ public class SecurityConfiguration {
         cors.addAllowedHeader("*");
         cors.addAllowedMethod("*");
         cors.addAllowedOrigin("*");
+        cors.addAllowedHeader("X-Delete-Key");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cors);
 
@@ -87,7 +88,9 @@ public class SecurityConfiguration {
                         AntPathRequestMatcher.antMatcher("/pawfund-sockjs/**"),
                         AntPathRequestMatcher.antMatcher("/test.html"),
                         AntPathRequestMatcher.antMatcher("/test-2.html"),
-                        AntPathRequestMatcher.antMatcher("/test-mail.html")).permitAll())
+                        AntPathRequestMatcher.antMatcher("/test-mail.html"),
+                        AntPathRequestMatcher.antMatcher("/test-pet-intake-reg.html"),
+                        AntPathRequestMatcher.antMatcher("/test-pet-intake-reg-2.html")).permitAll())
                 .authorizeHttpRequests(httpAuthorization -> httpAuthorization.anyRequest().authenticated())
                 .exceptionHandling(excHandler -> excHandler.authenticationEntryPoint(authenticationEntryPoint))
                 .build();

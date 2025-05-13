@@ -1,4 +1,4 @@
-package com.paw.fund.app.modules.shelter_management.repository.feign.data;
+package com.paw.fund.app.modules.map_management.repository.feign.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;

@@ -33,7 +33,7 @@ spring:
             enable: true
 
 app:
-  version: v1.4.1
+  version: v1.5.0
   access-token:
     secret-key: ftoLRVxHq82BzLq3stXhnOJRo4azrVab
     expired-duration: 4320
@@ -48,3 +48,7 @@ app:
     domain: https://rsapi.goong.io
     autocomplete: /Place/AutoComplete
     geocode: /geocode
+  websocket:
+    pet-intake-registration:
+      admin:
+        topic: /topic/pet-intake-registration/new

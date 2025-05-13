@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MapUseCaseService implements IMapUseCase {
     @NonNull
-    MapQueryService queryService;
+    MapCategoryQueryService queryService;
 
     @Override
     public Prediction predictPlaceList(CategorySearch categorySearch) {

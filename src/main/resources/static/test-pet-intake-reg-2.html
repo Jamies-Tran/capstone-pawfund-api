@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>STOMP WebSocket Test Client</title>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+  <h2>STOMP WebSocket Test Client</h2>
+
+  <h1>Login</h1>
+  <input type="text" id="email"/>
+  <br/><br/>
+
+  <input type="text" id="password"/>
+  <br/><br/>
+
+  <input type="text" id="phone"/>
+  <br/><br/>
+
+  <label>WebSocket URL: <input type="text" id="wsUrl" value="http://localhost:8080/pawfund-sockjs" size="40"/></label>
+  <button onclick="connect()">Connect</button>
+  <br/><br/>
+
+  <label>Subscribe Topic: <input type="text" id="subscribeTopic" value="/topic/pet-intake-registration/detail"/></label>
+  <button onclick="subscribe()">Subscribe</button>
+  <br/><br/>
+
+  <label>Send Destination: <input type="text" id="sendDestination" value="/app/topic/pet-intake-registration/detail"/></label><br/>
+  <label>Message Body (JSON):</label><br/>
+  <button onclick="sendMessage()">Send Message</button>
+
+  <hr/>
+
+  <h3>Received Messages:</h3>
+  <pre id="messages" style="background: #f4f4f4; padding: 10px; border: 1px solid #ccc; max-height: 300px; overflow-y: scroll;"></pre>
+
+  <script>
+    let stompClient = null;
+
+    function connect(options) {
+      const wsUrl = document.getElementById("wsUrl").value;
+      const subscribeTopic = document.getElementById("subscribeTopic").value;
+
+      const socket = new SockJS(wsUrl);
+      socket.debug = console.log;
+      stompClient = Stomp.over(socket);
+      stompClient.connect({}, function (frame) {
+
+        log("✅ Connected: " + frame);
+        stompClient.subscribe(
+                subscribeTopic,
+                function (message) {
+                  const notification = JSON.parse(message.body);
+                  log2(notification);
+                  console.log(notification);
+                },
+                {}
+        );
+      }, function (error) {
+        log("❌ Error: " + error);
+      });
+    }
+
+    function sendMessage() {
+      const phone = document.getElementById("phone").value;
+      const destination = document.getElementById("sendDestination").value;
+      stompClient.send(
+              destination,
+              {},
+              phone
+      ), function (error) {
+        log("❌ Error: " + error);
+      };
+    }
+
+    function log(message) {
+      const messages = document.getElementById('messages');
+      messages.textContent += message + "\n";
+    }
+
+    function log2(message) {
+      const messages = document.getElementById('messages');
+      messages.textContent += `\nRequest ID: ${message.petIntakeRegistrationId}` + "\n";
+      messages.textContent += `\nRequest ID: ${message.petTypeId}` + "\n";
+      messages.textContent += `\nRequest ID: ${message.informerPhone}` + "\n";
+      messages.textContent += `\nRequest ID: ${message.petDescription}` + "\n";
+      messages.textContent += `\nRequest ID: ${message.reasonTypeCode}` + "\n";
+      messages.textContent += `\nRequest ID: ${message.reasonTypeName}` + "\n";
+      messages.textContent += `Address: ${message.address}` + "\n";
+      messages.textContent += `Address: ${message.latitude}` + "\n";
+      messages.textContent += `Address: ${message.longitude}` + "\n";
+      messages.textContent += `Status: ${message.statusCode}` + "\n";
+      messages.textContent += `Status: ${message.statusName}` + "\n";
+      messages.textContent += "\n"
+    }
+  </script>
+</body>
+</html>
