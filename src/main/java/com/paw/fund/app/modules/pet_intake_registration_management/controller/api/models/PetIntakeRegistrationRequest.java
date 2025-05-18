@@ -12,6 +12,7 @@ public record PetIntakeRegistrationRequest(
         Long petTypeId,
         @NotNull(message = "Vui lòng thêm thông tin vị trí yêu cầu đăng ký tiếp nhận thú cưng")
         String placeId,
+        @NotNull(message = "Vui lòng nhập số điện thoại của người thông báo")
         String informerPhone,
         String petDescription,
         @NotNull(message = "Vui lòng thêm mã lý do gửi đăng ký tiếp nhận thú cưng")

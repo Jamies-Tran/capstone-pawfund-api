@@ -22,6 +22,7 @@ public record ShelterResponse(
         String province,
         BigDecimal latitude,
         BigDecimal longitude,
+        BigDecimal distance,
         String statusCode,
         String statusName,
         List<ShelterMediaResponse> medias

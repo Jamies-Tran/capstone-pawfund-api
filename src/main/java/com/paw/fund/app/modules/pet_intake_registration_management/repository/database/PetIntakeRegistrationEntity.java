@@ -33,9 +33,6 @@ public class PetIntakeRegistrationEntity extends AuditableEntity {
     Long petIntakeRegistrationId;
 
     @Column
-    Long accountId;
-
-    @Column
     Long petTypeId;
 
     @Column
@@ -58,6 +55,9 @@ public class PetIntakeRegistrationEntity extends AuditableEntity {
 
     @Column
     BigDecimal longitude;
+
+    @Column
+    String canceledReason;
 
     @Column
     String statusCode;

@@ -23,11 +23,11 @@
   <button onclick="connect()">Connect</button>
   <br/><br/>
 
-  <label>Subscribe Topic: <input type="text" id="subscribeTopic" value="/topic/pet-intake-registration/detail"/></label>
+  <label>Subscribe Topic: <input type="text" id="subscribeTopic" value="/topic/pet-intake-registration"/></label>
   <button onclick="subscribe()">Subscribe</button>
   <br/><br/>
 
-  <label>Send Destination: <input type="text" id="sendDestination" value="/app/topic/pet-intake-registration/detail"/></label><br/>
+  <label>Send Destination: <input type="text" id="sendDestination" value="/app/topic/pet-intake-registration"/></label><br/>
   <label>Message Body (JSON):</label><br/>
   <button onclick="sendMessage()">Send Message</button>
 
@@ -42,6 +42,7 @@
     function connect(options) {
       const wsUrl = document.getElementById("wsUrl").value;
       const subscribeTopic = document.getElementById("subscribeTopic").value;
+      const phone = document.getElementById("phone").value;
 
       const socket = new SockJS(wsUrl);
       socket.debug = console.log;
@@ -50,11 +51,11 @@
 
         log("✅ Connected: " + frame);
         stompClient.subscribe(
-                subscribeTopic,
+                `${subscribeTopic}/${phone}`,
                 function (message) {
                   const notification = JSON.parse(message.body);
-                  log2(notification);
                   console.log(notification);
+                  log2(notification);
                 },
                 {}
         );
@@ -67,9 +68,8 @@
       const phone = document.getElementById("phone").value;
       const destination = document.getElementById("sendDestination").value;
       stompClient.send(
-              destination,
-              {},
-              phone
+              `${destination}/${phone}`,
+              {}
       ), function (error) {
         log("❌ Error: " + error);
       };

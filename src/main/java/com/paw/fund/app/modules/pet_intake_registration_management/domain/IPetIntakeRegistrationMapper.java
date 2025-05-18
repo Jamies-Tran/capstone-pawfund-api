@@ -1,6 +1,7 @@
 package com.paw.fund.app.modules.pet_intake_registration_management.domain;
 
 import com.paw.fund.app.modules.pet_intake_registration_management.repository.database.PetIntakeRegistrationEntity;
+import com.paw.fund.app.modules.pet_intake_registration_management.repository.database.dao.PetIntakeRegistrationActionDAO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -17,4 +18,6 @@ public interface IPetIntakeRegistrationMapper {
     PetIntakeRegistrationEntity toEntity(PetIntakeRegistration dto);
 
     void update(@MappingTarget PetIntakeRegistrationEntity entity, PetIntakeRegistration dto);
+
+    PetIntakeRegistrationAction toDto(PetIntakeRegistrationActionDAO dao);
 }

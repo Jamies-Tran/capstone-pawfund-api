@@ -15,4 +15,6 @@ public interface IShelterUseCase {
     Page<Shelter> getShelterList(ShelterFilter shelterFilter);
 
     Shelter getShelterDetail(ShelterId shelterId);
+
+    Page<Shelter> getShelterDistanceList(ShelterFilter shelterFilter);
 }

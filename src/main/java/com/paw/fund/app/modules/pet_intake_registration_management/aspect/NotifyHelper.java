@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 public @interface NotifyHelper {
     String appDestination() default "";
 
-    String[] multiAppDestinations() default "";
+    String variableDestination() default "";
 
     String userDestination() default "";
 }

@@ -19,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,10 +39,13 @@ public class ShelterV2PubController implements IShelterV2PubAPI {
 
     @Override
     public PageResponse<ShelterResponse> getShelterList(String search,
+                                                        BigDecimal latitude,
+                                                        BigDecimal longitude,
+                                                        BigDecimal radius,
                                                         List<LocalDateTime> timeRange,
                                                         String sorter, Integer current, Integer pageSize) {
         ShelterSearchCriteria searchCriteria = ShelterSearchCriteria
-                .of(search, List.of(EShelterStatus.ENABLE.getCode()), timeRange);
+                .of(search, latitude, longitude, radius, List.of(EShelterStatus.ENABLE.getCode()), timeRange);
         PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSize, sorter);
         Page<ShelterResponse> responses = useCase.getShelterList(ShelterFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);

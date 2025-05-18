@@ -16,6 +16,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
@@ -46,10 +47,10 @@ public class PetIntakeRegistrationWebSocket {
         MessageTemplateHandler.sendToTopic("/topic/pet-intake-registration/new", notifications);
     }
 
-    @MessageMapping("/topic/pet-intake-registration/detail")
-    public void getPetIntakeRegistrationDetail(@Payload String phone) {
-        PetIntakeRegistration petIntakeRegistration = useCase
-                .getPetIntakeRegistrationDetail(PetIntakeRegistrationInformerPhone.of(phone));
-        MessageTemplateHandler.sendToTopic("/topic/pet-intake-registration/detail", petIntakeRegistration);
+    @MessageMapping("/topic/pet-intake-registration/{informerPhone}")
+    public void getPetIntakeRegistrationDetail(@DestinationVariable String informerPhone) {
+        List<PetIntakeRegistration> petIntakeRegistration = useCase
+                .getPetIntakeRegistrationListByInformerPhone(PetIntakeRegistrationInformerPhone.of(informerPhone));
+        MessageTemplateHandler.sendToTopic("/topic/pet-intake-registration/%s".formatted(informerPhone), petIntakeRegistration);
     }
 }

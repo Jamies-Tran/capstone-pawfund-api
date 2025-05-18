@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,6 +26,15 @@ public interface IShelterV2PubAPI {
     PageResponse<ShelterResponse> getShelterList(
             @RequestParam(required = false, value = "search", defaultValue = "")
             String search,
+
+            @RequestParam(required = false, value = "latitude", defaultValue = "0.0")
+            BigDecimal latitude,
+
+            @RequestParam(required = false, value = "longitude", defaultValue = "0.0")
+            BigDecimal longitude,
+
+            @RequestParam(required = false, value = "radius", defaultValue = "")
+            BigDecimal radius,
 
             @RequestParam(required = false, value = "timeRange", defaultValue = "")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

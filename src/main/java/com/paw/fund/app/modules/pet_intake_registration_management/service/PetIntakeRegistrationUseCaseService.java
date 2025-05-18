@@ -7,12 +7,14 @@ import com.paw.fund.app.modules.pet_intake_registration_management.aspect.GetPet
 import com.paw.fund.app.modules.pet_intake_registration_management.aspect.NotifyHelper;
 import com.paw.fund.app.modules.pet_intake_registration_management.aspect.UpdatePetIntakeRegistrationHelper;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.PetIntakeRegistration;
+import com.paw.fund.app.modules.pet_intake_registration_management.domain.usecase.PetIntakeRegistrationCancel;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.usecase.PetIntakeRegistrationDelete;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.usecase.PetIntakeRegistrationFilter;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.usecase.PetIntakeRegistrationId;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.usecase.PetIntakeRegistrationInformerPhone;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.usecase.PetIntakeRegistrationUpdate;
 import com.paw.fund.app.modules.pet_intake_registration_management.service.usecase.IPetIntakeRegistrationUseCase;
+import com.paw.fund.enums.EPetIntakeRegistrationStatus;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,8 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +51,7 @@ public class PetIntakeRegistrationUseCaseService implements IPetIntakeRegistrati
     }
 
     @Override
-    public PetIntakeRegistration getPetIntakeRegistrationDetail(PetIntakeRegistrationInformerPhone petIntakeRegistrationInformerPhone) {
+    public List<PetIntakeRegistration> getPetIntakeRegistrationListByInformerPhone(PetIntakeRegistrationInformerPhone petIntakeRegistrationInformerPhone) {
         return queryService.findByPetIntakeRegistrationInformerPhone(petIntakeRegistrationInformerPhone.value());
     }
 
@@ -73,5 +77,29 @@ public class PetIntakeRegistrationUseCaseService implements IPetIntakeRegistrati
         commandService.deleteWithVerificationByPhone(
                 petIntakeRegistrationDelete.petIntakeRegistrationId(),
                 petIntakeRegistrationDelete.phone());
+    }
+
+    @Override
+    @Transactional
+    @NotifyHelper(appDestination = "/topic/pet-intake-registration/new", variableDestination = "/topic/pet-intake-registration")
+    public PetIntakeRegistration processPetIntakeRegistration(PetIntakeRegistrationId petIntakeRegistrationId) {
+        return commandService.updateStatus(petIntakeRegistrationId.value(), EPetIntakeRegistrationStatus.PROCESSING, null);
+    }
+
+    @Override
+    @Transactional
+    @NotifyHelper(appDestination = "/topic/pet-intake-registration/new", variableDestination = "/topic/pet-intake-registration")
+    public PetIntakeRegistration cancelPetIntakeRegistration(PetIntakeRegistrationCancel petIntakeRegistrationCancel) {
+        return commandService.updateStatus(
+                petIntakeRegistrationCancel.petIntakeRegistrationId(),
+                EPetIntakeRegistrationStatus.CANCEL,
+                petIntakeRegistrationCancel.canceledReason());
+    }
+
+    @Override
+    @Transactional
+    @NotifyHelper(appDestination = "/topic/pet-intake-registration/new", variableDestination = "/topic/pet-intake-registration")
+    public PetIntakeRegistration finishPetIntakeRegistration(PetIntakeRegistrationId petIntakeRegistrationId) {
+        return commandService.updateStatus(petIntakeRegistrationId.value(), EPetIntakeRegistrationStatus.FINISHED, null);
     }
 }

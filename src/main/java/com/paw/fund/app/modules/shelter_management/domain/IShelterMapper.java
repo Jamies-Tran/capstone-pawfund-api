@@ -1,6 +1,7 @@
 package com.paw.fund.app.modules.shelter_management.domain;
 
 import com.paw.fund.app.modules.shelter_management.repository.database.ShelterEntity;
+import com.paw.fund.app.modules.shelter_management.repository.database.dao.ShelterDAO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -15,6 +16,8 @@ public interface IShelterMapper {
     ShelterEntity toEntity(Shelter dto);
 
     Shelter toDto(ShelterEntity entity);
+
+    Shelter toDto(ShelterDAO dao);
 
     void update(@MappingTarget ShelterEntity entity, Shelter shelter);
 }
