@@ -126,6 +126,11 @@ public class ShelterUseCaseService implements IShelterUseCase {
         return queryService.findById(shelterId.value());
     }
 
+    @Override
+    public Page<Shelter> getShelterDistanceList(ShelterFilter shelterFilter) {
+        return queryService.findAllDistance(shelterFilter.searchCriteria(), shelterFilter.pageRequestCustom());
+    }
+
     private void validateActiveShelter(Long shelterId) {
         if(!shelterRegistrationQueryService.existsApprovedShelterRegistrationByShelterId(shelterId)) {
             throw new RequestNotAvailable("Yêu cầu chưa được duyệt");

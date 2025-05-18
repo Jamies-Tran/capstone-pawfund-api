@@ -19,6 +19,7 @@ public record Shelter(
         LocalDateTime dateOfPub,
         String email,
         String hotline,
+        @With BigDecimal distance,
         @With List<CommonMedia> medias,
         @With String address,
         @With String ward,

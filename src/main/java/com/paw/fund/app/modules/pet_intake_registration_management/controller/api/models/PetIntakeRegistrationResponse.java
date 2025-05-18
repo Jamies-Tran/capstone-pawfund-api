@@ -1,6 +1,7 @@
 package com.paw.fund.app.modules.pet_intake_registration_management.controller.api.models;
 
 import com.paw.fund.app.modules.media_management.domain.verification.VerificationMedia;
+import com.paw.fund.app.modules.pet_intake_registration_management.domain.PetIntakeRegistrationAction;
 import com.paw.fund.app.modules.pet_management.domain.type.PetType;
 import lombok.Builder;
 
@@ -14,6 +15,7 @@ public record PetIntakeRegistrationResponse(
         Long accountId,
         Long petTypeId,
         PetType petType,
+        String informerPhone,
         String petDescription,
         String reasonTypeCode,
         String reasonTypeName,
@@ -21,10 +23,12 @@ public record PetIntakeRegistrationResponse(
         BigDecimal latitude,
         BigDecimal longitude,
         List<VerificationMedia> medias,
+        String canceledReason,
         String statusCode,
         String statusName,
         LocalDateTime createdAt,
         Long createdById,
-        String createdByName
+        String createdByName,
+        PetIntakeRegistrationActionResponse action
 ) {
 }

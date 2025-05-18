@@ -18,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,6 +45,26 @@ public class ShelterV1Controller implements IShelterV1API {
         ShelterSearchCriteria searchCriteria = ShelterSearchCriteria.of(search, statusCodes, timeRange);
         PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSize, sorter);
         Page<ShelterResponse> responses = useCase.getShelterList(ShelterFilter.of(searchCriteria, pageRequestCustom))
+                .map(modelMapper::toResponse);
+
+        return PageResponse.success(
+                responses.getContent(),
+                Meta.of(responses),
+                HttpStatus.OK,
+                API_VERSION);
+    }
+
+    @Override
+    public PageResponse<ShelterResponse> getShelterDistanceList(String search,
+                                                                BigDecimal latitude,
+                                                                BigDecimal longitude,
+                                                                BigDecimal radius,
+                                                                List<String> statusCodes,
+                                                                List<LocalDateTime> timeRange,
+                                                                String sorter, Integer current, Integer pageSize) {
+        ShelterSearchCriteria searchCriteria = ShelterSearchCriteria.of(search, latitude, longitude, radius, statusCodes, timeRange);
+        PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSize);
+        Page<ShelterResponse> responses = useCase.getShelterDistanceList(ShelterFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);
 
         return PageResponse.success(

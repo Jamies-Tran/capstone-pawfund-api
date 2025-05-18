@@ -3,6 +3,7 @@ package com.paw.fund.app.modules.pet_intake_registration_management.service;
 import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.IPetIntakeRegistrationMapper;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.PetIntakeRegistration;
+import com.paw.fund.app.modules.pet_intake_registration_management.domain.PetIntakeRegistrationAction;
 import com.paw.fund.app.modules.pet_intake_registration_management.repository.database.IPetIntakeRegistrationRepository;
 import com.paw.fund.app.modules.pet_intake_registration_management.repository.database.PetIntakeRegistrationEntity;
 import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
@@ -64,6 +65,8 @@ public class PetIntakeRegistrationCommandService {
     }
 
     public void deleteWithVerificationByPhone(Long petIntakeRegistrationId, String phone) {
+        ValidationUtil.validateArgumentNotNull(petIntakeRegistrationId);
+        ValidationUtil.validateArgumentNotNull(phone);
         repository.findByStatusCodeNotDeletedAndPetIntakeRegistrationId(petIntakeRegistrationId)
                 .ifPresentOrElse(
                         x -> {
@@ -85,6 +88,50 @@ public class PetIntakeRegistrationCommandService {
             throw new ResourceNotValidException();
         } else if(!Objects.equals(existedPetIntakeRegistration.getInformerPhone(), phone)) {
             throw new AuthenticationException("Hiện tại bạn không thể sử dụng tính năng này");
+        }
+    }
+
+    public PetIntakeRegistration updateStatus(Long petIntakeRegistrationId, EPetIntakeRegistrationStatus status, String canceledReason) {
+        ValidationUtil.validateArgumentNotNull(petIntakeRegistrationId);
+        ValidationUtil.validateArgumentNotNull(status);
+
+        return repository.findByStatusCodeNotDeletedAndPetIntakeRegistrationId(petIntakeRegistrationId)
+                .map(x -> {
+                    validateBaseStatusAction(x.getPetIntakeRegistrationId(), status);
+                    x.setStatusCode(status.getCode());
+                    x.setStatusName(status.getName());
+                    x.setCanceledReason(canceledReason);
+                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
+                    PetIntakeRegistrationEntity updatedPetIntakeRegistration = repository.save(x);
+
+                    return mapper.toDto(updatedPetIntakeRegistration);
+                })
+                .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    private void validateBaseStatusAction(Long petIntakeRegistrationId, EPetIntakeRegistrationStatus status) {
+        PetIntakeRegistrationAction action = repository.findPetIntakeRegistrationActionById(petIntakeRegistrationId)
+                .map(mapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
+
+        switch (status) {
+            case PROCESSING -> {
+                if (!action.allowProcess()) {
+                    throw new ResourceNotValidException();
+                }
+            }
+
+            case CANCEL -> {
+                if (!action.allowCancel()) {
+                    throw new ResourceNotValidException();
+                }
+            }
+
+            case FINISHED -> {
+                if (!action.allowFinished()) {
+                    throw new ResourceNotValidException();
+                }
+            }
         }
     }
 }

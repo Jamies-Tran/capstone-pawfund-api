@@ -29,8 +29,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,8 +156,16 @@ public class PetIntakeAspectHandler {
             MessageTemplateHandler.sendToTopic(
                     notifyHelper.appDestination(),
                     PetIntakeRegistrationNotification.of(petIntakeRegistrations));
-        } else if(StringUtils.hasText(notifyHelper.userDestination())) {
+        }
 
+        if(StringUtils.hasText(notifyHelper.appDestination())) {
+            if(result instanceof PetIntakeRegistration petIntakeRegistration) {
+                String informerPhone = petIntakeRegistration.informerPhone();
+                String completeDestination = notifyHelper.appDestination().concat("/%s".formatted(informerPhone));
+                List<PetIntakeRegistration> petIntakeRegistrations = queryService
+                        .findByPetIntakeRegistrationInformerPhone(informerPhone);
+                MessageTemplateHandler.sendToTopic(completeDestination, petIntakeRegistrations);
+            }
         }
 
     }
