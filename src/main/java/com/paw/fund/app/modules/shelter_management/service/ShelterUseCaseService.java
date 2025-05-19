@@ -6,10 +6,11 @@ import com.paw.fund.app.modules.account_management.service.account.role.AccountR
 import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
 import com.paw.fund.app.modules.account_management.domain.role.Role;
 import com.paw.fund.app.modules.account_management.service.role.usecase.IRoleUseCase;
-import com.paw.fund.app.modules.shelter_management.annotation.AttachMedia;
-import com.paw.fund.app.modules.shelter_management.annotation.CreateShelterMedia;
-import com.paw.fund.app.modules.shelter_management.annotation.CreateShelterRegistration;
-import com.paw.fund.app.modules.shelter_management.annotation.UpdateLocation;
+import com.paw.fund.app.modules.shelter_management.aspect.AttachMedia;
+import com.paw.fund.app.modules.shelter_management.aspect.CreateShelterMedia;
+import com.paw.fund.app.modules.shelter_management.aspect.CreateShelterRegistration;
+import com.paw.fund.app.modules.shelter_management.aspect.GetShelterListHelper;
+import com.paw.fund.app.modules.shelter_management.aspect.UpdateLocation;
 import com.paw.fund.app.modules.shelter_management.domain.Shelter;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterActive;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterFilter;
@@ -109,13 +110,15 @@ public class ShelterUseCaseService implements IShelterUseCase {
         }
 
         return commandService.updateStatusAndAccountRoleIdAndDescription(
-                shelterActive.description(),
                 shelterActive.shelterId(),
                 accountRoleId,
+                shelterActive.description(),
+                shelterActive.maximumPetCapacity(),
                 EShelterStatus.ENABLE);
     }
 
     @Override
+    @GetShelterListHelper
     public Page<Shelter> getShelterList(ShelterFilter shelterFilter) {
         return queryService.findAll(shelterFilter.searchCriteria(), shelterFilter.pageRequestCustom());
     }

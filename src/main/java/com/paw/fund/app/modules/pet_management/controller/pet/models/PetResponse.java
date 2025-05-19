@@ -5,6 +5,7 @@ import com.paw.fund.app.modules.pet_management.controller.pet.models.medias.Comm
 import com.paw.fund.app.modules.pet_management.controller.type.models.PetTypeResponse;
 import lombok.Builder;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -29,6 +30,7 @@ public record PetResponse(
         List<CommonMediaResponse> medias,
         String receiveSourceCode,
         String receiveSourceName,
+        BigDecimal adoptionCost,
         String statusCode,
         String statusName
 ) {

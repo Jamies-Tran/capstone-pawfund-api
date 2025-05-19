@@ -1,4 +1,4 @@
-package com.paw.fund.app.modules.shelter_management.annotation;
+package com.paw.fund.app.modules.shelter_management.aspect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

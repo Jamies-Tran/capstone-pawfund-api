@@ -5,8 +5,8 @@ import com.paw.fund.app.modules.account_management.service.account.AccountQueryS
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
 import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
 import com.paw.fund.app.modules.account_management.domain.role.Role;
-import com.paw.fund.app.modules.shelter_management.annotation.PublishRegistration;
-import com.paw.fund.app.modules.shelter_management.annotation.SendMail;
+import com.paw.fund.app.modules.shelter_management.aspect.PublishRegistration;
+import com.paw.fund.app.modules.shelter_management.aspect.SendMail;
 import com.paw.fund.app.modules.shelter_management.domain.registration.ShelterRegistration;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationEmail;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationFilter;

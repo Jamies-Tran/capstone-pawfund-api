@@ -8,6 +8,7 @@ import com.paw.fund.app.modules.pet_management.domain.type.usecase.PetTypeList;
 import lombok.Builder;
 import lombok.With;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,6 +33,7 @@ public record Pet(
         @With List<CommonMedia> medias,
         @With String receiveSourceCode,
         @With String receiveSourceName,
+        BigDecimal adoptionCost,
         String statusCode,
         String statusName
 ) {

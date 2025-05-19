@@ -1,5 +1,6 @@
 package com.paw.fund.app.modules.shelter_management.controller.api.models;
 
+import com.paw.fund.app.modules.shelter_management.controller.api.models.pet.type.PetTypeResponse;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -23,6 +24,10 @@ public record ShelterResponse(
         BigDecimal latitude,
         BigDecimal longitude,
         BigDecimal distance,
+        Integer totalPets,
+        Integer maximumPetCapacity,
+        List<PetTypeResponse> petTypes,
+        Integer totalStaff,
         String statusCode,
         String statusName,
         List<ShelterMediaResponse> medias

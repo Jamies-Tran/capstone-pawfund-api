@@ -10,6 +10,8 @@ import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetFilter;
 import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetId;
 import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetUpdate;
 import com.paw.fund.app.modules.pet_management.service.pet.usecase.IPetUseCase;
+import com.paw.fund.app.modules.shelter_management.service.ShelterQueryService;
+import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.enums.EPetAction;
 import com.paw.fund.enums.EPetStatus;
 import com.paw.fund.enums.EReceiveSource;
@@ -31,6 +33,9 @@ public class PetUseCaseService implements IPetUseCase {
     PetCommandService commandService;
 
     @NonNull
+    ShelterQueryService shelterQueryService;
+
+    @NonNull
     PetQueryService queryService;
 
     @Override
@@ -38,6 +43,10 @@ public class PetUseCaseService implements IPetUseCase {
     @CreatePetHelper
     @CreatePetActivityLogHelper(action = EPetAction.CREATED)
     public Pet createPet(Pet pet) {
+        if(shelterQueryService.existsExceedPetMaximumCapacityByShelterId(pet.shelterId())) {
+            throw new ResourceNotValidException("Trung tâm cứu trợ không thể tiếp nhận thêm thú cưng");
+        }
+
         return commandService.save(
                 pet
                         .withPetCode(UUID.randomUUID().toString())
