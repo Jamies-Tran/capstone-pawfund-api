@@ -5,6 +5,7 @@ import com.paw.fund.app.modules.pet_management.domain.pet.hobby.PetHobby;
 import lombok.Builder;
 import lombok.With;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public record PetRequest(
         LocalDate receivedAt,
         List<PetHobbyRequest> hobbies,
         List<CommonMediaRequest> medias,
+        BigDecimal adoptionCost,
         String statusCode,
         String statusName
 ) {

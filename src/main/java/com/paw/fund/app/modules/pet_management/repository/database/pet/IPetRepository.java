@@ -1,12 +1,14 @@
 package com.paw.fund.app.modules.pet_management.repository.database.pet;
 
 import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetSearchCriteria;
+import com.paw.fund.app.modules.pet_management.repository.database.pet.dao.PetSummarizeInfoDAO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -53,4 +55,17 @@ public interface IPetRepository extends JpaRepository<PetEntity, Long> {
             )
     """)
     Page<PetEntity> findAll(PetSearchCriteria searchCriteria, Pageable pageable);
+
+    @Query("""
+        SELECT 
+            p.shelterId AS shelterId,
+            COUNT(p) AS total,
+            pt.petTypeCode AS petTypeCode,
+            pt.petTypeName AS petTypeName
+        FROM PetEntity p
+        INNER JOIN PetTypeEntity pt ON p.petTypeId = pt.petTypeId
+        WHERE p.shelterId IN :shelterIds
+        GROUP BY p.shelterId, pt.petTypeCode, pt.petTypeName
+    """)
+    List<PetSummarizeInfoDAO> findAllPetSummarizeInfoByShelterIdIn(List<Long> shelterIds);
 }

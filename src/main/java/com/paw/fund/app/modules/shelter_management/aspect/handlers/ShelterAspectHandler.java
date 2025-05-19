@@ -1,7 +1,9 @@
-package com.paw.fund.app.modules.shelter_management.annotation.handlers;
+package com.paw.fund.app.modules.shelter_management.aspect.handlers;
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.account.role.AccountRoleSummarizeInfo;
 import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
+import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
 import com.paw.fund.app.modules.form_management.service.form.reply.FormReplyQueryService;
 import com.paw.fund.app.modules.mail_management.domain.MailSender;
 import com.paw.fund.app.modules.mail_management.service.MailSenderCommandService;
@@ -11,8 +13,12 @@ import com.paw.fund.app.modules.map_management.service.MapQueryService;
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaCommandService;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaQueryService;
-import com.paw.fund.app.modules.shelter_management.annotation.PublishRegistration;
-import com.paw.fund.app.modules.shelter_management.annotation.SendMail;
+import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
+import com.paw.fund.app.modules.pet_management.domain.pet.PetSummarizeInfo;
+import com.paw.fund.app.modules.pet_management.domain.type.PetType;
+import com.paw.fund.app.modules.pet_management.service.pet.PetQueryService;
+import com.paw.fund.app.modules.shelter_management.aspect.PublishRegistration;
+import com.paw.fund.app.modules.shelter_management.aspect.SendMail;
 import com.paw.fund.app.modules.shelter_management.domain.Shelter;
 import com.paw.fund.app.modules.shelter_management.domain.registration.ShelterRegistration;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterActive;
@@ -48,7 +54,10 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Aspect
 @Component
@@ -86,13 +95,19 @@ public class ShelterAspectHandler {
     CommonMediaQueryService commonMediaQueryService;
 
     @NonNull
+    PetQueryService petQueryService;
+
+    @NonNull
+    AccountRoleQueryService accountRoleQueryService;
+
+    @NonNull
     RequestContext requestContext;
 
     @NonFinal
     @Value("${app.mail.username}")
     String systemMail;
 
-    @Around("@annotation(com.paw.fund.app.modules.shelter_management.annotation.CreateShelterRegistration)")
+    @Around("@annotation(com.paw.fund.app.modules.shelter_management.aspect.CreateShelterRegistration)")
     public Object handleCreateShelterRegistration(ProceedingJoinPoint joinPoint) throws Throwable{
         Object result;
         Object args;
@@ -149,7 +164,7 @@ public class ShelterAspectHandler {
     }
 
     @AfterReturning(
-            pointcut = "@annotation(com.paw.fund.app.modules.shelter_management.annotation.PublishRegistration)",
+            pointcut = "@annotation(com.paw.fund.app.modules.shelter_management.aspect.PublishRegistration)",
             returning = "result"
     )
     public void handlePublishRegistration(JoinPoint joinPoint, Object result) throws Throwable {
@@ -174,7 +189,7 @@ public class ShelterAspectHandler {
     }
 
     @AfterReturning(
-            pointcut = "@annotation(com.paw.fund.app.modules.shelter_management.annotation.SendMail)",
+            pointcut = "@annotation(com.paw.fund.app.modules.shelter_management.aspect.SendMail)",
             returning = "result"
     )
     public void HandleSendMail(JoinPoint joinPoint, Object result) {
@@ -203,7 +218,7 @@ public class ShelterAspectHandler {
         }
     }
 
-    @Around("@annotation(com.paw.fund.app.modules.shelter_management.annotation.UpdateLocation)")
+    @Around("@annotation(com.paw.fund.app.modules.shelter_management.aspect.UpdateLocation)")
     public Object handleUpdateLocation(ProceedingJoinPoint joinPoint) throws Throwable {
         Object arg = joinPoint.getArgs()[0];
         if(arg instanceof ShelterRegistrationCreate shelterRegistrationCreate) {
@@ -237,7 +252,7 @@ public class ShelterAspectHandler {
         return placeComponents.get(3).placeName();
     }
 
-    @Around("@annotation(com.paw.fund.app.modules.shelter_management.annotation.CreateShelterMedia)")
+    @Around("@annotation(com.paw.fund.app.modules.shelter_management.aspect.CreateShelterMedia)")
     public Object handleCreateShelterMedia(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
           Object result = joinPoint.proceed();
@@ -256,7 +271,7 @@ public class ShelterAspectHandler {
         }
     }
 
-    @Around("@annotation(com.paw.fund.app.modules.shelter_management.annotation.AttachMedia)")
+    @Around("@annotation(com.paw.fund.app.modules.shelter_management.aspect.AttachMedia)")
     public Object handleAttachMedia(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             Object result = joinPoint.proceed();
@@ -269,5 +284,44 @@ public class ShelterAspectHandler {
         } catch (Throwable e) {
             throw e;
         }
+    }
+
+    @Around("@annotation(com.paw.fund.app.modules.shelter_management.aspect.GetShelterListHelper)")
+    public Object getShelterListHelper(ProceedingJoinPoint joinPoint) throws Throwable {
+         try {
+             Object result = joinPoint.proceed();
+             if(result instanceof Page<?> results) {
+                 Page<Shelter> shelters = results.map(x -> (Shelter) x);
+                 List<Long> shelterIds = shelters.map(Shelter::shelterId).toList();
+                 Map<Long, List<PetSummarizeInfo>> petSummarizeInfoMap = petQueryService.findAllPetSummarizeInfoByShelterIdIn(shelterIds)
+                         .stream()
+                         .collect(Collectors.groupingBy(PetSummarizeInfo::shelterId));
+                 Map<Long, Integer> accountSummarizeInfoMap = accountRoleQueryService.findAllAccountRoleSummarizeInfoByShelterIdIn(shelterIds)
+                         .stream()
+                         .collect(Collectors.toMap(AccountRoleSummarizeInfo::shelterId, AccountRoleSummarizeInfo::totalStaff));
+                 return shelters.map(x -> {
+                     List<PetSummarizeInfo> petSummarizeInfos = petSummarizeInfoMap.computeIfAbsent(x.shelterId(), _ -> List.of());
+                     Integer totalPets = petSummarizeInfos.stream()
+                             .mapToInt(xx -> Optional.ofNullable(xx.total()).orElse(0))
+                             .sum();
+                     List<PetType> petTypes = petSummarizeInfos.stream()
+                             .map(xx -> PetType.builder()
+                                     .petTypeCode(Optional.ofNullable(xx.petTypeCode()).orElse(""))
+                                     .petTypeName(Optional.ofNullable(xx.petTypeName()).orElse(""))
+                                     .build())
+                             .toList();
+                     Integer totalStaff = accountSummarizeInfoMap.computeIfAbsent(x.shelterId(), _ -> 0);
+
+                     return x
+                             .withTotalPets(totalPets)
+                             .withPetTypes(petTypes)
+                             .withTotalStaff(totalStaff);
+                 });
+             }
+
+             throw new ServiceException();
+         } catch (Throwable e) {
+             throw e;
+         }
     }
 }

@@ -48,6 +48,9 @@ public class ShelterEntity extends AuditableEntity {
     String description;
 
     @Column
+    Integer maximumPetCapacity;
+
+    @Column
     LocalDateTime dateOfPub;
 
     @Column

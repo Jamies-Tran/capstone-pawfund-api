@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -69,6 +70,9 @@ public class PetEntity extends AuditableEntity {
 
     @Column
     String receiveSourceName;
+
+    @Column
+    BigDecimal adoptionCost;
 
     @Column
     String statusCode;

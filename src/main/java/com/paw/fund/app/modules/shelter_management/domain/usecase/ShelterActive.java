@@ -7,17 +7,20 @@ import java.util.List;
 
 @Builder
 public record ShelterActive(
-        String description,
         Long shelterId,
+        String description,
+        Integer maximumPetCapacity,
         List<CommonMedia> medias
 ) {
-    public static ShelterActive of(String description,
-                                   Long shelterId,
+    public static ShelterActive of(Long shelterId,
+                                   String description,
+                                   Integer maximumPetCapacity,
                                    List<CommonMedia> medias) {
         return ShelterActive.builder()
                 .description(description)
                 .shelterId(shelterId)
                 .medias(medias)
+                .maximumPetCapacity(maximumPetCapacity)
                 .build();
     }
 }

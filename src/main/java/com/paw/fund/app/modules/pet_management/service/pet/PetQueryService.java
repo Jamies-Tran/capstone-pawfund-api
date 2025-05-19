@@ -2,6 +2,7 @@ package com.paw.fund.app.modules.pet_management.service.pet;
 
 import com.paw.fund.app.modules.pet_management.domain.pet.IPetMapper;
 import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
+import com.paw.fund.app.modules.pet_management.domain.pet.PetSummarizeInfo;
 import com.paw.fund.app.modules.pet_management.domain.pet.usecase.PetSearchCriteria;
 import com.paw.fund.app.modules.pet_management.repository.database.pet.IPetRepository;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
@@ -12,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +36,12 @@ public class PetQueryService {
 
         return repository.findAll(searchCriteria, pageRequestCustom.pageRequest())
                 .map(mapper::toDto);
+    }
+
+    public List<PetSummarizeInfo> findAllPetSummarizeInfoByShelterIdIn(List<Long> shelterIds) {
+        return repository.findAllPetSummarizeInfoByShelterIdIn(shelterIds)
+                .stream()
+                .map(mapper::toDto)
+                .toList();
     }
 }

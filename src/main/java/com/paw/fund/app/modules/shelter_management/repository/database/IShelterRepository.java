@@ -51,7 +51,7 @@ public interface IShelterRepository extends JpaRepository<ShelterEntity, Long> {
                 OR s.shelterCode ILIKE %:#{#searchCriteria.search()}%))
         AND (s.createdAt BETWEEN :#{#searchCriteria.timeRange.get(0)} AND :#{#searchCriteria.timeRange.get(1)})
     """)
-    Page<ShelterDAO> findAll(ShelterSearchCriteria searchCriteria, Pageable pageable);
+    Page<ShelterEntity> findAll(ShelterSearchCriteria searchCriteria, Pageable pageable);
 
     @Query(
             value = """
@@ -87,4 +87,12 @@ public interface IShelterRepository extends JpaRepository<ShelterEntity, Long> {
             nativeQuery = true
     )
     Page<ShelterDAO> findAllDistance(@Param("searchCriteria") ShelterSearchCriteria searchCriteria, Pageable pageable);
+
+    @Query("""
+        SELECT COUNT(p) >= s.maximumPetCapacity
+        FROM ShelterEntity s
+        LEFT JOIN PetEntity p ON s.shelterId = p.shelterId
+        WHERE s.shelterId = :shelterId
+    """)
+    Boolean existsExceedMaximumPetByShelterId(Long shelterId);
 }

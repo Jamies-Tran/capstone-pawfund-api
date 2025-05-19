@@ -61,4 +61,8 @@ public class ShelterQueryService {
 
         return new PageImpl(shelters);
     }
+
+    public Boolean existsExceedPetMaximumCapacityByShelterId(Long shelterId) {
+        return repository.existsExceedMaximumPetByShelterId(shelterId);
+    }
 }

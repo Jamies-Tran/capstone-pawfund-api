@@ -1,6 +1,7 @@
 package com.paw.fund.app.modules.shelter_management.domain;
 
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
+import com.paw.fund.app.modules.pet_management.domain.type.PetType;
 import com.paw.fund.app.modules.shelter_management.domain.registration.ShelterRegistration;
 import lombok.Builder;
 import lombok.With;
@@ -16,6 +17,7 @@ public record Shelter(
         String shelterCode,
         String shelterName,
         String description,
+        Integer maximumPetCapacity,
         LocalDateTime dateOfPub,
         String email,
         String hotline,
@@ -28,6 +30,9 @@ public record Shelter(
         @With BigDecimal latitude,
         @With BigDecimal longitude,
         @With ShelterRegistration shelterRegistration,
+        @With Integer totalPets,
+        @With List<PetType> petTypes,
+        @With Integer totalStaff,
         @With String statusCode,
         @With String statusName
 ) {

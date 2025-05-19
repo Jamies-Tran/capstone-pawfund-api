@@ -59,9 +59,10 @@ public class ShelterCommandService {
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
-    public Shelter updateStatusAndAccountRoleIdAndDescription(String description,
-                                                              Long shelterId,
+    public Shelter updateStatusAndAccountRoleIdAndDescription(Long shelterId,
                                                               Long accountRoleId,
+                                                              String description,
+                                                              Integer maximumPetCapacity,
                                                               EShelterStatus status) {
         ValidationUtil.validateArgumentNotNull(shelterId);
         ValidationUtil.validateArgumentNotNull(status);
@@ -73,6 +74,7 @@ public class ShelterCommandService {
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
                     x.setAccountRoleId(accountRoleId);
+                    x.setMaximumPetCapacity(maximumPetCapacity);
                     x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     ShelterEntity savedShelter = repository.save(x);
 

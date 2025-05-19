@@ -9,6 +9,7 @@ public record AccountRole(
         Long accountRoleId,
         Long roleId,
         Long accountId,
+        Long shelterId,
         Account account,
         Role role
 ) {
