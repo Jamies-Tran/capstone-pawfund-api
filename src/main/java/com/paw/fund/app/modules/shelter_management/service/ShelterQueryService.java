@@ -17,6 +17,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -57,6 +58,7 @@ public class ShelterQueryService {
         List<Shelter> shelters = repository.findAllById(shelterDistanceMap.keySet())
                 .stream()
                 .map(x -> mapper.toDto(x).withDistance(shelterDistanceMap.computeIfAbsent(x.getShelterId(), _ -> BigDecimal.valueOf(0.0))))
+                .sorted(Comparator.comparing(Shelter::distance))
                 .toList();
 
         return new PageImpl(shelters);

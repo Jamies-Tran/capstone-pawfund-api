@@ -34,7 +34,7 @@ public class PetIntakeRegistrationQueryService {
                 .toList();
     }
 
-    public PetIntakeRegistration findByPetIntakeRegistrationId(Long petIntakeRegistrationId) {
+    public PetIntakeRegistration findById(Long petIntakeRegistrationId) {
         PetIntakeRegistrationAction action = repository.findPetIntakeRegistrationActionById(petIntakeRegistrationId)
                 .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);

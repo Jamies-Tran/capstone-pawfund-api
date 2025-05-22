@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>STOMP WebSocket Test Client</title>
+  <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1.6.1/dist/sockjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+</head>
+<body>
+  <h2>STOMP WebSocket Test Client</h2>
+
+  <h1>Shelter Id</h1>
+
+  <input type="text" id="shelterId"/>
+  <br/><br/>
+
+  <label>WebSocket URL: <input type="text" id="wsUrl" value="http://localhost:8080/pawfund-sockjs" size="40"/></label>
+  <button onclick="connect()">Connect</button>
+  <br/><br/>
+
+  <label>Subscribe Topic: <input type="text" id="subscribeTopic" value="/topic/shelter-assignment"/></label>
+  <button onclick="subscribe()">Subscribe</button>
+  <br/><br/>
+
+  <label>Send Destination: <input type="text" id="sendDestination" value="/app/topic/shelter-assignment"/></label><br/>
+  <label>Message Body (JSON):</label><br/>
+  <button onclick="sendMessage()">Send Message</button>
+
+  <hr/>
+
+  <h3>Received Messages:</h3>
+  <pre id="messages" style="background: #f4f4f4; padding: 10px; border: 1px solid #ccc; max-height: 300px; overflow-y: scroll;"></pre>
+
+  <script>
+    let stompClient = null;
+
+    function connect(options) {
+      const wsUrl = document.getElementById("wsUrl").value;
+      const subscribeTopic = document.getElementById("subscribeTopic").value;
+      const shelterId = document.getElementById("shelterId").value;
+      const messages = document.getElementById('messages');
+
+      const socket = new SockJS(wsUrl);
+      socket.debug = console.log;
+      stompClient = Stomp.over(socket);
+      stompClient.connect({}, function (frame) {
+
+        log("✅ Connected: " + frame);
+        stompClient.subscribe(
+                `${subscribeTopic}/${shelterId}`,
+                function (message) {
+                  alert("New notification");
+                  messages.innerText = null;
+                  const notification = JSON.parse(message.body);
+                  console.log(notification);
+                  log2(notification);
+                },
+                {}
+        );
+      }, function (error) {
+        log("❌ Error: " + error);
+      });
+    }
+
+    function sendMessage() {
+      const shelterId = document.getElementById("shelterId").value;
+      const destination = document.getElementById("sendDestination").value;
+      const payload = {
+        "petIntakeRegistrationId": null,
+        "timeRange": [],
+        "statusCodes": [],
+        "sorter": "updatedAt",
+        "current": 0,
+        "pageSize": 25
+      }
+      stompClient.send(
+              `${destination}/${shelterId}`,
+              {},
+              JSON.stringify(payload)
+      ), function (error) {
+        log("❌ Error: " + error);
+      };
+    }
+
+    function log(message) {
+      const messages = document.getElementById('messages');
+      messages.textContent += message + "\n";
+    }
+
+    function log2(message) {
+      const messages = document.getElementById('messages');
+      message.forEach(message => {
+        messages.textContent += `\nShelter Assignment Id: ${message.shelterAssignmentId}` + "\n";
+        messages.textContent += `\nShelter ID: ${message.shelterId}` + "\n";
+        messages.textContent += `\nPet Intake Registration ID: ${message.petIntakeRegistrationId}` + "\n";
+        messages.textContent += `\nReason: ${message.reason}` + "\n";
+        messages.textContent += `\nStatus Code: ${message.statusCode}` + "\n";
+        messages.textContent += `\nStatus Name: ${message.statusName}` + "\n";
+        messages.textContent += `\nCreated At: ${message.createdAt}` + "\n";
+        messages.textContent += "\n"
+      })
+    }
+  </script>
+</body>
+</html>

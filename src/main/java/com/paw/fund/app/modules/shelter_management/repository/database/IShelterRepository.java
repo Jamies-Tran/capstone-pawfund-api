@@ -34,6 +34,7 @@ public interface IShelterRepository extends JpaRepository<ShelterEntity, Long> {
         FROM ShelterEntity s
         INNER JOIN ShelterRegistrationEntity sr ON s.shelterId = sr.shelterId
         INNER JOIN AccountEntity a ON sr.accountId = a.accountId
+        WHERE sr.accountId = :accountId
         ORDER BY s.shelterId DESC
         LIMIT 1
     """)
@@ -58,11 +59,12 @@ public interface IShelterRepository extends JpaRepository<ShelterEntity, Long> {
                 SELECT 
                     s.shelter_id AS shelterId,
                     (
-                        6371 * ACOS(
-                               COS(RADIANS(:#{#searchCriteria.latitude()})) * COS(RADIANS(s.latitude)) *
-                               COS(RADIANS(s.longitude) - RADIANS(:#{#searchCriteria.longitude()})) +
-                               SIN(RADIANS(:#{#searchCriteria.latitude()}) ) * SIN(RADIANS(s.latitude))
-                        )
+                        2 * 6371 * ASIN(SQRT(
+                             POWER(SIN(RADIANS(s.latitude - :#{#searchCriteria.latitude()}) / 2), 2) +
+                             COS(RADIANS(:#{#searchCriteria.latitude()})) *
+                             COS(RADIANS(s.latitude)) *
+                             POWER(SIN(RADIANS(s.longitude - :#{#searchCriteria.longitude()}) / 2), 2)
+                         ))
                     ) AS distance
                 FROM shelters s
                 WHERE (s.status_code NOT IN (:#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}, :#{T(com.paw.fund.enums.EShelterStatus).DRAFT.getCode()}))
@@ -74,12 +76,14 @@ public interface IShelterRepository extends JpaRepository<ShelterEntity, Long> {
                   AND (s.created_at BETWEEN :#{#searchCriteria.timeRange.get(0)} AND :#{#searchCriteria.timeRange.get(1)})
                   AND (:#{#searchCriteria.isRadiusNullOrEmpty()} = TRUE
                       OR (
-                        6371 * ACOS(
-                               COS(RADIANS(:#{#searchCriteria.latitude()}) * COS(RADIANS(s.latitude))) *
-                               COS(RADIANS(s.longitude) - RADIANS(:#{#searchCriteria.longitude()})) +
-                               SIN(RADIANS(:#{#searchCriteria.latitude()}) * SIN(RADIANS(s.latitude)))
-                        )
+                        2 * 6371 * ASIN(SQRT(
+                             POWER(SIN(RADIANS(s.latitude - :#{#searchCriteria.latitude()}) / 2), 2) +
+                             COS(RADIANS(:#{#searchCriteria.latitude()})) *
+                             COS(RADIANS(s.latitude)) *
+                             POWER(SIN(RADIANS(s.longitude - :#{#searchCriteria.longitude()}) / 2), 2)
+                         ))
                     ) <= :#{#searchCriteria.radius()})
+                ORDER BY distance ASC 
             """,
             countQuery = """
                 SELECT COUNT(*) FROM shelters;

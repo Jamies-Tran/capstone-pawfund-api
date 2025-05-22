@@ -30,6 +30,16 @@ public record PetIntakeRegistrationSearchCriteria(
                 .build();
     }
 
+    public static PetIntakeRegistrationSearchCriteria ofDefault(String informerPhone) {
+        return PetIntakeRegistrationSearchCriteria.builder()
+                .search(informerPhone)
+                .timeRange(ValidationUtil.validateNotNullOrDefaultTimeRange(List.of()))
+                .petTypeCodes(List.of())
+                .reasonTypeCodes(List.of())
+                .statusCodes(List.of())
+                .build();
+    }
+
     public Boolean isSearchNullOrEmpty() {
         return !StringUtils.hasText(search);
     }
