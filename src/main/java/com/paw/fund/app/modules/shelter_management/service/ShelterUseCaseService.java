@@ -130,6 +130,7 @@ public class ShelterUseCaseService implements IShelterUseCase {
     }
 
     @Override
+    @GetShelterListHelper
     public Page<Shelter> getShelterDistanceList(ShelterFilter shelterFilter) {
         return queryService.findAllDistance(shelterFilter.searchCriteria(), shelterFilter.pageRequestCustom());
     }

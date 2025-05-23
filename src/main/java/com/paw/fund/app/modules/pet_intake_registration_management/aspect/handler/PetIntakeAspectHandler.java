@@ -158,10 +158,10 @@ public class PetIntakeAspectHandler {
                     PetIntakeRegistrationNotification.of(petIntakeRegistrations));
         }
 
-        if(StringUtils.hasText(notifyHelper.appDestination())) {
+        if(StringUtils.hasText(notifyHelper.variableDestination())) {
             if(result instanceof PetIntakeRegistration petIntakeRegistration) {
                 String informerPhone = petIntakeRegistration.informerPhone();
-                String completeDestination = notifyHelper.appDestination().concat("/%s".formatted(informerPhone));
+                String completeDestination = notifyHelper.variableDestination().concat("/%s".formatted(informerPhone));
                 List<PetIntakeRegistration> petIntakeRegistrations = queryService
                         .findByPetIntakeRegistrationInformerPhone(informerPhone);
                 MessageTemplateHandler.sendToTopic(completeDestination, petIntakeRegistrations);

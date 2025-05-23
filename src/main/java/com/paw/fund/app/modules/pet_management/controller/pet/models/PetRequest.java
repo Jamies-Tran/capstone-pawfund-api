@@ -14,6 +14,7 @@ public record PetRequest(
         Long shelterId,
         Long petBreedId,
         Long petTypeId,
+        Long petIntakeRegistrationId,
         String petName,
         String colorCode,
         String colorName,

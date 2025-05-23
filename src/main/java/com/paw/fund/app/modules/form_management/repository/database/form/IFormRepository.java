@@ -32,4 +32,6 @@ public interface IFormRepository extends JpaRepository<FormEntity, Long> {
             AND f.formId = :formId
     """)
     Optional<FormEntity> findByStatusCodeNotDeletedAndById(Long formId);
+
+    Boolean existsByFormTypeCode(String formTypeCode);
 }

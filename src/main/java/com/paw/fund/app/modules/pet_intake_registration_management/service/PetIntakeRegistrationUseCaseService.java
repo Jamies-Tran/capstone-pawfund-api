@@ -1,6 +1,5 @@
 package com.paw.fund.app.modules.pet_intake_registration_management.service;
 
-import com.paw.fund.app.modules.pet_intake_registration_management.PetIntakeRegistrationModuleConstant;
 import com.paw.fund.app.modules.pet_intake_registration_management.aspect.CreatePetIntakeRegistrationParamHelper;
 import com.paw.fund.app.modules.pet_intake_registration_management.aspect.CreatePetIntakeRegistrationHelper;
 import com.paw.fund.app.modules.pet_intake_registration_management.aspect.GetPetIntakeRegistrationHelper;
@@ -47,7 +46,7 @@ public class PetIntakeRegistrationUseCaseService implements IPetIntakeRegistrati
     @Override
     @GetPetIntakeRegistrationHelper
     public PetIntakeRegistration getPetIntakeRegistrationDetail(PetIntakeRegistrationId petIntakeRegistrationId) {
-        return queryService.findByPetIntakeRegistrationId(petIntakeRegistrationId.value());
+        return queryService.findById(petIntakeRegistrationId.value());
     }
 
     @Override

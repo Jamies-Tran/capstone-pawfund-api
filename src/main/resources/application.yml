@@ -35,7 +35,7 @@ spring:
     active: dev
 
 app:
-  version: v1.5.2
+  version: v1.5.3
   access-token:
     secret-key: ftoLRVxHq82BzLq3stXhnOJRo4azrVab
     expired-duration: 4320
@@ -54,3 +54,5 @@ app:
     pet-intake-registration:
       admin:
         topic: /topic/pet-intake-registration/new
+    shelter-assignment:
+      topic: /topic/shelter-assignment/list

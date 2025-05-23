@@ -47,11 +47,7 @@ public class PetUseCaseService implements IPetUseCase {
             throw new ResourceNotValidException("Trung tâm cứu trợ không thể tiếp nhận thêm thú cưng");
         }
 
-        return commandService.save(
-                pet
-                        .withPetCode(UUID.randomUUID().toString())
-                        .withReceiveSourceCode(EReceiveSource.STAFF.getCode())
-                        .withReceiveSourceName(EReceiveSource.STAFF.getName()));
+        return commandService.save(pet);
     }
 
     @Override

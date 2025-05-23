@@ -1,7 +1,6 @@
 package com.paw.fund.app.modules.pet_intake_registration_management.controller.websocket;
 
 import com.paw.fund.app.modules.pet_intake_registration_management.controller.api.models.IPetIntakeRegistrationModelMapper;
-import com.paw.fund.app.modules.pet_intake_registration_management.controller.api.models.PetIntakeRegistrationResponse;
 import com.paw.fund.app.modules.pet_intake_registration_management.controller.websocket.models.PetIntakeRegistrationPayload;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.PetIntakeRegistration;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.usecase.PetIntakeRegistrationFilter;
@@ -21,13 +20,12 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class PetIntakeRegistrationWebSocket {
+public class PetIntakeRegistrationWebSocketController {
     @NonNull
     IPetIntakeRegistrationUseCase useCase;
 

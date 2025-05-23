@@ -20,6 +20,7 @@ public record Pet(
         @With PetBreed petBreed,
         Long petTypeId,
         @With PetType petType,
+        @With Long petIntakeRegistrationId,
         @With String petCode,
         String petName,
         String colorCode,

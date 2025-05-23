@@ -9,12 +9,7 @@
 <body>
   <h2>STOMP WebSocket Test Client</h2>
 
-  <h1>Login</h1>
-  <input type="text" id="email"/>
-  <br/><br/>
-
-  <input type="text" id="password"/>
-  <br/><br/>
+  <h1>Phone</h1>
 
   <input type="text" id="phone"/>
   <br/><br/>
@@ -43,6 +38,7 @@
       const wsUrl = document.getElementById("wsUrl").value;
       const subscribeTopic = document.getElementById("subscribeTopic").value;
       const phone = document.getElementById("phone").value;
+      const messages = document.getElementById('messages');
 
       const socket = new SockJS(wsUrl);
       socket.debug = console.log;
@@ -53,6 +49,8 @@
         stompClient.subscribe(
                 `${subscribeTopic}/${phone}`,
                 function (message) {
+                  alert("New notification");
+                  messages.innerText = null;
                   const notification = JSON.parse(message.body);
                   console.log(notification);
                   log2(notification);
@@ -82,18 +80,21 @@
 
     function log2(message) {
       const messages = document.getElementById('messages');
-      messages.textContent += `\nRequest ID: ${message.petIntakeRegistrationId}` + "\n";
-      messages.textContent += `\nRequest ID: ${message.petTypeId}` + "\n";
-      messages.textContent += `\nRequest ID: ${message.informerPhone}` + "\n";
-      messages.textContent += `\nRequest ID: ${message.petDescription}` + "\n";
-      messages.textContent += `\nRequest ID: ${message.reasonTypeCode}` + "\n";
-      messages.textContent += `\nRequest ID: ${message.reasonTypeName}` + "\n";
-      messages.textContent += `Address: ${message.address}` + "\n";
-      messages.textContent += `Address: ${message.latitude}` + "\n";
-      messages.textContent += `Address: ${message.longitude}` + "\n";
-      messages.textContent += `Status: ${message.statusCode}` + "\n";
-      messages.textContent += `Status: ${message.statusName}` + "\n";
-      messages.textContent += "\n"
+      message.forEach(m => {
+        messages.textContent += `\nRequest ID: ${m.petIntakeRegistrationId}` + "\n";
+        messages.textContent += `\nPet Type ID: ${m.petTypeId}` + "\n";
+        messages.textContent += `\nPhone: ${m.informerPhone}` + "\n";
+        messages.textContent += `\nPet Description: ${m.petDescription}` + "\n";
+        messages.textContent += `\nReason Type Code: ${m.reasonTypeCode}` + "\n";
+        messages.textContent += `\nReason Type Name: ${m.reasonTypeName}` + "\n";
+        messages.textContent += `\nAddress: ${m.address}` + "\n";
+        messages.textContent += `\nLatitude: ${m.latitude}` + "\n";
+        messages.textContent += `\nLongitude: ${m.longitude}` + "\n";
+        messages.textContent += `\nStatus Code: ${m.statusCode}` + "\n";
+        messages.textContent += `\nStatus Name: ${m.statusName}` + "\n";
+        messages.textContent += "\n"
+      })
+
     }
   </script>
 </body>
