@@ -48,9 +48,3 @@ app:
     domain: https://rsapi.goong.io
     autocomplete: /Place/AutoComplete
     geocode: /geocode
-  websocket:
-    pet-intake-registration:
-      admin:
-        topic: /topic/pet-intake-registration/new
-    shelter-assignment:
-      topic: /topic/shelter-assignment/list
