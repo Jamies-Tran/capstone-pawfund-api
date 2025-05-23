@@ -28,7 +28,7 @@ public class PetIntakeRegistrationEventHandler {
     @NonNull
     IPetIntakeRegistrationMapper mapper;
 
-    String petIntakeRegistrationTopicDes = PetIntakeRegistrationModuleConstant.getAdminTopicDestination();
+    String petIntakeRegistrationTopicDes = "/topic/pet-intake-registration/new";
 
     @EventListener
     public void petIntakeRegistrationEventHandler(SessionSubscribeEvent event) {

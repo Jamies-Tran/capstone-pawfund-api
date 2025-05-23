@@ -28,15 +28,6 @@ public class ShelterAssignmentModuleConstant {
         return ShelterAssignmentModuleConstant.APP_VERSION;
     }
 
-    @Value("${app.websocket.shelter-assignment.topic}")
-    public static void setShelterAssignmentsDestination(String shelterAssignmentsDestination) {
-        ShelterAssignmentModuleConstant.SHELTER_ASSIGNMENTS_DESTINATION = shelterAssignmentsDestination;
-    }
-
-    public static String getShelterAssignmentsDestination() {
-        return ShelterAssignmentModuleConstant.SHELTER_ASSIGNMENTS_DESTINATION;
-    }
-
     @PostConstruct
     public void postConstruct() {
         log.info("MODULE: [{} {}]", MODULE_NAME, APP_VERSION);

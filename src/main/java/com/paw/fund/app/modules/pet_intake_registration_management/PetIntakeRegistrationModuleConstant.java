@@ -19,17 +19,6 @@ public class PetIntakeRegistrationModuleConstant {
     String APP_VERSION;
 
 
-    static String adminTopicDestination;
-
-    @Value("${app.websocket.pet-intake-registration.admin.topic}")
-    public void setAdminTopicDestination(String adminTopicDestination) {
-        PetIntakeRegistrationModuleConstant.adminTopicDestination = adminTopicDestination;
-    }
-
-    public static String getAdminTopicDestination () {
-        return PetIntakeRegistrationModuleConstant.adminTopicDestination;
-    }
-
     @PostConstruct
     public void postConstruct() {
         log.info("MODULE: [{} {}]", MODULE_NAME, APP_VERSION);
