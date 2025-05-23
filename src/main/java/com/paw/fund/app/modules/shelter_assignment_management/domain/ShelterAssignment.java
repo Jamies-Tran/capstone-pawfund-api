@@ -17,6 +17,7 @@ public record ShelterAssignment(
         String reason,
         String statusCode,
         String statusName,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        @With ShelterAssignmentAction action
 ) {
 }

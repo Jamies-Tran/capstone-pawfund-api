@@ -1,7 +1,9 @@
 package com.paw.fund.app.modules.session_management.service;
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.role.Role;
 import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
+import com.paw.fund.app.modules.account_management.service.role.RoleQueryService;
 import com.paw.fund.app.modules.log_management.domain.account.AccountActivityLog;
 import com.paw.fund.app.modules.log_management.service.account.AccountActivityLogCommandService;
 import com.paw.fund.app.modules.session_management.domain.Session;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
@@ -44,6 +47,9 @@ public class SessionUseCaseService implements ISessionUseCase {
     AccountQueryService accountQueryService;
 
     @NonNull
+    RoleQueryService roleQueryService;
+
+    @NonNull
     AccountActivityLogCommandService accountActivityLogCommandService;
 
     @NonNull
@@ -52,6 +58,7 @@ public class SessionUseCaseService implements ISessionUseCase {
     @Override
     public Session login(LoginInfo login) {
         Account account = accountQueryService.findByAccountEmail(login.email());
+        List<Role> roles = roleQueryService.findAllByAccountId(account.accountId());
         if(!Objects.equals(account.statusCode(), EAccountStatus.ACTIVE.getCode())) {
             throw new AuthenticationException("Tài khoản chưa được kích hoạt");
         } else if(!appPasswordEncoder.bCryptpasswordEncoder().matches(login.password(), account.password())) {
@@ -85,7 +92,7 @@ public class SessionUseCaseService implements ISessionUseCase {
         return session
                 .withAccessToken(accessToken)
                 .withAccessExpiredAt(accessExpiredAt)
-                .withAccount(account);
+                .withAccount(account.withRoles(roles));
     }
 
     @Override

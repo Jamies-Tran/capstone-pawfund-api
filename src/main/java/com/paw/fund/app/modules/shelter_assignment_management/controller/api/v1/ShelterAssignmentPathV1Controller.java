@@ -4,10 +4,10 @@ import com.paw.fund.app.modules.shelter_assignment_management.ShelterAssignmentM
 import com.paw.fund.app.modules.shelter_assignment_management.controller.api.models.IShelterAssignmentModelMapper;
 import com.paw.fund.app.modules.shelter_assignment_management.controller.api.models.ShelterAssignmentRequest;
 import com.paw.fund.app.modules.shelter_assignment_management.controller.api.models.ShelterAssignmentResponse;
-import com.paw.fund.app.modules.shelter_assignment_management.controller.api.models.reason.ShelterAssignmentRejectReason;
+import com.paw.fund.app.modules.shelter_assignment_management.controller.api.models.reason.ShelterAssignmentCancelReason;
 import com.paw.fund.app.modules.shelter_assignment_management.domain.ShelterAssignment;
 import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentId;
-import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentReject;
+import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentCancel;
 import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentUpdate;
 import com.paw.fund.app.modules.shelter_assignment_management.service.usecase.IShelterAssignmentUseCase;
 import com.paw.fund.utils.response.ValueResponse;
@@ -53,9 +53,9 @@ public class ShelterAssignmentPathV1Controller implements IShelterAssignmentPath
     }
 
     @Override
-    public ValueResponse<ShelterAssignmentResponse> rejectShelterAssignment(Long shelterAssignmentId, ShelterAssignmentRejectReason rejectReason) {
+    public ValueResponse<ShelterAssignmentResponse> cancelShelterAssignment(Long shelterAssignmentId, ShelterAssignmentCancelReason rejectReason) {
         ShelterAssignment shelterAssignment = useCase
-                .rejectShelterAssignment(ShelterAssignmentReject.of(shelterAssignmentId, rejectReason.reason()));
+                .cancelShelterAssignment(ShelterAssignmentCancel.of(shelterAssignmentId, rejectReason.reason()));
 
         return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK, ShelterAssignmentModuleConstant.getAppVersion());
     }

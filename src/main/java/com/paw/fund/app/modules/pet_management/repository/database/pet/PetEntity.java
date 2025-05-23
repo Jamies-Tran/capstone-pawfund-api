@@ -1,11 +1,13 @@
 package com.paw.fund.app.modules.pet_management.repository.database.pet;
 
 import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
+import com.paw.fund.enums.EReceiveSource;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -16,6 +18,8 @@ import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -37,6 +41,9 @@ public class PetEntity extends AuditableEntity {
 
     @Column
     Long petBreedId;
+
+    @Column(name = "pet_intake_request_id")
+    Long petIntakeRegistrationId;
 
     @Column
     String petCode;
@@ -79,4 +86,20 @@ public class PetEntity extends AuditableEntity {
 
     @Column
     String statusName;
+
+    @PrePersist
+    private void prePersist() {
+        if(Objects.nonNull(petCode)) {
+            petCode = "PET_%s_%s".formatted(getCreatedAt()
+                    .format(DateTimeFormatter.ofPattern("yyyyMMdd")), shelterId.toString());
+        }
+
+        if(Objects.nonNull(petIntakeRegistrationId)) {
+            receiveSourceCode = EReceiveSource.CUSTOMER.getCode();
+            receiveSourceName = EReceiveSource.CUSTOMER.getName();
+        } else {
+            receiveSourceCode = EReceiveSource.STAFF.getCode();
+            receiveSourceName = EReceiveSource.STAFF.getName();
+        }
+    }
 }

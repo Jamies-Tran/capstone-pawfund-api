@@ -7,7 +7,7 @@ import com.paw.fund.app.modules.shelter_assignment_management.domain.ShelterAssi
 import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentCreateList;
 import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentFilter;
 import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentId;
-import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentReject;
+import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentCancel;
 import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentUpdate;
 import com.paw.fund.app.modules.shelter_assignment_management.service.usecase.IShelterAssignmentUseCase;
 import com.paw.fund.enums.EShelterAssignmentStatus;
@@ -81,12 +81,12 @@ public class ShelterAssignmentUseCaseService implements IShelterAssignmentUseCas
     @Override
     @Transactional
     @NotifyHelper(variableAppDestination = "/topic/shelter-assignment")
-    @ChangeShelterAssignmentStatusHelper(status = EShelterAssignmentStatus.REJECTED)
-    public ShelterAssignment rejectShelterAssignment(ShelterAssignmentReject shelterAssignmentReject) {
+    @ChangeShelterAssignmentStatusHelper(status = EShelterAssignmentStatus.CANCELED)
+    public ShelterAssignment cancelShelterAssignment(ShelterAssignmentCancel shelterAssignmentCancel) {
         return commandService.updateStatus(
-                shelterAssignmentReject.shelterAssignmentId(),
-                EShelterAssignmentStatus.REJECTED,
-                shelterAssignmentReject.cancelReason());
+                shelterAssignmentCancel.shelterAssignmentId(),
+                EShelterAssignmentStatus.CANCELED,
+                shelterAssignmentCancel.cancelReason());
     }
 
     @Override

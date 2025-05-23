@@ -4,7 +4,7 @@ import com.paw.fund.app.modules.shelter_assignment_management.domain.ShelterAssi
 import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentCreateList;
 import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentFilter;
 import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentId;
-import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentReject;
+import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentCancel;
 import com.paw.fund.app.modules.shelter_assignment_management.domain.usecase.ShelterAssignmentUpdate;
 import org.springframework.data.domain.Page;
 
@@ -21,7 +21,7 @@ public interface IShelterAssignmentUseCase {
 
     ShelterAssignment receiveShelterAssignment(ShelterAssignmentId shelterAssignmentId);
 
-    ShelterAssignment rejectShelterAssignment(ShelterAssignmentReject shelterAssignmentReject);
+    ShelterAssignment cancelShelterAssignment(ShelterAssignmentCancel shelterAssignmentCancel);
 
     ShelterAssignment completeShelterAssignment(ShelterAssignmentId shelterAssignmentId);
 }

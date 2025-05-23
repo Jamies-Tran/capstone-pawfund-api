@@ -3,13 +3,13 @@ package com.paw.fund.app.modules.shelter_assignment_management.domain.usecase;
 import lombok.Builder;
 
 @Builder
-public record ShelterAssignmentReject(
+public record ShelterAssignmentCancel(
         Long shelterAssignmentId,
         String cancelReason
 ) {
-    public static ShelterAssignmentReject of(Long shelterAssignmentId,
+    public static ShelterAssignmentCancel of(Long shelterAssignmentId,
                                              String cancelReason) {
-        return ShelterAssignmentReject.builder()
+        return ShelterAssignmentCancel.builder()
                 .shelterAssignmentId(shelterAssignmentId)
                 .cancelReason(cancelReason)
                 .build();

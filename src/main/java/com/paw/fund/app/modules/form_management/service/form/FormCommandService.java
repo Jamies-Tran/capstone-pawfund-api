@@ -9,12 +9,15 @@ import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.enums.EDeleteStatus;
 import com.paw.fund.enums.EFormStatus;
+import com.paw.fund.enums.EFormType;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +34,7 @@ public class FormCommandService {
 
     public Form save(Form form) {
         ValidationUtil.validateNotNullPointerException(form);
+        validateSave(form);
         if(repository.existsByTitle(form.title())) {
             throw new ResourceDuplicateException("Tiêu đề form đã tồn tại");
         }
@@ -39,6 +43,13 @@ public class FormCommandService {
         savedForm.prepareSave(auditableUseCase.createAuditableForNew());
 
         return mapper.toDto(savedForm);
+    }
+
+    private void validateSave(Form form) {
+        Boolean existsByShelterRegisterForm = repository.existsByFormTypeCode(EFormType.SHELTER_REGISTER.getCode());
+        if(Objects.equals(form.formTypeCode(), EFormType.SHELTER_REGISTER.getCode()) && existsByShelterRegisterForm) {
+            throw new ResourceDuplicateException("Form " + EFormType.SHELTER_REGISTER.getName() + " đã tồn tại");
+        }
     }
 
     public Form updateStatus(Long formId, EFormStatus status) {

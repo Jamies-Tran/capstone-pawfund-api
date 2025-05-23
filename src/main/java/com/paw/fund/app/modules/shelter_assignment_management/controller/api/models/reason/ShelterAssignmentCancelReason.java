@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 
 @Builder
-public record ShelterAssignmentRejectReason(
+public record ShelterAssignmentCancelReason(
         @NotNull(message = "Lý do không tiếp nhận không được bỏ trống")
         String reason
 ) {

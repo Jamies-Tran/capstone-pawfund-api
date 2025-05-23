@@ -11,7 +11,7 @@ import lombok.experimental.FieldDefaults;
 public enum EShelterAssignmentStatus {
     NEW("NEW", "Mới"),
     RECEIVED("RECEIVED", "Tiếp nhận"),
-    REJECTED("REJECTED", "Từ chối"),
+    CANCELED("CANCELED", "Hủy bỏ"),
     COMPLETED("COMPLETED", "Hoàn thành");
 
     String code;

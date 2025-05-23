@@ -1,6 +1,7 @@
 package com.paw.fund.app.modules.shelter_assignment_management.domain;
 
 import com.paw.fund.app.modules.shelter_assignment_management.repository.database.ShelterAssignmentEntity;
+import com.paw.fund.app.modules.shelter_assignment_management.repository.database.dao.ShelterAssignmentActionDAO;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValuePropertyMappingStrategy;
@@ -17,4 +18,6 @@ public interface IShelterAssignmentMapper {
     ShelterAssignmentEntity toEntity(ShelterAssignment dto);
 
     void update(@MappingTarget ShelterAssignmentEntity entity, ShelterAssignment dto);
+
+    ShelterAssignmentAction toDto(ShelterAssignmentActionDAO dao);
 }
