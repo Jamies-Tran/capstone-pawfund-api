@@ -55,7 +55,6 @@ public class VerificationMediaCommandService {
                 .map(x -> {
                     EMimeType mimeType = ImageUtil.findMimeType(x.url());
                     return mapper.toEntity(x
-                            .with(petIntakeRegistrationId)
                             .withMediaTypeCode(mimeType.getCode())
                             .withMediaTypeName(mimeType.getName()));
                 })
