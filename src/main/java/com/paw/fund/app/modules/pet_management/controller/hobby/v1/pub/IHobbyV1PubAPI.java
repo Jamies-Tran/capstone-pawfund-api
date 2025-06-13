@@ -24,6 +24,9 @@ public interface IHobbyV1PubAPI {
             @RequestParam(required = false, value = "search", defaultValue = "")
             String search,
 
+            @RequestParam(required = false, value = "petTypeId", defaultValue = "")
+            Long petTypeId,
+
             @RequestParam(required = false, value = "sorter", defaultValue = "hobbyName")
             String sorter,
 

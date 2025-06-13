@@ -13,7 +13,6 @@ import com.paw.fund.app.modules.map_management.service.MapQueryService;
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaCommandService;
 import com.paw.fund.app.modules.media_management.service.common.CommonMediaQueryService;
-import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
 import com.paw.fund.app.modules.pet_management.domain.pet.PetSummarizeInfo;
 import com.paw.fund.app.modules.pet_management.domain.type.PetType;
 import com.paw.fund.app.modules.pet_management.service.pet.PetQueryService;
@@ -33,7 +32,7 @@ import com.paw.fund.configuration.handler.exceptions.RequestNotAvailable;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.configuration.handler.exceptions.ServiceException;
 import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.enums.EShelterRegistrationStatus;
 import com.paw.fund.utils.websocket.MessageTemplateHandler;
 import lombok.AccessLevel;
@@ -210,7 +209,7 @@ public class ShelterAspectHandler {
                 case APPROVED -> mailSender = mailSender
                         .prepareForEmailApproveShelter(account.lastName(), shelter.shelterName());
                 case REJECTED -> mailSender = mailSender.prepareForEmailRejectShelter(account.lastName(), shelter.shelterName(),
-                        shelterRegistration.reason());
+                        shelterRegistration.rejectReason());
                 default -> throw new ResourceNotValidException();
             }
 

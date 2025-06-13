@@ -24,7 +24,7 @@ import com.paw.fund.app.modules.verification_code_management.domain.Verification
 import com.paw.fund.app.modules.verification_code_management.service.VerificationCodeCommandService;
 import com.paw.fund.app.modules.verification_code_management.service.VerificationCodeQueryService;
 import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.enums.EAccountAction;
 import com.paw.fund.enums.EAccountStatus;
 import com.paw.fund.enums.EVerificationCodeType;

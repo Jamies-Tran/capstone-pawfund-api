@@ -1,4 +1,4 @@
-package com.paw.fund.dto;
+package com.paw.fund.common;
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
 import com.paw.fund.app.modules.account_management.domain.role.Role;

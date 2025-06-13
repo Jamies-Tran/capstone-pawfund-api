@@ -59,7 +59,7 @@ public class ShelterRegistrationCommandService {
             }
             case REJECTED -> {
                 foundRegistration.setRejectedAt(LocalDateTime.now());
-                foundRegistration.setReason(rejectReason);
+                foundRegistration.setRejectReason(rejectReason);
             }
             default -> throw new ResourceNotValidException();
         }

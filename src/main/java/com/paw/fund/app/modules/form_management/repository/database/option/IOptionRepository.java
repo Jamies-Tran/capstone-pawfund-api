@@ -24,4 +24,12 @@ public interface IOptionRepository extends JpaRepository<OptionEntity, Long> {
             AND o.questionId IN :#{#questionIds}
     """)
     List<OptionEntity> findAllByStatusCodeNotDeletedAndQuestionIdIn(List<Long> questionIds);
+
+    @Query("""
+        SELECT o
+        FROM OptionEntity o
+        WHERE o.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
+            AND o.optionId IN :optionIds
+    """)
+    List<OptionEntity> findAllByStatusCodeNotDeletedAndOptionIdIn(List<Long> optionIds);
 }

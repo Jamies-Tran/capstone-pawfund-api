@@ -32,8 +32,8 @@ public class PetCommandService {
         ValidationUtil.validateNotNullPointerException(pet);
 
         PetEntity newPet = mapper.toEntity(pet);
+        newPet.prepareSave(auditService.createAuditableForNew());
         PetEntity savedPet = repository.save(newPet);
-        savedPet.prepareSave(auditService.createAuditableForNew());
 
         return mapper.toDto(savedPet);
     }

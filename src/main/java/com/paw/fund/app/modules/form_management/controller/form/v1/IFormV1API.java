@@ -63,4 +63,14 @@ public interface IFormV1API {
             @Schema(description = "Số phần tử (mặc định 25)")
             Integer pageSize
     );
+
+    @PostMapping("/adopt-register")
+    @PreAuthorize("hasAnyRole({'ROLE_STAFF', 'ROLE_SHELTER_OWNER'})")
+    @Operation(
+            summary = "Tạo form đăng ký nhận nuôi thú cưng",
+            description = """
+                    - Admin tạo form đăng ký nhận nuôi thú cưng
+                    - [STAFF|SHELTER OWNER - Nhân viên|Chủ trung tâm cứu trợ]
+                    """)
+    ValueResponse<FormResponse> createAdoptRegisterForm(@RequestBody FormRequest request);
 }

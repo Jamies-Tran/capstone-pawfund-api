@@ -55,7 +55,7 @@ public class ShelterAssignmentPathV1Controller implements IShelterAssignmentPath
     @Override
     public ValueResponse<ShelterAssignmentResponse> cancelShelterAssignment(Long shelterAssignmentId, ShelterAssignmentCancelReason rejectReason) {
         ShelterAssignment shelterAssignment = useCase
-                .cancelShelterAssignment(ShelterAssignmentCancel.of(shelterAssignmentId, rejectReason.reason()));
+                .cancelShelterAssignment(ShelterAssignmentCancel.of(shelterAssignmentId, rejectReason.cancelReason()));
 
         return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK, ShelterAssignmentModuleConstant.getAppVersion());
     }

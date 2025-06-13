@@ -6,7 +6,6 @@ import com.paw.fund.app.modules.map_management.service.MapQueryService;
 import com.paw.fund.app.modules.media_management.domain.verification.VerificationMedia;
 import com.paw.fund.app.modules.media_management.service.verification.VerificationMediaCommandService;
 import com.paw.fund.app.modules.media_management.service.verification.VerificationMediaQueryService;
-import com.paw.fund.app.modules.pet_intake_registration_management.PetIntakeRegistrationModuleConstant;
 import com.paw.fund.app.modules.pet_intake_registration_management.aspect.NotifyHelper;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.PetIntakeRegistration;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.usecase.PetIntakeRegistrationNotification;
@@ -16,7 +15,7 @@ import com.paw.fund.app.modules.pet_management.domain.type.PetType;
 import com.paw.fund.app.modules.pet_management.service.type.PetTypeQueryService;
 import com.paw.fund.configuration.handler.exceptions.ServiceException;
 import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.utils.websocket.MessageTemplateHandler;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -29,10 +28,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

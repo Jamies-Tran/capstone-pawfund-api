@@ -27,6 +27,9 @@ public class FormEntity extends AuditableEntity {
     Long formId;
 
     @Column
+    Long shelterId;
+
+    @Column
     String title;
 
     @Column

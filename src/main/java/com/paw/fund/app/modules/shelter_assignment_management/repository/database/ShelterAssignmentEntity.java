@@ -36,7 +36,7 @@ public class ShelterAssignmentEntity extends AuditableEntity {
     Long petIntakeRegistrationId;
 
     @Column
-    String reason;
+    String cancelReason;
 
     @Column
     String statusCode;

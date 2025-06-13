@@ -89,7 +89,7 @@ public class PetEntity extends AuditableEntity {
 
     @PrePersist
     private void prePersist() {
-        if(Objects.nonNull(petCode)) {
+        if(Objects.isNull(petCode)) {
             petCode = "PET_%s_%s".formatted(getCreatedAt()
                     .format(DateTimeFormatter.ofPattern("yyyyMMdd")), shelterId.toString());
         }

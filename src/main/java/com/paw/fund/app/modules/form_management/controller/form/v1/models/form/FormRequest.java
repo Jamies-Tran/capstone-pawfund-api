@@ -10,6 +10,7 @@ import java.util.List;
 
 @Builder
 public record FormRequest(
+        Long shelterId,
         @NotNull(message = "Vui lòng nhập tiêu đề của form")
         @Schema(description = "Tiêu đề của form (required)")
         String title,

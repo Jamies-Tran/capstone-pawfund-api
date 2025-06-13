@@ -112,7 +112,7 @@ public class ShelterAssignmentAspectHandler {
 
                 case CANCELED -> {
                     petIntakeRegistration = petIntakeRegistrationCommandService
-                            .updateStatus(shelterAssignment.petIntakeRegistrationId(), EPetIntakeRegistrationStatus.CANCEL, shelterAssignment.reason());
+                            .updateStatus(shelterAssignment.petIntakeRegistrationId(), EPetIntakeRegistrationStatus.CANCEL, shelterAssignment.cancelReason());
                 }
 
                 case COMPLETED -> {

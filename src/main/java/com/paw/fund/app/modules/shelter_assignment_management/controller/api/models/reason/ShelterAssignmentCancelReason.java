@@ -6,6 +6,6 @@ import lombok.Builder;
 @Builder
 public record ShelterAssignmentCancelReason(
         @NotNull(message = "Lý do không tiếp nhận không được bỏ trống")
-        String reason
+        String cancelReason
 ) {
 }

@@ -37,8 +37,11 @@ public class HobbyV1PubController implements IHobbyV1PubAPI {
 
     @Override
     public PageResponse<HobbyResponse> getHobbyList(String search,
+                                                    Long petTypeId,
                                                     String sorter, Integer current, Integer pageSize) {
-        HobbySearchCriteria searchCriteria = HobbySearchCriteria.of(search,
+        HobbySearchCriteria searchCriteria = HobbySearchCriteria.of(
+                search,
+                petTypeId,
                 List.of(EPetInformationStatus.ACTIVE.getCode()));
         PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSize, sorter);
         Page<HobbyResponse> responses = useCase.getHobbyList(HobbyFilter.of(searchCriteria, pageRequestCustom))

@@ -45,7 +45,7 @@ public class ShelterRegistrationEntity extends AuditableEntity {
     Long formResponseId;
 
     @Column
-    String reason;
+    String rejectReason;
 
     @Column
     LocalDateTime requestAt;

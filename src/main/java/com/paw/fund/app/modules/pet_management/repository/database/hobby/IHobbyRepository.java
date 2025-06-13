@@ -45,6 +45,8 @@ public interface IHobbyRepository extends JpaRepository<HobbyEntity, Long> {
                     OR h.hobbyCode ILIKE %:#{#searchCriteria.search()}%))
             AND (:#{#searchCriteria.isStatusCodesNullOrEmpty()} = TRUE
                 OR h.statusCode IN :#{#searchCriteria.statusCodes()})
+            AND (:#{#searchCriteria.isPetTypeIdNullOrEmpty()} = TRUE
+                OR h.petTypeId = :#{#searchCriteria.petTypeId()})    
     """)
     Page<HobbyEntity> findAll(HobbySearchCriteria searchCriteria, Pageable pageable);
 

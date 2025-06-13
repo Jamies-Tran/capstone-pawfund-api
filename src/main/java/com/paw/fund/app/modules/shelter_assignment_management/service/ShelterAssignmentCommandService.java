@@ -70,7 +70,7 @@ public class ShelterAssignmentCommandService {
                     validUpdateStatus(x.getShelterAssignmentId(), status);
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
-                    x.setReason(cancelReason);
+                    x.setCancelReason(cancelReason);
                     x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     ShelterAssignmentEntity savedShelterAssignment = repository.save(x);
 
@@ -129,7 +129,7 @@ public class ShelterAssignmentCommandService {
                         case CANCELED -> {
                             x.setStatusCode(status.getCode());
                             x.setStatusName(status.getName());
-                            x.setReason(cancelReason);
+                            x.setCancelReason(cancelReason);
                         }
 
                         case COMPLETED -> {

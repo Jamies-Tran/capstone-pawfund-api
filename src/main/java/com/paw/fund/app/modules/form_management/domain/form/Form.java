@@ -9,6 +9,7 @@ import java.util.List;
 @Builder
 public record Form(
         Long formId,
+        Long shelterId,
         String title,
         String description,
         @With Integer questionCount,

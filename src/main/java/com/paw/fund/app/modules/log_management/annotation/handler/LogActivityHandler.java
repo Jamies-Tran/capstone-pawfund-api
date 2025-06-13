@@ -11,7 +11,7 @@ import com.paw.fund.app.modules.pet_management.domain.health.record.PetHealthRec
 import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
 import com.paw.fund.configuration.handler.exceptions.ServiceException;
 import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.enums.EHealthStatus;
 import com.paw.fund.enums.EPetAction;
 import com.paw.fund.enums.EPetStatus;
@@ -20,9 +20,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
-import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;

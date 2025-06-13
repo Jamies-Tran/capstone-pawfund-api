@@ -21,7 +21,7 @@ import com.paw.fund.app.modules.shelter_management.service.usecase.IShelterUseCa
 import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
 import com.paw.fund.configuration.handler.exceptions.RequestNotAvailable;
 import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.enums.ERole;
 import com.paw.fund.enums.EShelterRegistrationStatus;
 import com.paw.fund.enums.EShelterStatus;

@@ -1,4 +1,4 @@
-package com.paw.fund.app.modules.form_management.annotation;
+package com.paw.fund.app.modules.form_management.aspect;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CreateAnswer {
+public @interface UpdateFormReplyAdditionalData {
 }

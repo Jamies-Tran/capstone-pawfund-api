@@ -57,7 +57,7 @@ public class PetIntakeRegistrationEntity extends AuditableEntity {
     BigDecimal longitude;
 
     @Column
-    String canceledReason;
+    String cancelReason;
 
     @Column
     String statusCode;

@@ -14,7 +14,7 @@ public record ShelterAssignment(
         @With Shelter shelter,
         Long petIntakeRegistrationId,
         @With PetIntakeRegistration petIntakeRegistration,
-        String reason,
+        String cancelReason,
         String statusCode,
         String statusName,
         LocalDateTime createdAt,

@@ -48,6 +48,25 @@ public class VerificationMediaCommandService {
                 .toList();
     }
 
+    public List<VerificationMedia> saveAllWithAdoptRegistrationId(Long adoptRegistrationId,
+                                                                  List<VerificationMedia> verificationMedias) {
+
+        List<VerificationMediaEntity> newVerificationMedias = verificationMedias.stream()
+                .map(x -> {
+                    EMimeType mimeType = ImageUtil.findMimeType(x.url());
+                    return mapper.toEntity(x
+                            .with(petIntakeRegistrationId)
+                            .withMediaTypeCode(mimeType.getCode())
+                            .withMediaTypeName(mimeType.getName()));
+                })
+                .toList();
+
+        return repository.saveAll(newVerificationMedias)
+                .stream()
+                .map(mapper::toDto)
+                .toList();
+    }
+
     public List<VerificationMedia> updateAllWithPetIntakeRegistrationId(Long petIntakeRegistrationId, List<VerificationMedia> medias) {
         List<VerificationMediaEntity> existedMedias = repository.findAllByPetIntakeRegistrationId(petIntakeRegistrationId);
         List<Long> deletedIdList = existedMedias.stream()

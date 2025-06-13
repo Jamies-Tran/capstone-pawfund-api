@@ -2,7 +2,7 @@ package com.paw.fund.configuration.request.context;
 
 import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
 import com.paw.fund.app.modules.account_management.service.role.RoleQueryService;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.CurrentAccountLogin;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

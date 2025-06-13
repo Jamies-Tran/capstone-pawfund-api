@@ -3,7 +3,7 @@ package com.paw.fund.app.modules.auditable_management.service;
 import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
 import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
 import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.CurrentAccountLogin;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

@@ -11,7 +11,7 @@ import com.paw.fund.app.modules.verification_code_management.domain.usecase.Veri
 import com.paw.fund.app.modules.verification_code_management.service.usecase.IVerificationCodeUseCase;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.enums.EAccountAction;
 import com.paw.fund.enums.EAccountStatus;
 import com.paw.fund.enums.EVerificationCodeType;

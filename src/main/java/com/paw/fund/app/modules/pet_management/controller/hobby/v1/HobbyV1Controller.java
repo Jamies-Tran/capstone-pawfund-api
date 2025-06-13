@@ -42,9 +42,10 @@ public class HobbyV1Controller implements IHobbyV1API {
 
     @Override
     public PageResponse<HobbyResponse> getHobbyList(String search,
+                                                    Long petTypeId,
                                                     List<String> statusCodes,
                                                     String sorter, Integer current, Integer pageSize) {
-        HobbySearchCriteria searchCriteria = HobbySearchCriteria.of(search, statusCodes);
+        HobbySearchCriteria searchCriteria = HobbySearchCriteria.of(search, petTypeId, statusCodes);
         PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSize, sorter);
         Page<HobbyResponse> responses = useCase.getHobbyList(HobbyFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);

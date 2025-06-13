@@ -1,4 +1,4 @@
-package com.paw.fund.app.modules.form_management.annotation.handler;
+package com.paw.fund.app.modules.form_management.aspect.handler;
 
 import com.paw.fund.app.modules.form_management.domain.answer.Answer;
 import com.paw.fund.app.modules.form_management.domain.form.reply.FormReply;
@@ -29,7 +29,7 @@ public class FormAspectHandler {
     AnswerQueryService answerQueryService;
 
 
-    @Around("@annotation(com.paw.fund.app.modules.form_management.annotation.CreateAnswer)")
+    @Around("@annotation(com.paw.fund.app.modules.form_management.aspect.CreateAnswer)")
     public Object handleCreateAnswer(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             Object result = joinPoint.proceed();
@@ -47,7 +47,7 @@ public class FormAspectHandler {
         }
     }
 
-    @Around("@annotation(com.paw.fund.app.modules.form_management.annotation.GetFormReplyAdditionalData)")
+    @Around("@annotation(com.paw.fund.app.modules.form_management.aspect.GetFormReplyAdditionalData)")
     public Object handleGetFormReplyAdditionalData(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             Object result = joinPoint.proceed();
@@ -61,7 +61,7 @@ public class FormAspectHandler {
         }
     }
 
-    @Around("@annotation(com.paw.fund.app.modules.form_management.annotation.UpdateFormReplyAdditionalData)")
+    @Around("@annotation(com.paw.fund.app.modules.form_management.aspect.UpdateFormReplyAdditionalData)")
     public Object handleUpdateFormReplyAdditionalData(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
             Object result = joinPoint.proceed();

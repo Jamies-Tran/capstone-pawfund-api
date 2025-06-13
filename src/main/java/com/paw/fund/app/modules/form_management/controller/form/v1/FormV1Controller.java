@@ -65,4 +65,14 @@ public class FormV1Controller implements IFormV1API {
                 HttpStatus.OK,
                 API_VERSION);
     }
+
+    @Override
+    public ValueResponse<FormResponse> createAdoptRegisterForm(FormRequest request) {
+        Form form = modelMapper.toDto(request)
+                .withFormTypeCode(EFormType.ADOPT_REGISTER.getCode())
+                .withFormTypeName(EFormType.ADOPT_REGISTER.getName());
+        Form savedForm = useCase.createForm(form);
+
+        return ValueResponse.success(modelMapper.toResponse(savedForm), HttpStatus.CREATED, API_VERSION);
+    }
 }

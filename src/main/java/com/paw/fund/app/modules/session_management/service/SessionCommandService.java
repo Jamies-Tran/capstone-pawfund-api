@@ -7,7 +7,7 @@ import com.paw.fund.app.modules.session_management.repository.database.ISessionR
 import com.paw.fund.app.modules.session_management.repository.database.SessionEntity;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;

@@ -100,7 +100,7 @@ public class PetIntakeRegistrationCommandService {
                     validateBaseStatusAction(x.getPetIntakeRegistrationId(), status);
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
-                    x.setCanceledReason(canceledReason);
+                    x.setCancelReason(canceledReason);
                     x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     PetIntakeRegistrationEntity updatedPetIntakeRegistration = repository.save(x);
 
