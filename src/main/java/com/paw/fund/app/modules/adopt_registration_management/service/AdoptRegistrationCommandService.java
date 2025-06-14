@@ -4,7 +4,7 @@ import com.paw.fund.app.modules.adopt_registration_management.domain.AdoptRegist
 import com.paw.fund.app.modules.adopt_registration_management.domain.IAdoptRegistrationMapper;
 import com.paw.fund.app.modules.adopt_registration_management.repository.database.AdoptRegistrationEntity;
 import com.paw.fund.app.modules.adopt_registration_management.repository.database.IAdoptRegistrationRepository;
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -22,13 +22,9 @@ public class AdoptRegistrationCommandService {
     @NonNull
     IAdoptRegistrationMapper mapper;
 
-    @NonNull
-    IAuditableUseCase auditableUseCase;
-
     public AdoptRegistration save(AdoptRegistration adoptRegistration) {
         ValidationUtil.validateNotNullPointerException(adoptRegistration);
         AdoptRegistrationEntity newAdoptRegistration = mapper.toEntity(adoptRegistration);
-        newAdoptRegistration.prepareSave(auditableUseCase.createAuditableForNew());
         AdoptRegistrationEntity saveAdoptRegistration = repository.save(newAdoptRegistration);
 
         return mapper.toDto(saveAdoptRegistration);

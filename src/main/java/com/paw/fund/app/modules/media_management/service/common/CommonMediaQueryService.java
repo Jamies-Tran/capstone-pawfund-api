@@ -22,7 +22,7 @@ public class CommonMediaQueryService {
     @NonNull
     ICommonMediaMapper mapper;
 
-    public List<CommonMedia> findAllByAccountId(Long accountId) {
+    protected List<CommonMedia> findAllByAccountId(Long accountId) {
         List<CommonMediaEntity> foundCommonMedias = repository.findAllByAccountId(accountId);
 
         return foundCommonMedias.stream()
@@ -30,13 +30,13 @@ public class CommonMediaQueryService {
                 .toList();
     }
 
-    public List<CommonMedia> findAllByShelterId(Long shelterId) {
+    protected List<CommonMedia> findAllByShelterId(Long shelterId) {
         return repository.findAllByShelterId(shelterId).stream()
                 .map(mapper::toDto)
                 .toList();
     }
 
-    public List<CommonMedia> findAllByPetId(Long petId) {
+    protected List<CommonMedia> findAllByPetId(Long petId) {
         return repository.findAllByPetId(petId).stream()
                 .map(mapper::toDto)
                 .toList();

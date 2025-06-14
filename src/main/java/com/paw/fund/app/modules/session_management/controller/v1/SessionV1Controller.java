@@ -26,6 +26,6 @@ public class SessionV1Controller implements ISessionV1API {
     public ValueResponse<?> logout() {
         useCase.logout();
 
-        return ValueResponse.success("", HttpStatus.OK, API_VERSION );
+        return ValueResponse.success("", HttpStatus.OK );
     }
 }

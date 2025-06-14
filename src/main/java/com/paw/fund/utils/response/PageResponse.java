@@ -1,5 +1,6 @@
 package com.paw.fund.utils.response;
 
+import com.paw.fund.env.AppEnv;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
 
@@ -16,15 +17,14 @@ public record PageResponse<T>(
         String apiVersion
 ) {
     public static <T> PageResponse <T> success(List<T> data, Meta meta,
-                                               HttpStatus responseStatus,
-                                               String apiVersion) {
+                                               HttpStatus responseStatus) {
         return PageResponse.<T>builder()
                 .data(data)
                 .meta(meta)
                 .success(Boolean.TRUE)
                 .message(responseStatus.getReasonPhrase())
                 .status(String.valueOf(responseStatus.value()))
-                .apiVersion(apiVersion)
+                .apiVersion(AppEnv.API_VERSION)
                 .build();
     }
 }

@@ -4,9 +4,9 @@ import com.paw.fund.app.modules.account_management.controller.models.AccountResp
 import com.paw.fund.app.modules.account_management.controller.models.AccountV2Request;
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
 import com.paw.fund.app.modules.account_management.domain.account.Account;
-import com.paw.fund.app.modules.account_management.domain.account.usecase.AccountSave;
-import com.paw.fund.app.modules.account_management.service.account.usecase.IAccountUseCase;
-import com.paw.fund.app.modules.account_management.service.role.usecase.IRoleUseCase;
+import com.paw.fund.app.modules.account_management.domain.account.AccountSave;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.IAccountUseCase;
+import com.paw.fund.app.modules.account_management.domain.role.usecase.IRoleUseCase;
 import com.paw.fund.utils.response.ValueResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -42,8 +42,7 @@ public class AccountPubV2Controller implements IAccountPubV2API {
 
         return ValueResponse.success(
                 modelMapper.toResponse(savedAccount),
-                HttpStatus.CREATED,
-                APP_VERSION
+                HttpStatus.CREATED
         );
     }
 }

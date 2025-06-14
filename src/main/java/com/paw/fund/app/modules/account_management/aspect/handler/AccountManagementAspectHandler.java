@@ -1,8 +1,7 @@
 package com.paw.fund.app.modules.account_management.aspect.handler;
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
-import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
-import com.paw.fund.app.modules.account_management.domain.account.usecase.AccountSave;
+import com.paw.fund.app.modules.account_management.domain.account.AccountSave;
 import com.paw.fund.app.modules.account_management.domain.role.Role;
 import com.paw.fund.app.modules.account_management.service.account.AccountCommandService;
 import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleCommandService;
@@ -29,58 +28,47 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccountManagementAspectHandler {
-    @NonNull
-    AccountCommandService commandService;
 
-    @NonNull
-    RoleQueryService roleQueryService;
-
-    @NonNull
-    AccountRoleCommandService accountRoleCommandService;
-
-    @NonNull
-    CommonMediaCommandService commonMediaCommandService;
-
-    @Around("@annotation(com.paw.fund.app.modules.account_management.aspect.CreateAccountHelper)")
-    public Object createAccountCreateHelper(ProceedingJoinPoint joinPoint) throws Throwable {
-        try {
-            Object result = joinPoint.proceed();
-            Object arg = joinPoint.getArgs()[0];
-            if(result instanceof Account createdAccount && arg instanceof AccountSave accountSave) {
-                Account newAccount = accountSave.account();
-
-                List<Role> roles = List.of();
-
-                List<CommonMedia> commonMedias = List.of();
-
-                if(!CollectionUtils.isEmpty(newAccount.roles())) {
-                    List<String> roleCodes = newAccount.roles()
-                            .stream()
-                            .map(Role::roleCode)
-                            .toList();
-                    roles = roleQueryService.findAllByCodeIn(roleCodes);
-                    List<Long> roleIds = roles
-                            .stream()
-                            .map(Role::roleId)
-                            .toList();
-                    if(roleCodes.contains(ERole.STAFF.getCode()) && Objects.nonNull(accountSave.shelterId())) {
-                        accountRoleCommandService.saveAll(accountSave.shelterId(), createdAccount.accountId(), roleIds);
-                    } else {
-                        accountRoleCommandService.saveAll(createdAccount.accountId(), roleIds);
-                    }
-                }
-
-                if(!CollectionUtils.isEmpty(newAccount.medias())) {
-                    commonMedias = commonMediaCommandService.saveAllWithAccountId(createdAccount.accountId(),
-                            newAccount.medias());
-                }
-                return createdAccount
-                        .withMedias(commonMedias)
-                        .withRoles(roles);
-            }
-            throw new ServiceException();
-        } catch (Throwable e) {
-            throw e;
-        }
-    }
+//    @Around("@annotation(com.paw.fund.app.modules.account_management.aspect.CreateAccountHelper)")
+//    public Object createAccountCreateHelper(ProceedingJoinPoint joinPoint) throws Throwable {
+//        try {
+//            Object result = joinPoint.proceed();
+//            Object arg = joinPoint.getArgs()[0];
+//            if(result instanceof Account createdAccount && arg instanceof AccountSave accountSave) {
+//                Account newAccount = accountSave.account();
+//
+//                List<Role> roles = List.of();
+//
+//                List<CommonMedia> commonMedias = List.of();
+//
+//                if(!CollectionUtils.isEmpty(newAccount.roles())) {
+//                    List<String> roleCodes = newAccount.roles()
+//                            .stream()
+//                            .map(Role::roleCode)
+//                            .toList();
+//                    roles = roleQueryService.findAllByCodeIn(roleCodes);
+//                    List<Long> roleIds = roles
+//                            .stream()
+//                            .map(Role::roleId)
+//                            .toList();
+//                    if(roleCodes.contains(ERole.STAFF.getCode()) && Objects.nonNull(accountSave.shelterId())) {
+//                        accountRoleCommandService.saveAll(accountSave.shelterId(), createdAccount.accountId(), roleIds);
+//                    } else {
+//                        accountRoleCommandService.saveAll(createdAccount.accountId(), roleIds);
+//                    }
+//                }
+//
+//                if(!CollectionUtils.isEmpty(newAccount.medias())) {
+//                    commonMedias = commonMediaCommandService.saveAllWithAccountId(createdAccount.accountId(),
+//                            newAccount.medias());
+//                }
+//                return createdAccount
+//                        .withMedias(commonMedias)
+//                        .withRoles(roles);
+//            }
+//            throw new ServiceException();
+//        } catch (Throwable e) {
+//            throw e;
+//        }
+//    }
 }

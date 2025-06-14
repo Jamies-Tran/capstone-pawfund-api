@@ -3,8 +3,10 @@ package com.paw.fund.app.modules.media_management.service.common;
 import com.paw.fund.app.modules.form_management.domain.option.Option;
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.app.modules.media_management.domain.common.ICommonMediaMapper;
+import com.paw.fund.app.modules.media_management.domain.common.event.listener.CreateCommonMediaListener;
 import com.paw.fund.app.modules.media_management.repository.database.common.CommonMediaEntity;
 import com.paw.fund.app.modules.media_management.repository.database.common.ICommonMediaRepository;
+import com.paw.fund.common.aspect.annotation.validate.args.ValidateArgs;
 import com.paw.fund.enums.EMimeType;
 import com.paw.fund.utils.image.ImageUtil;
 import jakarta.annotation.Nonnull;
@@ -12,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +33,8 @@ public class CommonMediaCommandService {
     @NonNull
     ICommonMediaMapper mapper;
 
-    public List<CommonMedia> saveAllWithAccountId(Long accountId, List<CommonMedia> medias) {
+    @ValidateArgs
+    protected List<CommonMedia> saveAllWithAccountId(Long accountId, List<CommonMedia> medias) {
         List<CommonMediaEntity> newMedias = medias.stream()
                 .map(x -> {
                     EMimeType mimeType = ImageUtil.findMimeType(x.url());
@@ -49,12 +53,12 @@ public class CommonMediaCommandService {
                 .toList();
     };
 
-    public void deleteAllByAccountId(Long accountId) {
+    protected void deleteAllByAccountId(Long accountId) {
         List<CommonMediaEntity> commonMedias = repository.findAllByAccountId(accountId);
         repository.deleteAll(commonMedias);
     }
 
-    public List<CommonMedia> saveAllWithShelterId(Long shelterId, List<CommonMedia> medias) {
+    protected List<CommonMedia> saveAllWithShelterId(Long shelterId, List<CommonMedia> medias) {
         List<CommonMediaEntity> newMedias = medias.stream()
                 .map(x -> {
                     EMimeType mimeType = ImageUtil.findMimeType(x.url());

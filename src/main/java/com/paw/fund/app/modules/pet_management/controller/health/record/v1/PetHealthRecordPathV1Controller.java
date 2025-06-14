@@ -36,6 +36,6 @@ public class PetHealthRecordPathV1Controller implements IPetHealthRecordPathV1AP
         PetHealthRecord petHealthRecord = modelMapper.toDto(request);
         PetHealthRecord updatedPetHealthRecord = useCase.updatePetHealthRecord(PetHealthRecordUpdate.of(petHealthRecordId, petHealthRecord));
 
-        return ValueResponse.success(modelMapper.toResponse(updatedPetHealthRecord), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(updatedPetHealthRecord), HttpStatus.OK);
     }
 }

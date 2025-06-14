@@ -37,13 +37,13 @@ public class SessionV1PubController implements ISessionV1PubAPI {
         LoginInfo loginInfo = modelMapper.toDto(request);
         Session session = useCase.login(loginInfo);
 
-        return ValueResponse.success(modelMapper.toResponse(session), HttpStatus.CREATED, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(session), HttpStatus.CREATED);
     }
 
     @Override
     public ValueResponse<RefreshResponse> refresh(String refreshToken) {
         Session session = useCase.refresh(RefreshToken.of(refreshToken));
 
-        return ValueResponse.success(modelMapper.toRefreshResponse(session), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toRefreshResponse(session), HttpStatus.OK);
     }
 }

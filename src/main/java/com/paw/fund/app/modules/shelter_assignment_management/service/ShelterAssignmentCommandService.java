@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.shelter_assignment_management.service;
 
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
 import com.paw.fund.app.modules.shelter_assignment_management.domain.IShelterAssignmentMapper;
 import com.paw.fund.app.modules.shelter_assignment_management.domain.ShelterAssignment;
 import com.paw.fund.app.modules.shelter_assignment_management.repository.database.IShelterAssignmentRepository;
@@ -30,13 +30,9 @@ public class ShelterAssignmentCommandService {
     @NonNull
     IShelterAssignmentMapper mapper;
 
-    @NonNull
-    IAuditableUseCase auditableUseCase;
-
     public List<ShelterAssignment> saveAll(List<ShelterAssignment> shelterAssignments) {
         List<ShelterAssignmentEntity> newShelterAssignment = shelterAssignments.stream()
                 .map(mapper::toEntity)
-                .peek(x -> x.prepareSave(auditableUseCase.createAuditableForNew()))
                 .toList();
 
         return repository.saveAll(newShelterAssignment)
@@ -50,7 +46,6 @@ public class ShelterAssignmentCommandService {
                 .map(x -> {
                     validateUpdate(x);
                     mapper.update(x, shelterAssignment);
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     ShelterAssignmentEntity savedShelterAssignment = repository.save(x);
 
                     return mapper.toDto(savedShelterAssignment);
@@ -71,7 +66,6 @@ public class ShelterAssignmentCommandService {
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
                     x.setCancelReason(cancelReason);
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     ShelterAssignmentEntity savedShelterAssignment = repository.save(x);
 
                     return mapper.toDto(savedShelterAssignment);
@@ -139,7 +133,6 @@ public class ShelterAssignmentCommandService {
                             }
                         }
                     }
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     ShelterAssignmentEntity savedShelterAssignment = repository.save(x);
 
                     return mapper.toDto(savedShelterAssignment);

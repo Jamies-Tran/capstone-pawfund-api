@@ -38,6 +38,6 @@ public class ShelterRegistrationStatusCategoryV1PubController implements IShelte
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(responses, HttpStatus.OK, API_VERSION);
+        return ListResponse.success(responses, HttpStatus.OK);
     }
 }

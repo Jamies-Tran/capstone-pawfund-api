@@ -100,13 +100,12 @@ public class PetManagerHandler {
             if(result instanceof Pet pet) {
                 PetType petType = petTypeQueryService.findById(pet.petTypeId());
                 PetBreed petBreed = petBreedQueryService.findById(pet.petBreedId());
-                List<CommonMedia> medias = mediaQueryService.findAllByPetId(pet.petId());
+//                List<CommonMedia> medias = mediaQueryService.findAllByPetId(pet.petId());
                 List<PetHobby> petHobbies = petHobbyQueryService.findAllByPetId(pet.petId());
 
                 return pet
                         .withPetType(petType)
                         .withPetBreed(petBreed)
-                        .withMedias(medias)
                         .withHobbies(petHobbies);
             }
 
@@ -142,14 +141,14 @@ public class PetManagerHandler {
     @Around("@annotation(com.paw.fund.app.modules.pet_management.aspect.GetPetHealthRecordDetailHelper)")
     public Object getPetHealthRecordDetailHelper(ProceedingJoinPoint joinPoint) throws Throwable{
         try {
-            Object result = joinPoint.proceed();
-            if(result instanceof PetHealthRecord petHealthRecord) {
-                Pet pet = petQueryService.findById(petHealthRecord.petId());
-                Account staff = accountQueryService.findById(petHealthRecord.createdById());
-
-                return petHealthRecord.withPet(pet).withStaffLoggedRecord(staff);
-            }
-
+//            Object result = joinPoint.proceed();
+//            if(result instanceof PetHealthRecord petHealthRecord) {
+//                Pet pet = petQueryService.findById(petHealthRecord.petId());
+//                Account staff = accountQueryService.findById(petHealthRecord.createdById());
+//
+//                return petHealthRecord.withPet(pet).withStaffLoggedRecord(staff);
+//            }
+//
             throw new ServiceException();
         } catch (Throwable e) {
             throw e;

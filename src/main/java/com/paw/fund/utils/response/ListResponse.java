@@ -1,5 +1,6 @@
 package com.paw.fund.utils.response;
 
+import com.paw.fund.env.AppEnv;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
 
@@ -13,13 +14,13 @@ public record ListResponse<T>(
         String errorCode,
         String message,
         String apiVersion) {
-    public static <T> ListResponse <T> success(List<T> data, HttpStatus responseStatus, String apiVersion) {
+    public static <T> ListResponse <T> success(List<T> data, HttpStatus responseStatus) {
         return ListResponse.<T>builder()
                 .data(data)
                 .success(Boolean.TRUE)
                 .message(responseStatus.getReasonPhrase())
                 .status(String.valueOf(responseStatus.value()))
-                .apiVersion(apiVersion)
+                .apiVersion(AppEnv.API_VERSION)
                 .build();
     }
 }

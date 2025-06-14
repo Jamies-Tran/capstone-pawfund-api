@@ -35,6 +35,6 @@ public class MapV1PubController implements IMapV1PubAPI {
         Prediction prediction = useCase.predictPlaceList(CategorySearch.of(search, limit));
         PredictionResponse response = modelMapper.toResponse(prediction);
 
-        return ListResponse.success(response.predictions(), HttpStatus.OK, API_VERSION);
+        return ListResponse.success(response.predictions(), HttpStatus.OK);
     }
 }

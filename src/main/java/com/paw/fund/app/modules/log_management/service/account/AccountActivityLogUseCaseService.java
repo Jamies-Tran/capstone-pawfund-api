@@ -3,7 +3,7 @@ package com.paw.fund.app.modules.log_management.service.account;
 import com.paw.fund.app.modules.log_management.domain.account.AccountActivityLog;
 import com.paw.fund.app.modules.log_management.domain.account.usecase.AccountActivityLogFilter;
 import com.paw.fund.app.modules.log_management.service.account.usecase.IAccountActivityLogUseCase;
-import com.paw.fund.configuration.request.context.RequestContext;
+import com.paw.fund.common.context.request.RequestContext;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class AccountActivityLogUseCaseService implements IAccountActivityLogUseC
 
     @Override
     public Page<AccountActivityLog> getSelfLog(AccountActivityLogFilter filter) {
-        AccountActivityLogFilter filterHandle = filter.ofSelfLog(requestContext.getCurrentAccountLogin().accountId());
+        //AccountActivityLogFilter filterHandle = filter.ofSelfLog(requestContext.getCurrentAccountLogin().accountId());
 
-        return queryService.findAll(filterHandle.searchCriteria(), filterHandle.pageRequestCustom());
+        return queryService.findAll(filter.searchCriteria(), filter.pageRequestCustom());
     }
 }

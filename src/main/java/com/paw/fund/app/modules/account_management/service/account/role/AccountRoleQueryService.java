@@ -2,7 +2,7 @@ package com.paw.fund.app.modules.account_management.service.account.role;
 
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRoleSummarizeInfo;
-import com.paw.fund.app.modules.account_management.domain.account.role.IAccountRoleMapper;
+import com.paw.fund.app.modules.account_management.repository.database.account.role.IAccountRoleMapper;
 import com.paw.fund.app.modules.account_management.repository.database.account.role.IAccountRoleRepository;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import lombok.AccessLevel;

@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.log_management.service.pet;
 
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
 import com.paw.fund.app.modules.log_management.domain.pet.IPetActivityLogMapper;
 import com.paw.fund.app.modules.log_management.domain.pet.PetActivityLog;
 import com.paw.fund.app.modules.log_management.repository.databse.pet.IPetActivityLogRepository;
@@ -22,12 +22,8 @@ public class PetActivityLogCommandService {
     @NonNull
     IPetActivityLogMapper mapper;
 
-    @NonNull
-    IAuditableUseCase auditableUseCase;
-
     public void save(PetActivityLog petActivityLog) {
         PetActivityLogEntity newPetActivityLog = mapper.toEntity(petActivityLog);
-        newPetActivityLog.prepareSave(auditableUseCase.createAuditableForNew());
 
         repository.save(newPetActivityLog);
     }

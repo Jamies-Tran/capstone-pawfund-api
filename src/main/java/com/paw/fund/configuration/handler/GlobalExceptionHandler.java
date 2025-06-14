@@ -37,8 +37,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.UNAUTHORIZED,
-                EErrorCode.AUTHORIZE_EXCEPTION.getCode(),
-                API_VERSION);
+                EErrorCode.AUTHORIZE_EXCEPTION.getCode());
     }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
@@ -47,8 +46,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.UNAUTHORIZED,
-                EErrorCode.TOKEN_EXPIRED.getCode(),
-                API_VERSION);
+                EErrorCode.TOKEN_EXPIRED.getCode());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
@@ -57,8 +55,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.NOT_FOUND,
-                EErrorCode.RESOURCE_NOT_FOUND.getCode(),
-                API_VERSION);
+                EErrorCode.RESOURCE_NOT_FOUND.getCode());
     }
 
     @ResponseStatus(HttpStatus.CONFLICT)
@@ -67,8 +64,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.CONFLICT,
-                EErrorCode.RESOURCE_DUPLICATED.getCode(),
-                API_VERSION);
+                EErrorCode.RESOURCE_DUPLICATED.getCode());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -77,8 +73,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                EErrorCode.SERVER_ERROR.getCode(),
-                API_VERSION);
+                EErrorCode.SERVER_ERROR.getCode());
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -87,8 +82,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                EErrorCode.NULL_ERROR.getCode(),
-                API_VERSION
+                EErrorCode.NULL_ERROR.getCode()
         );
     }
 
@@ -98,8 +92,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                EErrorCode.ARGUMENT_ERROR.getCode(),
-                API_VERSION
+                EErrorCode.ARGUMENT_ERROR.getCode()
         );
     }
 
@@ -109,8 +102,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                EErrorCode.SERVICE_ERROR.getCode(),
-                API_VERSION
+                EErrorCode.SERVICE_ERROR.getCode()
         );
     }
 
@@ -120,8 +112,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.BAD_REQUEST,
-                EErrorCode.SERVICE_ERROR.getCode(),
-                API_VERSION
+                EErrorCode.SERVICE_ERROR.getCode()
         );
     }
 
@@ -131,8 +122,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.BAD_REQUEST,
-                EErrorCode.SERVICE_ERROR.getCode(),
-                API_VERSION
+                EErrorCode.SERVICE_ERROR.getCode()
         );
     }
 
@@ -142,8 +132,7 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 exc.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR,
-                EErrorCode.SERVICE_ERROR.getCode(),
-                API_VERSION
+                EErrorCode.SERVICE_ERROR.getCode()
         );
     }
 
@@ -157,7 +146,6 @@ public class GlobalExceptionHandler {
         return ValueResponse.error(
                 errors,
                 HttpStatus.BAD_REQUEST,
-                EErrorCode.RESOURCE_VALIDATE_FAIL.getCode(),
-                API_VERSION);
+                EErrorCode.RESOURCE_VALIDATE_FAIL.getCode());
     }
 }

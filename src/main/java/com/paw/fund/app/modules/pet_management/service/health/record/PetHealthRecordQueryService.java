@@ -7,7 +7,7 @@ import com.paw.fund.app.modules.pet_management.domain.health.record.usecase.PetH
 import com.paw.fund.app.modules.pet_management.repository.database.health.record.IPetHealthRecordRepository;
 import com.paw.fund.app.modules.pet_management.repository.database.health.record.PetHealthRecordEntity;
 import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
-import com.paw.fund.configuration.request.context.RequestContext;
+import com.paw.fund.common.context.request.RequestContext;
 import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.utils.request.PageRequestCustom;
 import lombok.AccessLevel;
@@ -43,9 +43,8 @@ public class PetHealthRecordQueryService {
     }
 
     private PetHealthRecordAction prepareAction(PetHealthRecordEntity foundPetHealthRecord) {
-        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
-        Boolean allowUpdate = Objects.equals(foundPetHealthRecord.getCreatedById(), currentAccountLogin.accountId());
-        Boolean allowDelete = Objects.equals(foundPetHealthRecord.getCreatedById(), currentAccountLogin.accountId());
+        Boolean allowUpdate = true;
+        Boolean allowDelete = true;
 
         return PetHealthRecordAction.of(allowUpdate, allowDelete);
     }

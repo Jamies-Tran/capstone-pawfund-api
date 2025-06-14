@@ -36,7 +36,7 @@ public class ShelterRegistrationPathV1Controller implements IShelterRegisterPath
         ShelterRegistration shelterRegistration = useCase
                 .receiveShelterRegistration(ShelterRegistrationId.of(shelterRegistrationId));
 
-        return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class ShelterRegistrationPathV1Controller implements IShelterRegisterPath
         ShelterRegistration shelterRegistration = useCase
                 .approveShelterRegistration(ShelterRegistrationId.of(shelterRegistrationId));
 
-        return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ShelterRegistrationPathV1Controller implements IShelterRegisterPath
         ShelterRegistration shelterRegistration = useCase
                 .rejectedShelterRegistration(registrationReject);
 
-        return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK);
     }
 
     @Override
@@ -62,6 +62,6 @@ public class ShelterRegistrationPathV1Controller implements IShelterRegisterPath
         ShelterRegistration shelterRegistration = useCase
                 .getShelterRegistrationDetail(ShelterRegistrationId.of(shelterRegistrationId));
 
-        return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(shelterRegistration), HttpStatus.OK);
     }
 }

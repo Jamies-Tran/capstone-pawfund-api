@@ -23,14 +23,14 @@ public class RoleQueryService {
     @NonNull
     IRoleMapper mapper;
 
-    public Role findByCode(String code) {
+    protected Role findByCode(String code) {
         ValidationUtil.validateArgumentNotNull(code);
         return repository.findByRoleCode(code)
                 .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
-    public List<Role> findAllByCodeIn(List<String> codes) {
+    protected List<Role> findAllByCodeIn(List<String> codes) {
         ValidationUtil.validateArgumentListNotNull(codes);
         return repository.findAllByRoleCodeIn(codes)
                 .stream()
@@ -38,7 +38,7 @@ public class RoleQueryService {
                 .toList();
     }
 
-    public List<Role> findAllByAccountId(Long accountId) {
+    protected List<Role> findAllByAccountId(Long accountId) {
         ValidationUtil.validateArgumentNotNull(accountId);
         return repository.findAllByAccountId(accountId)
                 .stream()

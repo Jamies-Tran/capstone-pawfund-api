@@ -80,8 +80,7 @@ public class PawFundSecurityFilter extends OncePerRequestFilter {
             ValueResponse<?> errorResponse = ValueResponse
                     .error("Phiên đăng nhập đã hết hạn.",
                             HttpStatus.UNAUTHORIZED,
-                            EErrorCode.TOKEN_EXPIRED.getCode(),
-                            API_VERSION);
+                            EErrorCode.TOKEN_EXPIRED.getCode());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.getWriter().write(AppObjectMapper.convertDataToJsonString(errorResponse));
@@ -89,8 +88,7 @@ public class PawFundSecurityFilter extends OncePerRequestFilter {
             ValueResponse<?> errorResponse = ValueResponse
                     .error(e.getMessage(),
                             HttpStatus.UNAUTHORIZED,
-                            EErrorCode.NO_AUTHORITY.getCode(),
-                            API_VERSION);
+                            EErrorCode.NO_AUTHORITY.getCode());
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setContentType("application/json");
             response.getWriter().write(AppObjectMapper.convertDataToJsonString(errorResponse));
@@ -99,8 +97,7 @@ public class PawFundSecurityFilter extends OncePerRequestFilter {
             ValueResponse<?> errorResponse = ValueResponse
                     .error("Lỗi xác thực",
                             HttpStatus.UNAUTHORIZED,
-                            EErrorCode.AUTHORIZE_EXCEPTION.getCode(),
-                            API_VERSION);
+                            EErrorCode.AUTHORIZE_EXCEPTION.getCode());
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType("application/json");
             response.getWriter().write(AppObjectMapper.convertDataToJsonString(errorResponse));

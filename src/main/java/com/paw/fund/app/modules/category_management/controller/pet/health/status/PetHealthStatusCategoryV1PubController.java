@@ -37,6 +37,6 @@ public class PetHealthStatusCategoryV1PubController implements IPetHealthStatusC
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(response, HttpStatus.OK, API_VERSION);
+        return ListResponse.success(response, HttpStatus.OK);
     }
 }

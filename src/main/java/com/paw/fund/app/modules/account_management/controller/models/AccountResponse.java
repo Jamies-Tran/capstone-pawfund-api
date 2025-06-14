@@ -2,6 +2,7 @@ package com.paw.fund.app.modules.account_management.controller.models;
 
 import com.paw.fund.app.modules.account_management.controller.models.medias.CommonMediaResponse;
 import com.paw.fund.app.modules.account_management.controller.models.role.RoleResponse;
+import com.paw.fund.common.category.CategoryResponse;
 import lombok.Builder;
 
 import java.time.LocalDate;
@@ -13,15 +14,17 @@ public record AccountResponse(
         String firstName,
         String lastName,
         String identification,
+
         String email,
         String phone,
         String address,
         LocalDate dateOfBirth,
-        String genderCode,
-        String genderName,
+        CategoryResponse gender,
+
+
+        String thumbnail,
         List<RoleResponse> roles,
-        String statusCode,
-        String statusName,
-        List<CommonMediaResponse> medias
+        List<CommonMediaResponse> medias,
+        CategoryResponse status
 ) {
 }

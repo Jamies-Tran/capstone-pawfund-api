@@ -37,6 +37,6 @@ public class PetStatusCategoryV1PubController implements IPetStatusCategoryV1Pub
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(responses, HttpStatus.OK, API_VERSION);
+        return ListResponse.success(responses, HttpStatus.OK);
     }
 }

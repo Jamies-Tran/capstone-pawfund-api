@@ -15,7 +15,7 @@ public interface IPetActivityLogRepository extends JpaRepository<PetActivityLogE
         WHERE (pal.petId = :#{#searchCriteria.petId()})
             AND (pal.createdAt BETWEEN :#{#searchCriteria.timeRange().get(0)} AND :#{#searchCriteria.timeRange().get(1)})
             AND (:#{#searchCriteria.isAccountSearchNullOrEmpty()} = TRUE
-                OR pal.createdByName ILIKE %:#{#searchCriteria.accountSearch()}%)
+                OR pal.createdBy ILIKE %:#{#searchCriteria.accountSearch()}%)
             AND (:#{#searchCriteria.isDescriptionSearchNullOrEmpty()} = TRUE
                 OR pal.description ILIKE %:#{#searchCriteria.descriptionSearch()}%)
             AND (:#{#searchCriteria.isActionCodesNullOrEmpty()} = TRUE

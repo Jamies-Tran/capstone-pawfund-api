@@ -34,6 +34,6 @@ public class PetHealthRecordV1Controller implements IPetHealthRecordV1API {
         PetHealthRecord petHealthRecord = modelMapper.toDto(request);
         PetHealthRecord savedPetHealthRecord = useCase.createPetHealthRecord(petHealthRecord);
 
-        return ValueResponse.success(modelMapper.toResponse(savedPetHealthRecord), HttpStatus.CREATED, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(savedPetHealthRecord), HttpStatus.CREATED);
     }
 }

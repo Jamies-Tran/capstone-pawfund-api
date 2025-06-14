@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.license_management.service;
 
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
 import com.paw.fund.app.modules.license_management.domain.ILicenseMapper;
 import com.paw.fund.app.modules.license_management.domain.License;
 import com.paw.fund.app.modules.license_management.repository.database.ILicenseRepository;
@@ -25,13 +25,9 @@ public class LicenseCommandService {
     @NonNull
     ILicenseMapper mapper;
 
-    @NonNull
-    IAuditableUseCase auditableUseCase;
-
     public License save(License license) {
         ValidationUtil.validateNotNullPointerException(license);
         LicenseEntity newLicense = mapper.toEntity(license);
-        newLicense.prepareSave(auditableUseCase.createAuditableForNew());
         LicenseEntity savedLicense = repository.save(newLicense);
 
         return mapper.toDto(savedLicense);
@@ -44,7 +40,6 @@ public class LicenseCommandService {
         return repository.findByStatusCodeNotDeletedAndLicenseId(licenseId)
                 .map(x -> {
                     mapper.update(x, license);
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     LicenseEntity savedLicense = repository.save(x);
 
                     return mapper.toDto(savedLicense);
@@ -60,7 +55,6 @@ public class LicenseCommandService {
                 .map(x -> {
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     LicenseEntity savedLicense = repository.save(x);
 
                     return mapper.toDto(savedLicense);
@@ -75,7 +69,6 @@ public class LicenseCommandService {
                 .map(x -> {
                     x.setStatusCode(EDeleteStatus.DELETED.getCode());
                     x.setStatusName(EDeleteStatus.DELETED.getName());
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
 
                     return repository.save(x);
                 })

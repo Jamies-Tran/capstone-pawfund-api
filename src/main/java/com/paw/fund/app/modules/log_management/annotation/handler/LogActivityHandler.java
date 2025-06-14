@@ -10,7 +10,6 @@ import com.paw.fund.app.modules.log_management.service.pet.PetActivityLogCommand
 import com.paw.fund.app.modules.pet_management.domain.health.record.PetHealthRecord;
 import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
 import com.paw.fund.configuration.handler.exceptions.ServiceException;
-import com.paw.fund.configuration.request.context.RequestContext;
 import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.enums.EHealthStatus;
 import com.paw.fund.enums.EPetAction;
@@ -39,27 +38,24 @@ public class LogActivityHandler {
     @NonNull
     PetActivityLogCommandService petActivityLogCommandService;
 
-    @NonNull
-    RequestContext requestContext;
-
     @AfterReturning(
             returning = "result",
             pointcut = "@annotation(com.paw.fund.app.modules.log_management.annotation.CreateAccountActivityLogHelper)")
     public void createAccountActivityLogHelper(Object result, JoinPoint joinPoint) {
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        CreateAccountActivityLogHelper createAccountActivityLogHelper = methodSignature.getMethod().getAnnotation(CreateAccountActivityLogHelper.class);
-        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
-        if(result instanceof Account account) {
-            Long refId = createAccountActivityLogHelper.isCurrentLogin() ? currentAccountLogin.accountId()
-                    : account.accountId();
-            AccountActivityLog log = AccountActivityLog.builder()
-                    .actionCode(createAccountActivityLogHelper.action().getCode())
-                    .actionName(createAccountActivityLogHelper.action().getName())
-                    .loggedAt(LocalDateTime.now())
-                    .accountId(refId)
-                    .build();
-            accountActivityLogcommandService.save(log);
-        }
+//        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+//        CreateAccountActivityLogHelper createAccountActivityLogHelper = methodSignature.getMethod().getAnnotation(CreateAccountActivityLogHelper.class);
+//        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+//        if(result instanceof Account account) {
+//            Long refId = createAccountActivityLogHelper.isCurrentLogin() ? currentAccountLogin.accountId()
+//                    : account.accountId();
+//            AccountActivityLog log = AccountActivityLog.builder()
+//                    .actionCode(createAccountActivityLogHelper.action().getCode())
+//                    .actionName(createAccountActivityLogHelper.action().getName())
+//                    .loggedAt(LocalDateTime.now())
+//                    .accountId(refId)
+//                    .build();
+//            accountActivityLogcommandService.save(log);
+//        }
     }
 
     @AfterReturning(

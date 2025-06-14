@@ -35,28 +35,28 @@ public class LicensePathV1Controller implements ILicensePathV1API {
     public ValueResponse<LicenseResponse> getLicenseDetail(Long licenseId) {
         License foundLicense = useCase.getLicenseDetail(LicenseId.of(licenseId));
 
-        return ValueResponse.success(modelMapper.toResponse(foundLicense), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(foundLicense), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<LicenseResponse> updateLicense(Long licenseId, LicenseUpdateRequest request) {
         License updateLicense = useCase.updateLicense(LicenseUpdate.of(licenseId, modelMapper.toDto(request)));
 
-        return ValueResponse.success(modelMapper.toResponse(updateLicense), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(updateLicense), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<LicenseResponse> activeLicense(Long licenseId) {
         License updateLicense = useCase.activeLicense(LicenseId.of(licenseId));
 
-        return ValueResponse.success(modelMapper.toResponse(updateLicense), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(updateLicense), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<LicenseResponse> inactiveLicense(Long licenseId) {
         License updateLicense = useCase.inactiveLicense(LicenseId.of(licenseId));
 
-        return ValueResponse.success(modelMapper.toResponse(updateLicense), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(updateLicense), HttpStatus.OK);
     }
 
     @Override

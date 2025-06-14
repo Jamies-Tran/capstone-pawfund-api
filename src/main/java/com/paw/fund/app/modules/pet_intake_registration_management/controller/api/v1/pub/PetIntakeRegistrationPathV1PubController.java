@@ -34,6 +34,6 @@ public class PetIntakeRegistrationPathV1PubController implements IPetIntakeRegis
         PetIntakeRegistration petIntakeRegistration = useCase.getPetIntakeRegistrationDetail(
                 PetIntakeRegistrationId.of(petIntakeRegistrationId));
 
-        return ValueResponse.success(modelMapper.toResponse(petIntakeRegistration), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petIntakeRegistration), HttpStatus.OK);
     }
 }

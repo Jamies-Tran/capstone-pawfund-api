@@ -34,6 +34,6 @@ public class PetIntakeRegistrationV2PubController implements IPetIntakeRegistrat
         PetIntakeRegistration petIntakeRegistration = modelMapper.toDto(request);
         PetIntakeRegistration savedPetIntakeRegistration = useCase.createPetIntakeRegistration(petIntakeRegistration);
 
-        return ValueResponse.success(modelMapper.toResponse(savedPetIntakeRegistration), HttpStatus.CREATED, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(savedPetIntakeRegistration), HttpStatus.CREATED);
     }
 }

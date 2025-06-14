@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.form_management.service.question;
 
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
 import com.paw.fund.app.modules.form_management.domain.option.Option;
 import com.paw.fund.app.modules.form_management.domain.question.IQuestionMapper;
 import com.paw.fund.app.modules.form_management.domain.question.Question;
@@ -39,9 +39,6 @@ public class QuestionCommandService {
     IQuestionMapper mapper;
 
     @NonNull
-    IAuditableUseCase auditableUseCase;
-
-    @NonNull
     OptionCommandService optionCommandService;
 
     public List<Question> saveAllWithFormId(Long formId, List<Question> questions) {
@@ -50,7 +47,6 @@ public class QuestionCommandService {
         List<Question> savedQuestions = questions.stream()
                 .map(x -> {
                     QuestionEntity newQuestion = mapper.toEntity(x.withFormId(formId));
-                    newQuestion.prepareSave(auditableUseCase.createAuditableForNew());
                     if(Objects.equals(x.questionTypeCode(), EQuestionType.MULTIPLE_CHOICE.getCode())
                             || Objects.equals(x.questionTypeCode(), EQuestionType.SINGLE_CHOICE.getCode())) {
                         if(CollectionUtils.isEmpty(x.options())) {
@@ -84,7 +80,6 @@ public class QuestionCommandService {
                 .peek(x -> {
                     x.setStatusCode(EDeleteStatus.DELETED.getCode());
                     x.setStatusName(EDeleteStatus.DELETED.getName());
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                 }).toList();
         optionCommandService.deleteAllByQuestionIdIn(deleteList.stream().map(QuestionEntity::getQuestionId).toList());
         repository.saveAll(deleteList);
@@ -97,7 +92,6 @@ public class QuestionCommandService {
                     QuestionEntity newQuestion;
                     if(Objects.isNull(q.questionId())) {
                         newQuestion = mapper.toEntity(q.withFormId(formId));
-                        newQuestion.prepareSave(auditableUseCase.createAuditableForNew());
 
                     } else {
                         newQuestion = foundQuestionMap.computeIfAbsent(q.questionId(), _ -> {
@@ -107,7 +101,6 @@ public class QuestionCommandService {
                         });
                         if(Objects.nonNull(newQuestion.getQuestionId())) {
                             mapper.update(newQuestion, q);
-                            newQuestion.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                         }
                     }
                     QuestionEntity savedQuestion = repository.save(newQuestion);
@@ -131,7 +124,6 @@ public class QuestionCommandService {
                 .stream().peek(x -> {
                     x.setStatusCode(EDeleteStatus.DELETED.getCode());
                     x.setStatusName(EDeleteStatus.DELETED.getName());
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                 }).toList();
         List<Long> foundQuestionIds = foundQuestions.stream().map(QuestionEntity::getQuestionId).toList();
         optionCommandService.deleteAllByQuestionIdIn(foundQuestionIds);

@@ -33,6 +33,6 @@ public class ShelterPathV1PubController implements IShelterPathV1PubAPI {
     public ValueResponse<ShelterResponse> getShelterId(Long shelterId) {
         Shelter shelter = useCase.getShelterDetail(ShelterId.of(shelterId));
 
-        return ValueResponse.success(modelMapper.toResponse(shelter), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(shelter), HttpStatus.OK);
     }
 }

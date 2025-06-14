@@ -1,7 +1,11 @@
 package com.paw.fund.app.modules.session_management.service;
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.IAccountUseCase;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountEmail;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountId;
 import com.paw.fund.app.modules.account_management.domain.role.Role;
+import com.paw.fund.app.modules.account_management.domain.role.usecase.IRoleUseCase;
 import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
 import com.paw.fund.app.modules.account_management.service.role.RoleQueryService;
 import com.paw.fund.app.modules.log_management.domain.account.AccountActivityLog;
@@ -44,10 +48,10 @@ public class SessionUseCaseService implements ISessionUseCase {
     PawFundPasswordEncoder appPasswordEncoder;
 
     @NonNull
-    AccountQueryService accountQueryService;
+    IAccountUseCase accountUseCase;
 
     @NonNull
-    RoleQueryService roleQueryService;
+    IRoleUseCase roleUseCase;
 
     @NonNull
     AccountActivityLogCommandService accountActivityLogCommandService;
@@ -57,8 +61,8 @@ public class SessionUseCaseService implements ISessionUseCase {
 
     @Override
     public Session login(LoginInfo login) {
-        Account account = accountQueryService.findByAccountEmail(login.email());
-        List<Role> roles = roleQueryService.findAllByAccountId(account.accountId());
+        Account account = accountUseCase.getAccountByEmail(AccountEmail.of(login.email()));
+        List<Role> roles = roleUseCase.getRoleByAccountId(AccountId.of(account.accountId()));
         if(!Objects.equals(account.statusCode(), EAccountStatus.ACTIVE.getCode())) {
             throw new AuthenticationException("Tài khoản chưa được kích hoạt");
         } else if(!appPasswordEncoder.bCryptpasswordEncoder().matches(login.password(), account.password())) {
@@ -101,7 +105,7 @@ public class SessionUseCaseService implements ISessionUseCase {
         if(LocalDateTime.now().isAfter(foundSession.refreshExpiredAt())) {
             throw new ResourceNotValidException("Token đã hết hạn");
         }
-        Account account = accountQueryService.findById(foundSession.accountId());
+        Account account = accountUseCase.getAccount(AccountId.of(foundSession.accountId()));
         String accessToken = tokenUtil.generateAccessToken(account.email());
         LocalDateTime accessExpiredAt = tokenUtil.accessTokenExpiredAt().toInstant().atZone(ZoneId.systemDefault())
                 .toLocalDateTime();

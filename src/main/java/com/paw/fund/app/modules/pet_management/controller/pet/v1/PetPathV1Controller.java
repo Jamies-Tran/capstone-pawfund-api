@@ -36,27 +36,27 @@ public class PetPathV1Controller implements IPetPathV1API {
     public ValueResponse<PetResponse> updatePet(Long petId, PetUpdateRequest request) {
         Pet pet = useCase.updatePet(PetUpdate.of(petId, modelMapper.toDto(request)));
         
-        return ValueResponse.success(modelMapper.toResponse(pet), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(pet), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<?> deletePet(Long petId) {
         useCase.deletePet(PetId.of(petId));
 
-        return ValueResponse.success(null, HttpStatus.NO_CONTENT, API_VERSION);
+        return ValueResponse.success(null, HttpStatus.NO_CONTENT);
     }
 
     @Override
     public ValueResponse<PetResponse> setAdoptablePet(Long petId) {
         Pet pet = useCase.setAdoptablePet(PetId.of(petId));
 
-        return ValueResponse.success(modelMapper.toResponse(pet), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(pet), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<PetResponse> setNotAdoptablePet(Long petId) {
         Pet pet = useCase.setNotadoptablePet(PetId.of(petId));
 
-        return ValueResponse.success(modelMapper.toResponse(pet), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(pet), HttpStatus.OK);
     }
 }

@@ -35,7 +35,7 @@ public class FormReplyPathV1Controller implements IFormReplyPathV1API {
     public ValueResponse<FormReplyResponse> getFormReplyDetail(Long formResponseId) {
         FormReply formReply = useCase.getFormReplyDetail(FormReplyId.of(formResponseId));
 
-        return ValueResponse.success(modelMapper.toResponse(formReply), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(formReply), HttpStatus.OK);
     }
 
     @Override
@@ -44,6 +44,6 @@ public class FormReplyPathV1Controller implements IFormReplyPathV1API {
         FormReply formReply = useCase.updateFormReply(FormReplyUpdate.of(formReplyRequest.formId(),
                 modelMapper.toDto(formReplyRequest)));
 
-        return ValueResponse.success(modelMapper.toResponse(formReply), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(formReply), HttpStatus.OK);
     }
 }

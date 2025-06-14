@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.account_management.repository.database.account;
 
-import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
+import com.paw.fund.common.context.auditor.repository.database.AuditableEntity;
 import com.paw.fund.enums.EAccountStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

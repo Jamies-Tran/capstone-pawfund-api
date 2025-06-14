@@ -1,16 +1,16 @@
 package com.paw.fund.app.modules.account_management.service.account;
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
-import com.paw.fund.app.modules.account_management.domain.account.IAccountMapper;
+import com.paw.fund.app.modules.account_management.repository.database.account.IAccountMapper;
 import com.paw.fund.app.modules.account_management.repository.database.account.AccountEntity;
 import com.paw.fund.app.modules.account_management.repository.database.account.IAccountRepository;
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
+import com.paw.fund.common.aspect.annotation.validate.args.ValidateArgs;
 import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.enums.EAccountStatus;
 import com.paw.fund.utils.password.encoder.PawFundPasswordEncoder;
-import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,21 +27,17 @@ public class AccountCommandService {
     IAccountRepository repository;
 
     @NonNull
-    IAuditableUseCase auditableUseCase;
-
-    @NonNull
     IAccountMapper mapper;
 
     @NonNull
     PawFundPasswordEncoder passwordEncoder;
 
-    public Account save(Account account) {
-        ValidationUtil.validateNotNullPointerException(account);
+    @ValidateArgs
+    protected Account save(Account account) {
         validateNewAccount(account);
-
         AccountEntity newAccount = mapper.toEntity(account);
-        newAccount.prepareSave(auditableUseCase.createAuditableForNew());
         AccountEntity savedAccount = repository.save(newAccount);
+
         return mapper.toDto(savedAccount);
     }
 
@@ -63,39 +59,38 @@ public class AccountCommandService {
         }
     }
 
-    public Account updateStatus(Long accountId, EAccountStatus status) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        ValidationUtil.validateArgumentNotNull(status);
+    @ValidateArgs
+    protected Account updateStatus(Long accountId, EAccountStatus status) {
         AccountEntity account = repository.findById(accountId)
                 .orElseThrow(ResourceNotFoundException::new);
         account.setStatusCode(status.getCode());
         account.setStatusName(status.getName());
-        account.prepareUpdate(auditableUseCase.createAuditableForUpdate());
         AccountEntity updatedAccount = repository.save(account);
 
         return mapper.toDto(updatedAccount);
     }
 
-    public Account updateEmail(Long accountId, String email) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        ValidationUtil.validateArgumentNotNull(email);
+    @ValidateArgs
+    protected Account updateEmailByAccountIdAndVerificationCode(Long accountId, String verificationCode) {
         AccountEntity account = repository.findById(accountId)
                 .orElseThrow(ResourceNotFoundException::new);
-        account.setEmail(email);
-        account.prepareUpdate(auditableUseCase.createAuditableForUpdate());
-        AccountEntity updatedAccount = repository.save(account);
+        AccountEntity updatedAccount = repository.findNewEmailByAccountIdAndVerificationCode(accountId, verificationCode)
+                .map(newEmail -> {
+                   account.setEmail(newEmail);
+
+                   return repository.save(account);
+                })
+                .orElseThrow(ResourceNotFoundException::new);
 
         return mapper.toDto(updatedAccount);
     }
 
-    public Account update(Long accountId, Account account) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        ValidationUtil.validateNotNullPointerException(account);
+    @ValidateArgs
+    protected Account update(Long accountId, Account account) {
         AccountEntity foundAccount = repository.findById(accountId)
                 .orElseThrow(ResourceNotFoundException::new);
         validateUpdateAccount(foundAccount, account);
         mapper.update(foundAccount, account);
-        foundAccount.prepareUpdate(auditableUseCase.createAuditableForUpdate());
         AccountEntity updatedAccount = repository.save(foundAccount);
 
         return mapper.toDto(updatedAccount);
@@ -117,9 +112,8 @@ public class AccountCommandService {
         }
     }
 
-    public Account updatePassword(Long accountId, String password) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        ValidationUtil.validateArgumentNotNull(password);
+    @ValidateArgs
+    protected Account updatePassword(Long accountId, String password) {
         AccountEntity foundAccount = repository.findById(accountId)
                 .orElseThrow(ResourceNotFoundException::new);
         foundAccount.setPassword(passwordEncoder.bCryptpasswordEncoder().encode(password));
@@ -128,8 +122,8 @@ public class AccountCommandService {
         return mapper.toDto(updatedAccount);
     }
 
-    public void delete(Long accountId) {
-        ValidationUtil.validateArgumentNotNull(accountId);
+    @ValidateArgs
+    protected void delete(Long accountId) {
         if(validateDelete(accountId)) {
             AccountEntity account = repository.findById(accountId)
                     .orElseThrow(ResourceNotFoundException::new);

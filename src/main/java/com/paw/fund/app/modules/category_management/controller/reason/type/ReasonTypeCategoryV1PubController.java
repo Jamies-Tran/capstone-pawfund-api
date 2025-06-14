@@ -38,6 +38,6 @@ public class ReasonTypeCategoryV1PubController implements IReasonTypeCategoryV1P
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(responses, HttpStatus.OK, API_VERSION);
+        return ListResponse.success(responses, HttpStatus.OK);
     }
 }

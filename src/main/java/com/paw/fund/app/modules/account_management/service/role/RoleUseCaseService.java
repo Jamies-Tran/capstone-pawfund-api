@@ -1,8 +1,10 @@
 package com.paw.fund.app.modules.account_management.service.role;
 
 import com.paw.fund.app.modules.account_management.domain.role.Role;
-import com.paw.fund.app.modules.account_management.domain.usecase.role.RoleCode;
-import com.paw.fund.app.modules.account_management.service.role.usecase.IRoleUseCase;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountId;
+import com.paw.fund.app.modules.account_management.domain.role.usecase.data.transfer.RoleCode;
+import com.paw.fund.app.modules.account_management.domain.role.usecase.IRoleUseCase;
+import com.paw.fund.app.modules.account_management.domain.role.usecase.data.transfer.RoleCodeList;
 import com.paw.fund.enums.ERole;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
@@ -10,6 +12,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +57,15 @@ public class RoleUseCaseService implements IRoleUseCase {
         ERole staffRole = ERole.STAFF;
 
         return getRole(RoleCode.of(staffRole.getCode()));
+    }
+
+    @Override
+    public List<Role> getRoleInCodeList(RoleCodeList roleCodeList) {
+        return queryService.findAllByCodeIn(roleCodeList.value());
+    }
+
+    @Override
+    public List<Role> getRoleByAccountId(AccountId accountId) {
+        return queryService.findAllByAccountId(accountId.value());
     }
 }

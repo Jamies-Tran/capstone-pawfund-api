@@ -39,7 +39,6 @@ public class QuestionTypeCategoryV1PubController implements IQuestionTypeCategor
 
         return ListResponse.success(
                 responses,
-                HttpStatus.OK,
-                API_VERSION);
+                HttpStatus.OK);
     }
 }

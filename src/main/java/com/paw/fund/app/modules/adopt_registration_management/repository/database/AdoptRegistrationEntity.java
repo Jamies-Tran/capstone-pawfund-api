@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.adopt_registration_management.repository.database;
 
-import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
+import com.paw.fund.common.context.auditor.repository.database.AuditableEntity;
 import com.paw.fund.enums.EAdoptRegistrationStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

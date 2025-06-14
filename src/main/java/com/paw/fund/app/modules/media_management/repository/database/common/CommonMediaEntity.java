@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.media_management.repository.database.common;
 
-import com.paw.fund.app.modules.auditable_management.domain.Auditable;
+import com.paw.fund.common.context.auditor.repository.database.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Entity
 @Table(name = "common_medias")
-public class CommonMediaEntity {
+public class CommonMediaEntity extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long commonMediaId;
@@ -48,37 +48,4 @@ public class CommonMediaEntity {
 
     @Column
     String mediaTypeName;
-
-    @Column
-    Long createdById;
-
-    @Column
-    String createdByName;
-
-    @Column
-    LocalDateTime createdAt;
-
-    @Column
-    Long updatedById;
-
-    @Column
-    String updatedByName;
-
-    @Column
-    LocalDateTime updatedAt;
-
-    public void prepareSave(Auditable auditable) {
-        this.setCreatedById(auditable.createdById());
-        this.setCreatedByName(auditable.createdByName());
-        this.setCreatedAt(auditable.createdAt());
-        this.setUpdatedById(auditable.updatedById());
-        this.setUpdatedByName(auditable.updatedByName());
-        this.setUpdatedAt(auditable.updatedAt());
-    }
-
-    public void prepareUpdate(Auditable auditable) {
-        this.setUpdatedById(auditable.updatedById());
-        this.setUpdatedByName(auditable.updatedByName());
-        this.setUpdatedAt(auditable.updatedAt());
-    }
 }

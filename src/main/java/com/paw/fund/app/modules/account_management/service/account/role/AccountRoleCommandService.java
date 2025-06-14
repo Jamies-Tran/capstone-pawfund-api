@@ -1,7 +1,7 @@
 package com.paw.fund.app.modules.account_management.service.account.role;
 
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
-import com.paw.fund.app.modules.account_management.domain.account.role.IAccountRoleMapper;
+import com.paw.fund.app.modules.account_management.repository.database.account.role.IAccountRoleMapper;
 import com.paw.fund.app.modules.account_management.repository.database.account.role.AccountRoleEntity;
 import com.paw.fund.app.modules.account_management.repository.database.account.role.IAccountRoleRepository;
 import com.paw.fund.utils.validation.ValidationUtil;
@@ -23,7 +23,7 @@ public class AccountRoleCommandService {
     @NonNull
     IAccountRoleMapper mapper;
 
-    public List<AccountRole> saveAll(Long accountId, List<Long> roleIds) {
+    protected List<AccountRole> saveAll(Long accountId, List<Long> roleIds) {
         ValidationUtil.validateArgumentNotNull(accountId);
         ValidationUtil.validateArgumentListNotNull(roleIds);
         List<AccountRoleEntity> newAccountRoles = roleIds.stream()
@@ -38,7 +38,8 @@ public class AccountRoleCommandService {
                 .map(mapper::toDto)
                 .toList();
     }
-    public List<AccountRole> saveAll(Long shelterId, Long accountId, List<Long> roleIds) {
+
+    protected List<AccountRole> saveAll(Long shelterId, Long accountId, List<Long> roleIds) {
         ValidationUtil.validateArgumentNotNull(accountId);
         ValidationUtil.validateArgumentListNotNull(roleIds);
         List<AccountRoleEntity> newAccountRoles = roleIds.stream()

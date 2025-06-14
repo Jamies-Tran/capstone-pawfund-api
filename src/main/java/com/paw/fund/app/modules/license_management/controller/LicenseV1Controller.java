@@ -42,7 +42,7 @@ public class LicenseV1Controller implements ILicenseV1API {
     public ValueResponse<LicenseResponse> createLicense(LicenseRequest request) {
         License savedLicense = useCase.createLicense(modelMapper.toDto(request));
 
-        return ValueResponse.success(modelMapper.toResponse(savedLicense), HttpStatus.CREATED, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(savedLicense), HttpStatus.CREATED);
     }
 
     @Override
@@ -58,7 +58,6 @@ public class LicenseV1Controller implements ILicenseV1API {
         return PageResponse.success(
                 responses.getContent(),
                 Meta.of(responses),
-                HttpStatus.OK,
-                API_VERSION);
+                HttpStatus.OK);
     }
 }

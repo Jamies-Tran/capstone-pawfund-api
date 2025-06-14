@@ -34,6 +34,6 @@ public class PetV1Controller implements IPetV1API {
         Pet pet = modelMapper.toDto(request);
         Pet savePet = useCase.createPet(pet);
 
-        return ValueResponse.success(modelMapper.toResponse(savePet), HttpStatus.CREATED, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(savePet), HttpStatus.CREATED);
     }
 }

@@ -44,7 +44,7 @@ public class ShelterAssignmentV1Controller implements IShelterAssignmentV1API {
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(shelterAssignments, HttpStatus.CREATED, ShelterAssignmentModuleConstant.getAppVersion());
+        return ListResponse.success(shelterAssignments, HttpStatus.CREATED);
     }
 
     @Override
@@ -63,8 +63,7 @@ public class ShelterAssignmentV1Controller implements IShelterAssignmentV1API {
         return PageResponse.success(
                 responses.getContent(),
                 Meta.of(responses),
-                HttpStatus.OK,
-                ShelterAssignmentModuleConstant.getAppVersion()
+                HttpStatus.OK
         );
     }
 }

@@ -45,6 +45,6 @@ public class ShelterPathV1Controller implements IShelterPathV1API {
         ShelterActive shelterActive = ShelterActive.of(shelterId, request.description(),  request.maximumPetCapacity(), medias);
         Shelter shelter = useCase.activeShelter(shelterActive);
 
-        return ValueResponse.success(modelMapper.toResponse(shelter), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(shelter), HttpStatus.OK);
     }
 }

@@ -17,19 +17,8 @@ public class ShelterAssignmentModuleConstant {
 
     static String APP_VERSION;
 
-    static String SHELTER_ASSIGNMENTS_DESTINATION;
-
-    @Value("${app.version}")
-    public static void setAppVersion(String appVersion) {
-        ShelterAssignmentModuleConstant.APP_VERSION = appVersion;
-    }
-
-    public static String getAppVersion() {
-        return ShelterAssignmentModuleConstant.APP_VERSION;
-    }
-
     @PostConstruct
     public void postConstruct() {
-        log.info("MODULE: [{} {}]", MODULE_NAME, APP_VERSION);
+        log.info("MODULE: [{} {}]", MODULE_NAME);
     }
 }
