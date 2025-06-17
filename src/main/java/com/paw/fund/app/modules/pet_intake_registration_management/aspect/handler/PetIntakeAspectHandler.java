@@ -15,7 +15,6 @@ import com.paw.fund.app.modules.pet_management.domain.type.PetType;
 import com.paw.fund.app.modules.pet_management.service.type.PetTypeQueryService;
 import com.paw.fund.configuration.handler.exceptions.ServiceException;
 import com.paw.fund.common.context.request.RequestContext;
-import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.utils.websocket.MessageTemplateHandler;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -31,7 +30,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 @Aspect
 @Component

@@ -8,6 +8,8 @@ import com.paw.fund.app.modules.media_management.repository.database.common.Comm
 import com.paw.fund.app.modules.media_management.repository.database.common.ICommonMediaRepository;
 import com.paw.fund.common.aspect.annotation.validate.args.ValidateArgs;
 import com.paw.fund.enums.EMimeType;
+import com.paw.fund.utils.CollectionUtils;
+import com.paw.fund.utils.ObjectUtils;
 import com.paw.fund.utils.image.ImageUtil;
 import jakarta.annotation.Nonnull;
 import lombok.AccessLevel;
@@ -22,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -53,88 +56,40 @@ public class CommonMediaCommandService {
                 .toList();
     };
 
-    protected void deleteAllByAccountId(Long accountId) {
-        List<CommonMediaEntity> commonMedias = repository.findAllByAccountId(accountId);
-        repository.deleteAll(commonMedias);
-    }
-
-    protected List<CommonMedia> saveAllWithShelterId(Long shelterId, List<CommonMedia> medias) {
-        List<CommonMediaEntity> newMedias = medias.stream()
-                .map(x -> {
-                    EMimeType mimeType = ImageUtil.findMimeType(x.url());
-                    return x
-                            .withShelterId(shelterId)
-                            .withMediaTypeCode(mimeType.getType())
-                            .withMediaTypeName(mimeType.getName());
-                })
-                .map(mapper::toEntity)
-                .toList();
-        List<CommonMediaEntity> savedMedias = repository.saveAll(newMedias);
-
-        return savedMedias
-                .stream()
-                .map(mapper::toDto)
-                .toList();
-    };
-
-    public List<CommonMedia> saveAllWithPetId(Long petId, List<CommonMedia> medias) {
-        List<CommonMediaEntity> newMedias = medias.stream()
-                .map(x -> {
-                    EMimeType mimeType = ImageUtil.findMimeType(x.url());
-                    return x.withPetId(petId)
-                            .withMediaTypeCode(mimeType.getType())
-                            .withMediaTypeName(mimeType.getName());
-                })
-                .map(mapper::toEntity)
-                .toList();
-        List<CommonMediaEntity> saveMedias = repository.saveAll(newMedias);
-
-        return saveMedias.stream()
-                .map(mapper::toDto)
-                .toList();
-    }
-
-    public List<CommonMedia> updateAllByPetId(Long petId, List<CommonMedia> medias) {
-        List<CommonMediaEntity> existedMedias = repository.findAllByPetId(petId);
-        List<Long> deletedIds = existedMedias.stream()
+    protected List<CommonMedia> updateAllByAccountId(Long accountId, List<CommonMedia> medias) {
+        List<CommonMediaEntity> foundMedias = repository.findAllByAccountId(accountId);
+        Map<Long, CommonMediaEntity> foundMediaMap = foundMedias.stream()
+                .collect(Collectors.toMap(CommonMediaEntity::getCommonMediaId, media -> media));
+        List<Long> foundIds = foundMedias.stream()
                 .map(CommonMediaEntity::getCommonMediaId)
-                .filter(x -> medias.stream().noneMatch(xx ->  Optional
-                        .ofNullable(xx.commonMediaId())
-                        .orElse(Long.MIN_VALUE).equals(x)))
                 .toList();
-        repository.deleteAllById(deletedIds);
 
-        Map<Long, CommonMediaEntity> existedMediaMap = existedMedias.stream()
-                .collect(Collectors.toMap(CommonMediaEntity::getCommonMediaId, x -> x));
-        List<CommonMediaEntity> newCommonMedias = medias.stream()
-                .map(x -> {
-                    CommonMediaEntity media;
-                    EMimeType mimeType = ImageUtil.findMimeType(x.url());
-                    if(Objects.nonNull(x.commonMediaId())) {
-                        media = existedMediaMap.computeIfAbsent(x.commonMediaId(), _ -> {
-                            CommonMediaEntity altMedia = mapper.toEntity(x
-                                    .withPetId(petId)
-                                    .withMediaTypeCode(mimeType.getCode())
-                                    .withMediaTypeName(mimeType.getName()));
-                            altMedia.setCommonMediaId(null);
+        List<CommonMediaEntity> updateMedias = medias.stream()
+                .filter(media -> ObjectUtils.isNotNull(media.commonMediaId())
+                        && CollectionUtils.contains(foundIds, media.commonMediaId()))
+                .map(media -> {
+                    CommonMediaEntity foundMedia = foundMediaMap.get(media.commonMediaId());
+                    mapper.update(foundMedia, media);
 
-                            return altMedia;
-                        });
-
-                    } else {
-                        media = mapper.toEntity(x
-                                .withPetId(petId)
-                                .withMediaTypeCode(mimeType.getType())
-                                .withMediaTypeName(mimeType.getName()));
-                    }
-                    mapper.update(media, x);
-
-                    return media;
+                    return foundMedia;
                 })
                 .toList();
-        List<CommonMediaEntity> saveMedias = repository.saveAll(newCommonMedias);
+        List<CommonMediaEntity> newMedias = medias.stream()
+                .filter(media -> ObjectUtils.isNull(media.commonMediaId())
+                        || CollectionUtils.notContains(foundIds, media.commonMediaId()))
+                .map(media -> {
+                    EMimeType mimeType = ImageUtil.findMimeType(media.url());
+                    return media
+                            .withAccountId(accountId)
+                            .withMediaTypeCode(mimeType.getType())
+                            .withMediaTypeName(mimeType.getName());
+                })
+                .map(mapper::toEntity)
+                .toList();
 
-        return saveMedias.stream()
+        List<CommonMediaEntity> saveMedias = Stream.concat(updateMedias.stream(), newMedias.stream()).toList();
+        return repository.saveAll(saveMedias)
+                .stream()
                 .map(mapper::toDto)
                 .toList();
     }

@@ -13,6 +13,14 @@ public class CollectionUtils {
         return collection != null && !collection.isEmpty();
     }
 
+    public static Boolean contains(Collection<?> collection, Object element) {
+        return collection != null && collection.contains(element);
+    }
+
+    public static Boolean notContains(Collection<?> collection, Object element) {
+        return collection == null || !collection.contains(element);
+    }
+
     public static <T> List<T> getDefault(Collection<T> collection) {
         if(collection == null) {
             return new ArrayList<>();

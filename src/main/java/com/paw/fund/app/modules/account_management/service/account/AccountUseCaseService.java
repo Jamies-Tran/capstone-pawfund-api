@@ -17,15 +17,15 @@ import com.paw.fund.app.modules.account_management.service.account.role.AccountR
 import com.paw.fund.app.modules.log_management.annotation.CreateAccountActivityLogHelper;
 import com.paw.fund.app.modules.log_management.domain.account.AccountActivityLog;
 import com.paw.fund.app.modules.log_management.service.account.AccountActivityLogCommandService;
+import com.paw.fund.app.modules.login_info_management.domain.usecase.data.transfer.CurrentAccountLogin;
+import com.paw.fund.app.modules.login_info_management.repository.database.ILoginInfoUseCase;
 import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.app.modules.media_management.domain.common.event.listener.CreateCommonMediaListener;
+import com.paw.fund.app.modules.media_management.domain.common.event.listener.UpdateCommonMediaListener;
 import com.paw.fund.app.modules.media_management.domain.common.usecase.ICommonMediaUseCase;
-import com.paw.fund.app.modules.media_management.service.common.CommonMediaCommandService;
-import com.paw.fund.app.modules.media_management.service.common.CommonMediaQueryService;
 import com.paw.fund.app.modules.account_management.domain.role.Role;
 import com.paw.fund.app.modules.verification_management.domain.event.listener.DeleteVerificationEventListener;
 import com.paw.fund.common.aspect.annotation.validate.args.ValidateArgs;
-import com.paw.fund.common.context.request.RequestContext;
 import com.paw.fund.enums.EAccountAction;
 import com.paw.fund.enums.EAccountStatus;
 import com.paw.fund.enums.EVerificationType;
@@ -63,6 +63,9 @@ public class AccountUseCaseService implements IAccountUseCase {
     ICommonMediaUseCase commonMediaUseCase;
 
     @NonNull
+    ILoginInfoUseCase loginInfoUseCase;
+
+    @NonNull
     AccountActivityLogCommandService accountActivityLogCommandService;
 
     @NonNull
@@ -70,15 +73,10 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @Override
     @ValidateArgs
-    public Account getAccount(AccountId accountId) {
-        return queryService.findById(accountId.value());
-    }
-
-    @Override
-    @ValidateArgs
+    @Transactional(readOnly = true)
     public Account getAccountForAuth(AccountEmail accountEmail) {
         Account foundAccount = queryService.findByAccountEmail(accountEmail.value());
-        List<Role> roles = roleUseCase.getRoleByAccountId(AccountId.of(foundAccount.accountId()));
+        List<Role> roles = getRoleByAccountId(foundAccount.accountId());
 
         return foundAccount.withRoles(roles);
     }
@@ -143,7 +141,7 @@ public class AccountUseCaseService implements IAccountUseCase {
     @Transactional
     @ValidateArgs
     public Account verifyNewEmail(AccountVerification accountVerification) {
-        Account currentAccountLogin = getCurrentAccountLogin();
+        CurrentAccountLogin currentAccountLogin = getCurrentAccountLogin();
         Account updatedAccount = commandService.updateEmailByAccountIdAndVerificationCode(
                 currentAccountLogin.accountId(),
                 accountVerification.verificationCode()
@@ -155,11 +153,10 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @Override
     @Transactional
-    @CreateAccountActivityLogHelper(action = EAccountAction.SELF_UPDATE, isCurrentLogin = true)
     public Account selfChangeInfo(Account account) {
-        Account currentAccountLogin = getCurrentAccountLogin();
+        CurrentAccountLogin currentAccountLogin = getCurrentAccountLogin();
         Account updatedAccount = commandService.update(currentAccountLogin.accountId(), account);
-        publisher.publishEvent(new CreateCommonMediaListener(
+        publisher.publishEvent(new UpdateCommonMediaListener(
                 this,
                 currentAccountLogin.accountId(),
                 account.medias()
@@ -173,7 +170,6 @@ public class AccountUseCaseService implements IAccountUseCase {
     @CreateAccountActivityLogHelper(action = EAccountAction.ACTIVE_ACCOUNT, isCurrentLogin = true)
     public Account activeAccount(AccountId accountId) {
         ValidationUtil.validateNotNullPointerException(accountId);
-        Account currentAccountLogin = getCurrentAccountLogin();
 
         return commandService.updateStatus(accountId.value(), EAccountStatus.ACTIVE);
     }
@@ -192,15 +188,16 @@ public class AccountUseCaseService implements IAccountUseCase {
     @CreateAccountActivityLogHelper(action = EAccountAction.SELF_CHANGE_PASS, isCurrentLogin = true)
     public Account selfChangePassword(AccountPassword accountPassword) {
         ValidationUtil.validateNotNullPointerException(accountPassword);
-        Account currentAccountLogin = getCurrentAccountLogin();
+        CurrentAccountLogin currentAccountLogin = getCurrentAccountLogin();
 
         return commandService.updatePassword(currentAccountLogin.accountId(), accountPassword.value());
     }
 
     @Override
+    @Transactional
     public Account changePassword(AccountUpdatePassword accountUpdatePassword) {
         ValidationUtil.validateNotNullPointerException(accountUpdatePassword);
-        Account currentAccountLogin = getCurrentAccountLogin();
+        CurrentAccountLogin currentAccountLogin = getCurrentAccountLogin();
         Account account = commandService.updatePassword(accountUpdatePassword.accountId(),
                 accountUpdatePassword.password());
         AccountActivityLog log = AccountActivityLog.builder()
@@ -214,10 +211,11 @@ public class AccountUseCaseService implements IAccountUseCase {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Account getAccountDetail(AccountId accountId) {
         Account account = queryService.findById(accountId.value());
-        List<Role> roles = roleUseCase.getRoleByAccountId(AccountId.of(accountId.value()));
-        List<CommonMedia> commonMedia = commonMediaUseCase.getCommonMediaListByAccountId(accountId);
+        List<Role> roles = getRoleByAccountId(accountId.value());
+        List<CommonMedia> commonMedia = getCommonMediaByAccountId(accountId.value());
 
         return account
                 .withRoles(roles)
@@ -225,11 +223,12 @@ public class AccountUseCaseService implements IAccountUseCase {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Account getSelfDetail() {
-        Account currentAccountLogin = getCurrentAccountLogin();
+        CurrentAccountLogin currentAccountLogin = getCurrentAccountLogin();
         Account account = queryService.findById(currentAccountLogin.accountId());
-        List<Role> roles = roleUseCase.getRoleByAccountId(AccountId.of(account.accountId()));
-        List<CommonMedia> commonMedia = commonMediaUseCase.getCommonMediaListByAccountId(AccountId.of(account.accountId()));
+        List<Role> roles = getRoleByAccountId(currentAccountLogin.accountId());
+        List<CommonMedia> commonMedia = getCommonMediaByAccountId(currentAccountLogin.accountId());
 
         return account
                 .withRoles(roles)
@@ -237,6 +236,7 @@ public class AccountUseCaseService implements IAccountUseCase {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Account> getAccountList(AccountFilter filter) {
         return queryService.findAll(filter.searchCriteria(), filter.pageRequestCustom());
     }
@@ -255,7 +255,7 @@ public class AccountUseCaseService implements IAccountUseCase {
     @CreateAccountActivityLogHelper(action = EAccountAction.REGISTER_ADOPTER, isCurrentLogin = true)
     public Account registerRole(AccountRegisterRole registerRole) {
         ValidationUtil.validateNotNullPointerException(registerRole);
-        Account currentAccountLogin = getCurrentAccountLogin();
+        CurrentAccountLogin currentAccountLogin = getCurrentAccountLogin();
         Account account = commandService.update(currentAccountLogin.accountId(), registerRole.account());
         List<String> roleCodes = registerRole.roles().stream()
                 .map(Role::roleCode)
@@ -266,17 +266,20 @@ public class AccountUseCaseService implements IAccountUseCase {
     }
 
     @Override
-    public Account tryToGetAccountByEmail(AccountEmail accountEmail) {
-        return queryService.findByAccountEmailNullable(accountEmail.value())
-                .orElse(null);
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public Account getAccountByEmail(AccountEmail accountEmail) {
         return queryService.findByAccountEmail(accountEmail.value());
     }
 
-    private Account getCurrentAccountLogin() {
-        return queryService.findByAccountEmail(RequestContext.getCurrentAccountLogin());
+    private CurrentAccountLogin getCurrentAccountLogin() {
+        return loginInfoUseCase.getCurrentAccountLogin();
+    }
+    
+    private List<Role> getRoleByAccountId(Long accountId) {
+        return roleUseCase.getRoleByAccountId(AccountId.of(accountId));
+    }
+    
+    private List<CommonMedia> getCommonMediaByAccountId(Long accountId) {
+        return commonMediaUseCase.getCommonMediaListByAccountId(AccountId.of(accountId));
     }
 }

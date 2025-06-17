@@ -12,7 +12,6 @@ import com.paw.fund.app.modules.account_management.domain.account.usecase.data.t
 import org.springframework.data.domain.Page;
 
 public interface IAccountUseCase {
-    Account getAccount(AccountId accountId);
 
     Account getAccountForAuth(AccountEmail accountEmail);
 
@@ -41,8 +40,6 @@ public interface IAccountUseCase {
     void deleteAccount(AccountId accountId);
 
     Account registerRole(AccountRegisterRole registerRole);
-
-    Account tryToGetAccountByEmail(AccountEmail accountEmail);
 
     Account getAccountByEmail(AccountEmail accountEmail);
 }

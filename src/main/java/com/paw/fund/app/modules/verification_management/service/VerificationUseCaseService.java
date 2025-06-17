@@ -16,7 +16,6 @@ import com.paw.fund.app.modules.verification_management.domain.usecase.IVerifica
 import com.paw.fund.common.aspect.annotation.validate.args.ValidateArgs;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.common.context.request.RequestContext;
-import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.enums.EAccountAction;
 import com.paw.fund.enums.EAccountStatus;
 import com.paw.fund.enums.EVerificationType;

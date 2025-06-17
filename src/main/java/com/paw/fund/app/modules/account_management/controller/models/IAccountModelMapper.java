@@ -1,5 +1,6 @@
 package com.paw.fund.app.modules.account_management.controller.models;
 
+import com.paw.fund.app.modules.account_management.controller.models.medias.ICommonMediaModelMapper;
 import com.paw.fund.app.modules.account_management.controller.models.role.IRoleModelMapper;
 import com.paw.fund.app.modules.account_management.domain.account.Account;
 import com.paw.fund.app.modules.account_management.domain.role.Role;
@@ -12,7 +13,10 @@ import java.util.List;
 @Mapper(
         componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = {IRoleModelMapper.class}
+        uses = {
+                IRoleModelMapper.class,
+                ICommonMediaModelMapper.class
+        }
 )
 public interface IAccountModelMapper {
     Account toDto(AccountRequest request);
@@ -24,8 +28,6 @@ public interface IAccountModelMapper {
     @Mapping(target = "status.code", source = "statusCode")
     @Mapping(target = "status.name", source = "statusName")
     AccountResponse toResponse(Account dto);
-
-    Account toDto(AccountUpdateRequest updateRequest);
 
     Account toDto(AccountV2Request request);
 

@@ -8,7 +8,6 @@ import com.paw.fund.app.modules.pet_management.repository.database.health.record
 import com.paw.fund.app.modules.pet_management.repository.database.health.record.PetHealthRecordEntity;
 import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
 import com.paw.fund.common.context.request.RequestContext;
-import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.utils.request.PageRequestCustom;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -16,8 +15,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor

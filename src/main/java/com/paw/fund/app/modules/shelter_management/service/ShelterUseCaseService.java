@@ -4,7 +4,6 @@ import com.paw.fund.app.modules.account_management.service.account.AccountQueryS
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
 import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleCommandService;
 import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
-import com.paw.fund.app.modules.account_management.domain.role.Role;
 import com.paw.fund.app.modules.account_management.domain.role.usecase.IRoleUseCase;
 import com.paw.fund.app.modules.shelter_management.aspect.AttachMedia;
 import com.paw.fund.app.modules.shelter_management.aspect.CreateShelterMedia;
@@ -20,7 +19,6 @@ import com.paw.fund.app.modules.shelter_management.service.registration.ShelterR
 import com.paw.fund.app.modules.shelter_management.service.usecase.IShelterUseCase;
 import com.paw.fund.configuration.handler.exceptions.RequestNotAvailable;
 import com.paw.fund.common.context.request.RequestContext;
-import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.enums.EShelterStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;

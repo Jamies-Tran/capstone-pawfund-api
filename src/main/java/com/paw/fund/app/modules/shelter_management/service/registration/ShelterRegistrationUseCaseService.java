@@ -3,7 +3,6 @@ package com.paw.fund.app.modules.shelter_management.service.registration;
 import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
 import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
-import com.paw.fund.app.modules.account_management.domain.role.Role;
 import com.paw.fund.app.modules.shelter_management.aspect.PublishRegistration;
 import com.paw.fund.app.modules.shelter_management.aspect.SendMail;
 import com.paw.fund.app.modules.shelter_management.domain.registration.ShelterRegistration;
@@ -14,9 +13,7 @@ import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.S
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationReject;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationSearchCriteria;
 import com.paw.fund.app.modules.shelter_management.service.usecase.IShelterRegistrationUseCase;
-import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
 import com.paw.fund.common.context.request.RequestContext;
-import com.paw.fund.common.CurrentAccountLogin;
 import com.paw.fund.enums.ERole;
 import com.paw.fund.enums.EShelterRegistrationStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
@@ -29,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor

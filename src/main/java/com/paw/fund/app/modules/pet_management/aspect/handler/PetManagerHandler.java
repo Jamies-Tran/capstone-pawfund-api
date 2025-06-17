@@ -74,18 +74,18 @@ public class PetManagerHandler {
     @Around("@annotation(com.paw.fund.app.modules.pet_management.aspect.CreatePetHelper)")
     public Object createPetHelper(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
-            Object result = joinPoint.proceed();
-            Object arg = joinPoint.getArgs()[0];
-            if(result instanceof Pet savedPet && arg instanceof Pet requestPet) {
-                List<PetHobby> petHobbies = petHobbyCommandService
-                        .saveAllWithPetId(savedPet.petId(), requestPet.hobbies());
-                List<CommonMedia> medias = mediaCommandService
-                        .saveAllWithPetId(savedPet.petId(), requestPet.medias());
-
-                return savedPet
-                        .withHobbies(petHobbies)
-                        .withMedias(medias);
-            }
+//            Object result = joinPoint.proceed();
+//            Object arg = joinPoint.getArgs()[0];
+//            if(result instanceof Pet savedPet && arg instanceof Pet requestPet) {
+//                List<PetHobby> petHobbies = petHobbyCommandService
+//                        .saveAllWithPetId(savedPet.petId(), requestPet.hobbies());
+//                List<CommonMedia> medias = mediaCommandService
+//                        .saveAllWithPetId(savedPet.petId(), requestPet.medias());
+//
+//                return savedPet
+//                        .withHobbies(petHobbies)
+//                        .withMedias(medias);
+//            }
 
             throw new ServiceException();
         } catch (Throwable e) {
@@ -118,19 +118,19 @@ public class PetManagerHandler {
     @Around("@annotation(com.paw.fund.app.modules.pet_management.aspect.UpdatePetHelper)")
     public Object updatePetHelper(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
-            Object result = joinPoint.proceed();
-            Object arg = joinPoint.getArgs()[0];
-            if(result instanceof Pet updatedPet && arg instanceof PetUpdate petUpdate) {
-                Pet newPet = petUpdate.pet();
-                List<CommonMedia> medias = mediaCommandService
-                        .updateAllByPetId(updatedPet.petId(), newPet.medias());
-                List<PetHobby> petHobbies = petHobbyCommandService
-                        .updateAllByPetId(updatedPet.petId(), newPet.hobbies());
-
-                return updatedPet
-                        .withMedias(medias)
-                        .withHobbies(petHobbies);
-            }
+//            Object result = joinPoint.proceed();
+//            Object arg = joinPoint.getArgs()[0];
+//            if(result instanceof Pet updatedPet && arg instanceof PetUpdate petUpdate) {
+//                Pet newPet = petUpdate.pet();
+//                List<CommonMedia> medias = mediaCommandService
+//                        .updateAllByPetId(updatedPet.petId(), newPet.medias());
+//                List<PetHobby> petHobbies = petHobbyCommandService
+//                        .updateAllByPetId(updatedPet.petId(), newPet.hobbies());
+//
+//                return updatedPet
+//                        .withMedias(medias)
+//                        .withHobbies(petHobbies);
+//            }
 
             throw new ServiceException();
         } catch (Throwable e) {

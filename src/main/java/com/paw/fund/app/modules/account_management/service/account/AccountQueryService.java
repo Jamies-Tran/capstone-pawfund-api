@@ -43,7 +43,6 @@ public class AccountQueryService {
 
     @ValidateArgs
     protected Account findByAccountEmail(String accountEmail) {
-        ValidationUtil.validateArgumentNotNull(accountEmail);
         return repository.findByEmail(accountEmail)
                 .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);

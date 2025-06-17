@@ -2,13 +2,10 @@ package com.paw.fund.app.modules.account_management.controller.v2;
 
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
 import com.paw.fund.app.modules.account_management.controller.models.AccountRoleRegisterRequest;
-import com.paw.fund.app.modules.account_management.controller.models.AccountUpdateRequest;
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

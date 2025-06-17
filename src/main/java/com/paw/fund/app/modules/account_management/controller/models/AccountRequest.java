@@ -1,7 +1,6 @@
 package com.paw.fund.app.modules.account_management.controller.models;
 
 import com.paw.fund.app.modules.account_management.controller.models.medias.CommonMediaRequest;
-import com.paw.fund.app.modules.media_management.domain.common.CommonMedia;
 import com.paw.fund.utils.BooleanUtils;
 import com.paw.fund.utils.CollectionUtils;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,6 +8,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Builder;
+import lombok.With;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDate;
@@ -33,10 +33,11 @@ public record AccountRequest(
         @Schema(description = "Email của người dùng", example = "nguyenvanbe@gmail.com")
         @NotNull(message = "Vui lập nhập email")
         @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "Email không hợp lệ")
-        String email,
+        @With String email,
 
         @Schema(description = "Mật khẩu của người dùng", example = "nguyenvanbe")
         @NotNull(message = "Vui lập nhập mật khẩu")
+        @With
         String password,
 
         @Schema(description = "Số điện thoại của người dùng", example = "0981874736")
@@ -60,6 +61,7 @@ public record AccountRequest(
 
         @Schema(description = "Ảnh đại diện")
         @Valid
+        @With
         List<CommonMediaRequest> medias
 ) {
         public AccountRequest {
@@ -82,5 +84,15 @@ public record AccountRequest(
 
                         medias = CollectionUtils.hasElement(newMedias) ? newMedias : medias;
                 }
+        }
+
+        public AccountRequest ofSave() {
+                return this.withMedias(medias.stream().map(CommonMediaRequest::ofSave).toList());
+        }
+
+        public AccountRequest ofUpdate() {
+                return this
+                        .withEmail(null)
+                        .withPassword(null);
         }
 }

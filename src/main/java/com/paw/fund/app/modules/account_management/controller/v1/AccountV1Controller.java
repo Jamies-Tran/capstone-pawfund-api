@@ -3,7 +3,6 @@ package com.paw.fund.app.modules.account_management.controller.v1;
 import com.paw.fund.app.modules.account_management.controller.models.AccountRequest;
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
 import com.paw.fund.app.modules.account_management.controller.models.AccountUpdatePasswordRequest;
-import com.paw.fund.app.modules.account_management.controller.models.AccountUpdateRequest;
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
 import com.paw.fund.app.modules.account_management.controller.models.verification.code.EmailVerificationCodeRequest;
 import com.paw.fund.app.modules.account_management.domain.account.Account;
@@ -39,7 +38,7 @@ public class AccountV1Controller implements IAccountV1API {
     @Override
     public ValueResponse<AccountResponse> createAdmin(AccountRequest accountRequest) {
         List<Role> roles = List.of(roleUseCase.getAdminRole());
-        Account account = modelMapper.toDto(accountRequest, roles);
+        Account account = modelMapper.toDto(accountRequest.ofSave(), roles);
         Account createdAccount = useCase.createAccount(AccountSave.of(account));
 
         return ValueResponse.success(modelMapper.toResponse(createdAccount), HttpStatus.CREATED);
@@ -48,15 +47,15 @@ public class AccountV1Controller implements IAccountV1API {
     @Override
     public ValueResponse<AccountResponse> createStaff(Long shelterId, AccountRequest accountRequest) {
         List<Role> roles = List.of(roleUseCase.getStaffRole());
-        Account account = modelMapper.toDto(accountRequest, roles);
+        Account account = modelMapper.toDto(accountRequest.ofSave(), roles);
         Account createdAccount = useCase.createAccount(AccountSave.of(shelterId, account));
 
         return ValueResponse.success(modelMapper.toResponse(createdAccount), HttpStatus.CREATED);
     }
 
     @Override
-    public ValueResponse<AccountResponse> selfChangeInfo(AccountUpdateRequest updateRequest) {
-        Account updateAccount = modelMapper.toDto(updateRequest);
+    public ValueResponse<AccountResponse> selfChangeInfo(AccountRequest request) {
+        Account updateAccount = modelMapper.toDto(request.ofUpdate());
         Account updatedAccount = useCase.selfChangeInfo(updateAccount);
 
         return ValueResponse.success(modelMapper.toResponse(updatedAccount), HttpStatus.OK);

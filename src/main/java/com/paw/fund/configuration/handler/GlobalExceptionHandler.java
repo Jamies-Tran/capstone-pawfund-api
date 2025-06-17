@@ -1,5 +1,6 @@
 package com.paw.fund.configuration.handler;
 
+import com.paw.fund.configuration.handler.exceptions.LoginException;
 import com.paw.fund.configuration.handler.exceptions.RequestNotAvailable;
 import com.paw.fund.configuration.handler.exceptions.RuntimeException;
 import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
@@ -24,6 +25,7 @@ import com.paw.fund.configuration.handler.exceptions.NullPointerException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RestControllerAdvice
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -147,5 +149,15 @@ public class GlobalExceptionHandler {
                 errors,
                 HttpStatus.BAD_REQUEST,
                 EErrorCode.RESOURCE_VALIDATE_FAIL.getCode());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(LoginException.class)
+    public ValueResponse<?> loginExceptionHandler(LoginException exc) {
+        return ValueResponse.error(
+                exc.getMessage(),
+                HttpStatus.BAD_REQUEST,
+                Optional.ofNullable(exc.getCode()).orElse(EErrorCode.LOGIN_EXPIRED.getCode())
+        );
     }
 }

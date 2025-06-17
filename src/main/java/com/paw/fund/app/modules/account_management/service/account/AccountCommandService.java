@@ -89,7 +89,9 @@ public class AccountCommandService {
     protected Account update(Long accountId, Account account) {
         AccountEntity foundAccount = repository.findById(accountId)
                 .orElseThrow(ResourceNotFoundException::new);
+
         validateUpdateAccount(foundAccount, account);
+
         mapper.update(foundAccount, account);
         AccountEntity updatedAccount = repository.save(foundAccount);
 
@@ -99,10 +101,13 @@ public class AccountCommandService {
     private void validateUpdateAccount(AccountEntity foundAccount, Account account) {
         boolean isDuplicatedEmail = !Objects.equals(foundAccount.getEmail(), account.email())
                 && repository.existsByEmail(account.email());
+
         boolean isDuplicatedPhone = !Objects.equals(foundAccount.getPhone(), account.phone())
                 && repository.existsByPhone(account.phone());
+
         boolean isDuplicatedIdentification = !Objects.equals(foundAccount.getIdentification(), account.identification())
                 && repository.existsByIdentification(account.identification());
+
         if(isDuplicatedEmail) {
             throw new ResourceDuplicateException("Email đã tồn tại");
         } else if(isDuplicatedPhone) {

@@ -1,33 +1,33 @@
 package com.paw.fund.configuration.security.filter;
 
 
+import com.paw.fund.app.modules.login_info_management.domain.usecase.data.transfer.Login;
+import com.paw.fund.app.modules.login_info_management.repository.database.ILoginInfoUseCase;
 import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
+import com.paw.fund.configuration.handler.exceptions.LoginException;
 import com.paw.fund.configuration.security.user.detail.PawFundUserDetailService;
 import com.paw.fund.enums.EErrorCode;
+import com.paw.fund.enums.ELoginStatus;
+import com.paw.fund.utils.ObjectUtils;
 import com.paw.fund.utils.mapper.AppObjectMapper;
 import com.paw.fund.utils.response.ValueResponse;
 import com.paw.fund.utils.token.TokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import org.springframework.web.filter.AbstractRequestLoggingFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -45,13 +44,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PawFundSecurityFilter extends OncePerRequestFilter {
+    @NonNull
     TokenUtil tokenUtil;
 
+    @NonNull
     PawFundUserDetailService userDetailsService;
 
-    @NonFinal
-    @Value("${app.version}")
-    String API_VERSION;
+    @NonNull
+    ILoginInfoUseCase loginInfoUseCase;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -64,6 +64,9 @@ public class PawFundSecurityFilter extends OncePerRequestFilter {
             if(Optional.ofNullable(token).isPresent()) {
                 tokenUtil.validateToken(token);
                 String identification = tokenUtil.getUserIdentifyFromToken(token);
+
+                validateLogin(identification);
+
                 UserDetails userDetails = userDetailsService.loadUserByUsername(identification);
                 UsernamePasswordAuthenticationToken authToken = UsernamePasswordAuthenticationToken.authenticated(
                         userDetails.getUsername(), userDetails.getPassword(), userDetails.getAuthorities());
@@ -92,6 +95,13 @@ public class PawFundSecurityFilter extends OncePerRequestFilter {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setContentType("application/json");
             response.getWriter().write(AppObjectMapper.convertDataToJsonString(errorResponse));
+        } catch (LoginException exc) {
+            log.error("[{}-doFilterInternal] Xác thực that bại", this.getClass().getSimpleName());
+            ValueResponse<?> errorResponse = ValueResponse
+                    .error(exc.getMessage(), HttpStatus.BAD_REQUEST, exc.getCode());
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType("application/json");
+            response.getWriter().write(AppObjectMapper.convertDataToJsonString(errorResponse));
         } catch (RuntimeException e) {
             log.error("[{}-doFilterInternal] Xác thực that bại", this.getClass().getSimpleName());
             ValueResponse<?> errorResponse = ValueResponse
@@ -118,5 +128,24 @@ public class PawFundSecurityFilter extends OncePerRequestFilter {
                     "\n Body: [{}]" +
                     "\n time: [{}]\n}", authorization, method, path, param, body, requestAt);
         }
+    }
+
+    private void validateLogin(String identification) {
+        Login login = loginInfoUseCase.getCurrentLoginInfo(identification);
+
+        if (!Objects.equals(login.statusCode(), ELoginStatus.LOGIN.getCode())) {
+            throw new LoginException(EErrorCode.LOGIN_NOT_VALID.getCode(), "Xin vui lòng đăng nhập lại");
+        }
+
+        if (ObjectUtils.isNotNull(login.accessExpiredAt())
+                && login.accessExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new LoginException(EErrorCode.LOGIN_NOT_VALID.getCode(), "Xin vui lòng đăng nhập lại");
+        }
+
+        if (ObjectUtils.isNotNull(login.refreshExpiredAt())
+                && login.refreshExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new LoginException(EErrorCode.LOGIN_EXPIRED.getCode(), "");
+        }
+
     }
 }
