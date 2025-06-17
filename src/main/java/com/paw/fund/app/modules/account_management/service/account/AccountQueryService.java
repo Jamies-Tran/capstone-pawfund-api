@@ -36,14 +36,14 @@ public class AccountQueryService {
 
     @ValidateArgs
     protected Account findById(Long accountId) {
-        return repository.findById(accountId)
+        return repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
                 .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
     @ValidateArgs
     protected Account findByAccountEmail(String accountEmail) {
-        return repository.findByEmail(accountEmail)
+        return repository.findByEmailAndStatusCodeNotDeleted(accountEmail)
                 .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
     }
@@ -53,19 +53,6 @@ public class AccountQueryService {
         return repository.findByVerificationCodeAndVerifyTypeCode(verificationCode, verificationType.getCode())
                 .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-    }
-
-    @ValidateArgs
-    protected Optional<Account> findByAccountEmailNullable(String accountEmail) {
-        return repository.findByEmail(accountEmail)
-                .map(mapper::toDto);
-    }
-
-    @ValidateArgs
-    protected Boolean existsByAccountId(Long accountId) {
-        return Optional.ofNullable(accountId)
-                .map(repository::existsById)
-                .orElse(false);
     }
 
     @ValidateArgs

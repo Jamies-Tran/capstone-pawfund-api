@@ -10,6 +10,7 @@ import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.enums.EAccountStatus;
+import com.paw.fund.enums.EDeleteStatus;
 import com.paw.fund.utils.password.encoder.PawFundPasswordEncoder;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -61,41 +62,40 @@ public class AccountCommandService {
 
     @ValidateArgs
     protected Account updateStatus(Long accountId, EAccountStatus status) {
-        AccountEntity account = repository.findById(accountId)
+        return repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
+                .map(account -> {
+                    account.setStatusCode(status.getCode());
+                    account.setStatusName(status.getName());
+                    return repository.save(account);
+                })
+                .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-        account.setStatusCode(status.getCode());
-        account.setStatusName(status.getName());
-        AccountEntity updatedAccount = repository.save(account);
-
-        return mapper.toDto(updatedAccount);
     }
 
     @ValidateArgs
     protected Account updateEmailByAccountIdAndVerificationCode(Long accountId, String verificationCode) {
-        AccountEntity account = repository.findById(accountId)
+        AccountEntity account = repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
                 .orElseThrow(ResourceNotFoundException::new);
-        AccountEntity updatedAccount = repository.findNewEmailByAccountIdAndVerificationCode(accountId, verificationCode)
+
+        return repository.findNewEmailByAccountIdAndVerificationCode(accountId, verificationCode)
                 .map(newEmail -> {
-                   account.setEmail(newEmail);
-
-                   return repository.save(account);
+                    account.setEmail(newEmail);
+                    return repository.save(account);
                 })
+                .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-
-        return mapper.toDto(updatedAccount);
     }
 
     @ValidateArgs
     protected Account update(Long accountId, Account account) {
-        AccountEntity foundAccount = repository.findById(accountId)
+        return repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
+                .map(foundAccount -> {
+                    validateUpdateAccount(foundAccount, account);
+                    mapper.update(foundAccount, account);
+                    return repository.save(foundAccount);
+                })
+                .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-
-        validateUpdateAccount(foundAccount, account);
-
-        mapper.update(foundAccount, account);
-        AccountEntity updatedAccount = repository.save(foundAccount);
-
-        return mapper.toDto(updatedAccount);
     }
 
     private void validateUpdateAccount(AccountEntity foundAccount, Account account) {
@@ -119,27 +119,28 @@ public class AccountCommandService {
 
     @ValidateArgs
     protected Account updatePassword(Long accountId, String password) {
-        AccountEntity foundAccount = repository.findById(accountId)
+        return repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
+                .map(account -> {
+                    account.setPassword(passwordEncoder.bCryptpasswordEncoder().encode(password));
+                    return repository.save(account);
+                })
+                .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-        foundAccount.setPassword(passwordEncoder.bCryptpasswordEncoder().encode(password));
-        AccountEntity updatedAccount = repository.save(foundAccount);
-
-        return mapper.toDto(updatedAccount);
     }
 
     @ValidateArgs
     protected void delete(Long accountId) {
-        if(validateDelete(accountId)) {
-            AccountEntity account = repository.findById(accountId)
-                    .orElseThrow(ResourceNotFoundException::new);
-            repository.delete(account);
-        } else {
-            throw new ResourceNotValidException("Không thể xóa tài khoản");
-        }
+        repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
+                .map(account -> {
+                    account.setStatusCode(EDeleteStatus.DELETED.getCode());
+                    account.setStatusName(EDeleteStatus.DELETED.getName());
+                    return repository.save(account);
+                })
+                .map(mapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
-    public boolean validateDelete(Long accountId) {
+    public void validateDelete(Long accountId) {
         //TODO: Kiểm tra điều kiện xóa tài khoản
-        return true;
     }
 }

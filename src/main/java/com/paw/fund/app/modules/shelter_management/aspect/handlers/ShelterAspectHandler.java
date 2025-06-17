@@ -285,7 +285,7 @@ public class ShelterAspectHandler {
                  Map<Long, List<PetSummarizeInfo>> petSummarizeInfoMap = petQueryService.findAllPetSummarizeInfoByShelterIdIn(shelterIds)
                          .stream()
                          .collect(Collectors.groupingBy(PetSummarizeInfo::shelterId));
-                 Map<Long, Integer> accountSummarizeInfoMap = accountRoleQueryService.findAllAccountRoleSummarizeInfoByShelterIdIn(shelterIds)
+                 Map<Long, Integer> accountSummarizeInfoMap = List.<AccountRoleSummarizeInfo>of()
                          .stream()
                          .collect(Collectors.toMap(AccountRoleSummarizeInfo::shelterId, AccountRoleSummarizeInfo::totalStaff));
                  return shelters.map(x -> {

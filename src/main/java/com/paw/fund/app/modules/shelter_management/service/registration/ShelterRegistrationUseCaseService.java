@@ -141,8 +141,7 @@ public class ShelterRegistrationUseCaseService implements IShelterRegistrationUs
 //                .filter(x -> Objects.equals(x.roleCode(), ERole.ADMIN.getCode()))
 //                .findAny()
 //                .orElseThrow(AuthenticationException::new);
-        AccountRole accountRole = accountRoleQueryService
-                .findByRoleIdAndAccountId(0L, 0L);
+        AccountRole accountRole = null;
 
         return accountRole.accountRoleId();
     }

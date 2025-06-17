@@ -93,19 +93,18 @@ public class ShelterUseCaseService implements IShelterUseCase {
         Long adminRoleId = roleUseCase.getAdminRole().roleId();
         Long accountRoleId;
 
-        Optional<AccountRole> existsAccountRole = accountRoleQueryService
-                .findByRoleIdAndAccountIdNullable(adminRoleId, 0L);
+        Optional<AccountRole> existsAccountRole = null;
         if(existsAccountRole.isPresent()) {
             accountRoleId = existsAccountRole.get().accountRoleId();
         } else {
-            AccountRole accountRole = accountRoleCommandService.save(0L,
-                    roleUseCase.getShelterOwnerRole().roleId());
-            accountRoleId = accountRole.accountRoleId();
+//            AccountRole accountRole = accountRoleCommandService.save(0L,
+//                    roleUseCase.getShelterOwnerRole().roleId());
+//            accountRoleId = accountRole.accountRoleId();
         }
 
         return commandService.updateStatusAndAccountRoleIdAndDescription(
                 shelterActive.shelterId(),
-                accountRoleId,
+                0L,
                 shelterActive.description(),
                 shelterActive.maximumPetCapacity(),
                 EShelterStatus.ENABLE);

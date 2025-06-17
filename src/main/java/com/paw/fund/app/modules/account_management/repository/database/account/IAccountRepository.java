@@ -15,7 +15,13 @@ import java.util.Optional;
 
 @Repository
 public interface IAccountRepository extends JpaRepository<AccountEntity, Long> {
-    Optional<AccountEntity> findByEmail(String email);
+    @Query("""
+        SELECT a
+        FROM AccountEntity a
+        WHERE a.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
+            AND a.email = :email
+    """)
+    Optional<AccountEntity> findByEmailAndStatusCodeNotDeleted(String email);
 
     Boolean existsByEmail(String email);
 
@@ -92,4 +98,12 @@ public interface IAccountRepository extends JpaRepository<AccountEntity, Long> {
             AND cm.isThumbnail = TRUE
     """)
     List<AccountIdAndThumbnail> findAccountIdAndThumbnailByAccountIdIn(List<Long> accountIds);
+
+    @Query("""
+        SELECT a
+        FROM AccountEntity a
+        WHERE a.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
+            AND a.accountId = :accountId
+    """)
+    Optional<AccountEntity> findByAccountIdAndStatusCodeNotDeleted(Long accountId);
 }

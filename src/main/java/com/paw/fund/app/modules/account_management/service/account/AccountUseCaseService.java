@@ -54,9 +54,6 @@ public class AccountUseCaseService implements IAccountUseCase {
     AccountCommandService commandService;
 
     @NonNull
-    AccountRoleCommandService accountRoleCommandService;
-
-    @NonNull
     IRoleUseCase roleUseCase;
 
     @NonNull
@@ -64,9 +61,6 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @NonNull
     ILoginInfoUseCase loginInfoUseCase;
-
-    @NonNull
-    AccountActivityLogCommandService accountActivityLogCommandService;
 
     @NonNull
     ApplicationEventPublisher publisher;
@@ -167,27 +161,22 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @Override
     @Transactional
-    @CreateAccountActivityLogHelper(action = EAccountAction.ACTIVE_ACCOUNT, isCurrentLogin = true)
+    @ValidateArgs
     public Account activeAccount(AccountId accountId) {
-        ValidationUtil.validateNotNullPointerException(accountId);
-
         return commandService.updateStatus(accountId.value(), EAccountStatus.ACTIVE);
     }
 
     @Override
     @Transactional
-    @CreateAccountActivityLogHelper(action = EAccountAction.INACTIVE_ACCOUNT, isCurrentLogin = true)
+    @ValidateArgs
     public Account inactiveAccount(AccountId accountId) {
-        ValidationUtil.validateNotNullPointerException(accountId);
-
         return commandService.updateStatus(accountId.value(), EAccountStatus.INACTIVE);
     }
 
     @Override
     @Transactional
-    @CreateAccountActivityLogHelper(action = EAccountAction.SELF_CHANGE_PASS, isCurrentLogin = true)
+    @ValidateArgs
     public Account selfChangePassword(AccountPassword accountPassword) {
-        ValidationUtil.validateNotNullPointerException(accountPassword);
         CurrentAccountLogin currentAccountLogin = getCurrentAccountLogin();
 
         return commandService.updatePassword(currentAccountLogin.accountId(), accountPassword.value());
@@ -195,19 +184,10 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @Override
     @Transactional
+    @ValidateArgs
     public Account changePassword(AccountUpdatePassword accountUpdatePassword) {
-        ValidationUtil.validateNotNullPointerException(accountUpdatePassword);
-        CurrentAccountLogin currentAccountLogin = getCurrentAccountLogin();
-        Account account = commandService.updatePassword(accountUpdatePassword.accountId(),
+        return commandService.updatePassword(accountUpdatePassword.accountId(),
                 accountUpdatePassword.password());
-        AccountActivityLog log = AccountActivityLog.builder()
-                .accountId(currentAccountLogin.accountId())
-                .actionCode(EAccountAction.CHANGE_PASS.getCode())
-                .actionName(EAccountAction.CHANGE_PASS.getName())
-                .build();
-        accountActivityLogCommandService.save(log);
-
-        return account;
     }
 
     @Override
@@ -243,26 +223,27 @@ public class AccountUseCaseService implements IAccountUseCase {
 
     @Override
     @Transactional
-    @CreateAccountActivityLogHelper(action = EAccountAction.DELETE_ACCOUNT, isCurrentLogin = true)
     public void deleteAccount(AccountId accountId) {
-        accountRoleCommandService.deleteByAccountId(accountId.value());
-        accountActivityLogCommandService.deleteAllByAccountId(accountId.value());
         commandService.delete(accountId.value());
     }
 
     @Override
     @Transactional
-    @CreateAccountActivityLogHelper(action = EAccountAction.REGISTER_ADOPTER, isCurrentLogin = true)
+    @ValidateArgs
     public Account registerRole(AccountRegisterRole registerRole) {
-        ValidationUtil.validateNotNullPointerException(registerRole);
         CurrentAccountLogin currentAccountLogin = getCurrentAccountLogin();
         Account account = commandService.update(currentAccountLogin.accountId(), registerRole.account());
-        List<String> roleCodes = registerRole.roles().stream()
-                .map(Role::roleCode)
+        List<Long> roleIds = getRoleInCodeList(registerRole.roles().stream().map(Role::roleCode).toList())
+                .stream()
+                .map(Role::roleId)
                 .toList();
-        List<Role> foundRoles = roleUseCase.getRoleInCodeList(RoleCodeList.of(roleCodes));
+        publisher.publishEvent(new CreateAccountRoleEventListener(
+                this,
+                account.accountId(),
+                roleIds
+        ));
 
-        return account.withRoles(foundRoles);
+        return account;
     }
 
     @Override
@@ -277,6 +258,10 @@ public class AccountUseCaseService implements IAccountUseCase {
     
     private List<Role> getRoleByAccountId(Long accountId) {
         return roleUseCase.getRoleByAccountId(AccountId.of(accountId));
+    }
+
+    private List<Role> getRoleInCodeList(List<String> roleCodes) {
+        return roleUseCase.getRoleInCodeList(RoleCodeList.of(roleCodes));
     }
     
     private List<CommonMedia> getCommonMediaByAccountId(Long accountId) {
