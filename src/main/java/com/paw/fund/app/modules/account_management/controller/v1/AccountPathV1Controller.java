@@ -27,10 +27,6 @@ public class AccountPathV1Controller implements IAccountPathV1API {
     @NonNull
     IAccountModelMapper modelMapper;
 
-    @NonFinal
-    @Value("${app.version}")
-    String API_VERSION;
-
     @Override
     public ValueResponse<AccountResponse> activeAccount(Long accountId) {
         Account account = useCase.activeAccount(AccountId.of(accountId));
