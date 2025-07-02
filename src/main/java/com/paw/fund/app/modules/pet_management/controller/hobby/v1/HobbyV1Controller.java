@@ -42,14 +42,15 @@ public class HobbyV1Controller implements IHobbyV1API {
 
     @Override
     public PageResponse<HobbyResponse> getHobbyList(String search,
+                                                    Long petTypeId,
                                                     List<String> statusCodes,
                                                     String sorter, Integer current, Integer pageSize) {
-        HobbySearchCriteria searchCriteria = HobbySearchCriteria.of(search, statusCodes);
+        HobbySearchCriteria searchCriteria = HobbySearchCriteria.of(search, petTypeId, statusCodes);
         PageRequestCustom pageRequestCustom = PageRequestCustom.of(current, pageSize, sorter);
         Page<HobbyResponse> responses = useCase.getHobbyList(HobbyFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);
 
-        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK, API_VERSION);
+        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK);
     }
 
     @Override
@@ -57,7 +58,7 @@ public class HobbyV1Controller implements IHobbyV1API {
         Hobby hobby = modelMapper.toDto(request, petTypeId);
         Hobby savedHobby = useCase.createHobby(hobby);
 
-        return ValueResponse.success(modelMapper.toResponse(savedHobby), HttpStatus.CREATED, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(savedHobby), HttpStatus.CREATED);
     }
 
     @Override
@@ -70,6 +71,6 @@ public class HobbyV1Controller implements IHobbyV1API {
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(responses, HttpStatus.CREATED, API_VERSION);
+        return ListResponse.success(responses, HttpStatus.CREATED);
     }
 }

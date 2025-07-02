@@ -44,7 +44,7 @@ public class FormPathV1Controller implements IFormPathV1API {
 
         Form foundForm = useCase.getFormDetail(FormDetail.of(formId, questionSearchCriteria));
 
-        return ValueResponse.success(modelMapper.toResponse(foundForm), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(foundForm), HttpStatus.OK);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class FormPathV1Controller implements IFormPathV1API {
         FormUpdate formUpdate = FormUpdate.of(formId, form);
         Form updatedForm = useCase.updateForm(formUpdate);
 
-        return ValueResponse.success(modelMapper.toResponse(updatedForm), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(updatedForm), HttpStatus.OK);
     }
 
     @Override
@@ -65,13 +65,13 @@ public class FormPathV1Controller implements IFormPathV1API {
     public ValueResponse<FormResponse> activeForm(Long formId) {
         Form updatedForm = useCase.activeForm(FormId.of(formId));
 
-        return ValueResponse.success(modelMapper.toResponse(updatedForm), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(updatedForm), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<FormResponse> inactiveForm(Long formId) {
         Form updatedForm = useCase.inactiveForm(FormId.of(formId));
 
-        return ValueResponse.success(modelMapper.toResponse(updatedForm), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(updatedForm), HttpStatus.OK);
     }
 }

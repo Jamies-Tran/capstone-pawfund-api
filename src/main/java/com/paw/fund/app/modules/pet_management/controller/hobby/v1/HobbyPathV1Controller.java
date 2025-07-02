@@ -33,27 +33,27 @@ public class HobbyPathV1Controller implements IHobbyPathV1API {
     public ValueResponse<HobbyResponse> getHobbyDetail(Long hobbyId) {
         Hobby hobby = useCase.getHobbyDetail(HobbyId.of(hobbyId));
 
-        return ValueResponse.success(modelMapper.toResponse(hobby), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(hobby), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<HobbyResponse> activeHobby(Long hobbyId) {
         Hobby hobby = useCase.activeHobby(HobbyId.of(hobbyId));
 
-        return ValueResponse.success(modelMapper.toResponse(hobby), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(hobby), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<HobbyResponse> blockHobby(Long hobbyId) {
         Hobby hobby = useCase.blockHobby(HobbyId.of(hobbyId));
 
-        return ValueResponse.success(modelMapper.toResponse(hobby), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(hobby), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<HobbyResponse> deleteHobby(Long hobbyId) {
         useCase.deleteHobby(HobbyId.of(hobbyId));
 
-        return ValueResponse.success(null, HttpStatus.NO_CONTENT, API_VERSION);
+        return ValueResponse.success(null, HttpStatus.NO_CONTENT);
     }
 }

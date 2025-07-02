@@ -14,15 +14,20 @@ public record Account(
         String firstName,
         String lastName,
         String identification,
+
         @With String email,
         String password,
         String phone,
         String address,
+
         LocalDate dateOfBirth,
         String genderCode,
         String genderName,
+
         @With List<Role> roles,
+        @With String thumbnail,
         @With List<CommonMedia> medias,
+
         String statusCode,
         String statusName
 ) {

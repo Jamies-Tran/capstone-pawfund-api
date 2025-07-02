@@ -46,6 +46,6 @@ public class PetBreedV1PubController implements IPetBreedV1PubAPI {
         Page<PetBreedResponse> responses = useCase.getPetBreedList(PetBreedFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);
 
-        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK, API_VERSION);
+        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK);
     }
 }

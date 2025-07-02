@@ -8,6 +8,7 @@ import java.util.List;
 @Builder
 public record FormResponse(
         Long formId,
+        Long shelterId,
         String title,
         String description,
         String formTypeCode,

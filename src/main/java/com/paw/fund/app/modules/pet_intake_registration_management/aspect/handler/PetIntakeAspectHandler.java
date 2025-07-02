@@ -6,7 +6,6 @@ import com.paw.fund.app.modules.map_management.service.MapQueryService;
 import com.paw.fund.app.modules.media_management.domain.verification.VerificationMedia;
 import com.paw.fund.app.modules.media_management.service.verification.VerificationMediaCommandService;
 import com.paw.fund.app.modules.media_management.service.verification.VerificationMediaQueryService;
-import com.paw.fund.app.modules.pet_intake_registration_management.PetIntakeRegistrationModuleConstant;
 import com.paw.fund.app.modules.pet_intake_registration_management.aspect.NotifyHelper;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.PetIntakeRegistration;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.usecase.PetIntakeRegistrationNotification;
@@ -15,8 +14,7 @@ import com.paw.fund.app.modules.pet_intake_registration_management.service.PetIn
 import com.paw.fund.app.modules.pet_management.domain.type.PetType;
 import com.paw.fund.app.modules.pet_management.service.type.PetTypeQueryService;
 import com.paw.fund.configuration.handler.exceptions.ServiceException;
-import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.context.request.RequestContext;
 import com.paw.fund.utils.websocket.MessageTemplateHandler;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -29,12 +27,9 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Aspect
 @Component
@@ -62,22 +57,22 @@ public class PetIntakeAspectHandler {
     @Around("@annotation(com.paw.fund.app.modules.pet_intake_registration_management.aspect.CreatePetIntakeRegistrationParamHelper)")
     public Object PetIntakeCreateParamHelper(ProceedingJoinPoint joinPoint) throws Throwable {
         try {
-            Object args = joinPoint.getArgs()[0];
-            if(args instanceof PetIntakeRegistration petIntakeRegistration) {
-                PlaceDetail placeDetail = mapQueryService.getPlaceDetailByPlaceId(petIntakeRegistration.placeId());
-                PlaceResult placeResult = placeDetail.results().getFirst();
-                CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
-                PetIntakeRegistration newParam = petIntakeRegistration
-                        .withAddress(placeResult.address())
-                        .withLongitude(placeResult.placeGeometry().geometry().longitude())
-                        .withLatitude(placeResult.placeGeometry().geometry().latitude())
-                        .withAccountId(Optional.ofNullable(currentAccountLogin)
-                                .map(CurrentAccountLogin::accountId)
-                                .orElse(null));
-
-
-                return joinPoint.proceed(new Object[] {newParam});
-            }
+//            Object args = joinPoint.getArgs()[0];
+//            if(args instanceof PetIntakeRegistration petIntakeRegistration) {
+//                PlaceDetail placeDetail = mapQueryService.getPlaceDetailByPlaceId(petIntakeRegistration.placeId());
+//                PlaceResult placeResult = placeDetail.results().getFirst();
+//                CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+//                PetIntakeRegistration newParam = petIntakeRegistration
+//                        .withAddress(placeResult.address())
+//                        .withLongitude(placeResult.placeGeometry().geometry().longitude())
+//                        .withLatitude(placeResult.placeGeometry().geometry().latitude())
+//                        .withAccountId(Optional.ofNullable(currentAccountLogin)
+//                                .map(CurrentAccountLogin::accountId)
+//                                .orElse(null));
+//
+//
+//                return joinPoint.proceed(new Object[] {newParam});
+//            }
 
             throw new ServiceException();
         } catch (Throwable e) {

@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.pet_intake_registration_management.service;
 
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.IPetIntakeRegistrationMapper;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.PetIntakeRegistration;
 import com.paw.fund.app.modules.pet_intake_registration_management.domain.PetIntakeRegistrationAction;
@@ -30,14 +30,10 @@ public class PetIntakeRegistrationCommandService {
     @NonNull
     IPetIntakeRegistrationMapper mapper;
 
-    @NonNull
-    IAuditableUseCase auditableUseCase;
-
     public PetIntakeRegistration save(PetIntakeRegistration petIntakeRegistration) {
         ValidationUtil.validateNotNullPointerException(petIntakeRegistration);
         PetIntakeRegistrationEntity newPetIntakeRegistration = mapper.toEntity(petIntakeRegistration);
         PetIntakeRegistrationEntity savedPetIntakeRegistration = repository.save(newPetIntakeRegistration);
-        savedPetIntakeRegistration.prepareSave(auditableUseCase.createAuditableForNew());
 
         return mapper.toDto(savedPetIntakeRegistration);
     }
@@ -50,7 +46,6 @@ public class PetIntakeRegistrationCommandService {
                 .map(x -> {
                     validateUpdate(x);
                     mapper.update(x, petIntakeRegistration);
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     PetIntakeRegistrationEntity updatedPetIntakeRegistration = repository.save(x);
 
                     return mapper.toDto(updatedPetIntakeRegistration);
@@ -73,7 +68,6 @@ public class PetIntakeRegistrationCommandService {
                             validateDelete(x, phone);
                             x.setStatusCode(EDeleteStatus.DELETED.getCode());
                             x.setStatusName(EDeleteStatus.DELETED.getName());
-                            x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
 
                             repository.save(x);
                         },
@@ -100,8 +94,7 @@ public class PetIntakeRegistrationCommandService {
                     validateBaseStatusAction(x.getPetIntakeRegistrationId(), status);
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
-                    x.setCanceledReason(canceledReason);
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
+                    x.setCancelReason(canceledReason);
                     PetIntakeRegistrationEntity updatedPetIntakeRegistration = repository.save(x);
 
                     return mapper.toDto(updatedPetIntakeRegistration);

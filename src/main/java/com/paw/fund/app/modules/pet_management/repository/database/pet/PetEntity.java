@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.pet_management.repository.database.pet;
 
-import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
+import com.paw.fund.common.context.auditor.repository.database.AuditableEntity;
 import com.paw.fund.enums.EReceiveSource;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -89,7 +89,7 @@ public class PetEntity extends AuditableEntity {
 
     @PrePersist
     private void prePersist() {
-        if(Objects.nonNull(petCode)) {
+        if(Objects.isNull(petCode)) {
             petCode = "PET_%s_%s".formatted(getCreatedAt()
                     .format(DateTimeFormatter.ofPattern("yyyyMMdd")), shelterId.toString());
         }

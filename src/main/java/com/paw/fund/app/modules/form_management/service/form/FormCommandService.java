@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.form_management.service.form;
 
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
 import com.paw.fund.app.modules.form_management.domain.form.Form;
 import com.paw.fund.app.modules.form_management.domain.form.IFormMapper;
 import com.paw.fund.app.modules.form_management.repository.database.form.FormEntity;
@@ -29,9 +29,6 @@ public class FormCommandService {
     @NonNull
     IFormMapper mapper;
 
-    @NonNull
-    IAuditableUseCase auditableUseCase;
-
     public Form save(Form form) {
         ValidationUtil.validateNotNullPointerException(form);
         validateSave(form);
@@ -40,7 +37,6 @@ public class FormCommandService {
         }
         FormEntity newForm = mapper.toEntity(form);
         FormEntity savedForm = repository.save(newForm);
-        savedForm.prepareSave(auditableUseCase.createAuditableForNew());
 
         return mapper.toDto(savedForm);
     }
@@ -60,7 +56,6 @@ public class FormCommandService {
                 .map(x -> {
                     x.setStatusCode(status.getCode());
                     x.setStatusName(status.getName());
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     FormEntity savedForm = repository.save(x);
 
                     return mapper.toDto(savedForm);
@@ -74,7 +69,6 @@ public class FormCommandService {
         FormEntity foundForm = repository.findByStatusCodeNotDeletedAndById(formId)
                 .orElseThrow(ResourceNotFoundException::new);
         mapper.update(foundForm, form);
-        foundForm.prepareSave(auditableUseCase.createAuditableForNew());
         FormEntity savedForm = repository.save(foundForm);
 
         return mapper.toDto(savedForm);
@@ -86,7 +80,6 @@ public class FormCommandService {
                 .orElseThrow(ResourceNotFoundException::new);
         foundForm.setStatusCode(EDeleteStatus.DELETED.getCode());
         foundForm.setStatusName(EDeleteStatus.DELETED.getName());
-        foundForm.prepareUpdate(auditableUseCase.createAuditableForUpdate());
         repository.save(foundForm);
 
         return formId;

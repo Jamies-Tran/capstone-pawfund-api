@@ -42,7 +42,5 @@ public class ValidationUtil {
                 return timeRange;
             }
         }
-
-
     }
 }

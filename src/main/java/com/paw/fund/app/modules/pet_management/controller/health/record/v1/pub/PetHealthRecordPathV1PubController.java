@@ -33,6 +33,6 @@ public class PetHealthRecordPathV1PubController implements IPetHealthRecordPathV
     public ValueResponse<PetHealthRecordResponse> getPetHealthRecordDetail(Long petHealthRecordId) {
         PetHealthRecord petHealthRecord = useCase.getPetHealthRecordDetail(PetHealthRecordId.of(petHealthRecordId));
 
-        return ValueResponse.success(modelMapper.toResponse(petHealthRecord), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petHealthRecord), HttpStatus.OK);
     }
 }

@@ -20,6 +20,6 @@ public class MediaModuleConstant {
 
     @PostConstruct
     public void postConstruct() {
-        log.info("MODULE: [{} {}]", MODULE_NAME, APP_VERSION);
+        log.info("MODULE: [{} {}]", MODULE_NAME);
     }
 }

@@ -38,13 +38,13 @@ public class PetIntakeRegistrationPathV2PubController implements IPetIntakeRegis
         PetIntakeRegistration updatePetIntakeRegistration = useCase
                 .updatePetIntakeRegistration(PetIntakeRegistrationUpdate.of(petIntakeRegistrationId, petIntakeRegistration));
 
-        return ValueResponse.success(modelMapper.toResponse(updatePetIntakeRegistration), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(updatePetIntakeRegistration), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<?> deletePetIntakeRegistration(Long petIntakeRegistrationId, String phone) {
         useCase.delete(PetIntakeRegistrationDelete.of(petIntakeRegistrationId, phone));
 
-        return ValueResponse.success(null, HttpStatus.NO_CONTENT, API_VERSION);
+        return ValueResponse.success(null, HttpStatus.NO_CONTENT);
     }
 }

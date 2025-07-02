@@ -34,7 +34,7 @@ public class OptionQueryService {
 
     public List<Option> findAllByIdIn(List<Long> optionIds) {
 
-        return repository.findAllByStatusCodeNotDeletedAndQuestionIdIn(optionIds)
+        return repository.findAllByStatusCodeNotDeletedAndOptionIdIn(optionIds)
                 .stream()
                 .map(mapper::toDto)
                 .toList();

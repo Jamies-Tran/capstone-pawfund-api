@@ -37,6 +37,6 @@ public class PetGenderCategoryV1PubController implements IPetGenderCategoryV1Pub
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(responses, HttpStatus.OK, API_VERSION);
+        return ListResponse.success(responses, HttpStatus.OK);
     }
 }

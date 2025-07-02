@@ -50,8 +50,7 @@ public class ShelterV1Controller implements IShelterV1API {
         return PageResponse.success(
                 responses.getContent(),
                 Meta.of(responses),
-                HttpStatus.OK,
-                API_VERSION);
+                HttpStatus.OK);
     }
 
     @Override
@@ -70,7 +69,6 @@ public class ShelterV1Controller implements IShelterV1API {
         return PageResponse.success(
                 responses.getContent(),
                 Meta.of(responses),
-                HttpStatus.OK,
-                API_VERSION);
+                HttpStatus.OK);
     }
 }

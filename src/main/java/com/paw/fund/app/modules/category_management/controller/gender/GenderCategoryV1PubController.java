@@ -37,6 +37,6 @@ public class GenderCategoryV1PubController implements IGenderCategoryV1PubAPI {
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(responses, HttpStatus.OK, API_VERSION);
+        return ListResponse.success(responses, HttpStatus.OK);
     }
 }

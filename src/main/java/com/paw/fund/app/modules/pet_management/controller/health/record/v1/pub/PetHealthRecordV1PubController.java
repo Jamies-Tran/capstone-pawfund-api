@@ -49,6 +49,6 @@ public class PetHealthRecordV1PubController implements IPetHealthRecordV1PubAPI 
         Page<PetHealthRecordResponse> responses = useCase.getPetHealthRecordList(PetHealthRecordFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);
 
-        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK, API_VERSION);
+        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK);
     }
 }

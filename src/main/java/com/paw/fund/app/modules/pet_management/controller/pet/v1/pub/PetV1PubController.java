@@ -67,6 +67,6 @@ public class PetV1PubController implements IPetV1PubAPI {
         Page<PetResponse> responses = useCase.getPetList(PetFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);
 
-        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK, API_VERSION);
+        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK);
     }
 }

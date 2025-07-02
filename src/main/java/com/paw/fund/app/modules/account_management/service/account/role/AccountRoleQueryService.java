@@ -2,7 +2,7 @@ package com.paw.fund.app.modules.account_management.service.account.role;
 
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRoleSummarizeInfo;
-import com.paw.fund.app.modules.account_management.domain.account.role.IAccountRoleMapper;
+import com.paw.fund.app.modules.account_management.repository.database.account.role.IAccountRoleMapper;
 import com.paw.fund.app.modules.account_management.repository.database.account.role.IAccountRoleRepository;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import lombok.AccessLevel;
@@ -24,18 +24,19 @@ public class AccountRoleQueryService {
     @NonNull
     IAccountRoleMapper mapper;
 
-    public Optional<AccountRole> findByRoleIdAndAccountIdNullable(Long roleId, Long accountId) {
+    protected AccountRole findByRoleIdAndAccountIdNullable(Long roleId, Long accountId) {
         return repository.findByAccountIdAndRoleId(accountId, roleId)
-                .map(mapper::toDto);
+                .map(mapper::toDto)
+                .orElse(null);
     }
 
-    public AccountRole findByRoleIdAndAccountId(Long roleId, Long accountId) {
+    protected AccountRole findByRoleIdAndAccountId(Long roleId, Long accountId) {
         return repository.findByAccountIdAndRoleId(accountId, roleId)
                 .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
-    public List<AccountRoleSummarizeInfo> findAllAccountRoleSummarizeInfoByShelterIdIn(List<Long> shelterIds) {
+    protected List<AccountRoleSummarizeInfo> findAllAccountRoleSummarizeInfoByShelterIdIn(List<Long> shelterIds) {
         return repository.findAllAccountRoleSummarizeInfoByShelterIdIn(shelterIds)
                 .stream()
                 .map(mapper::toDto)

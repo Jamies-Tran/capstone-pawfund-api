@@ -2,8 +2,8 @@ package com.paw.fund.configuration.security.user.detail;
 
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
-import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountEmail;
-import com.paw.fund.app.modules.account_management.service.account.usecase.IAccountUseCase;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountEmail;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.IAccountUseCase;
 import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
 import com.paw.fund.utils.password.encoder.PawFundPasswordEncoder;
 import lombok.AccessLevel;

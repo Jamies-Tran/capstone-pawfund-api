@@ -35,6 +35,9 @@ public interface IHobbyV1API {
             @RequestParam(required = false, value = "search", defaultValue = "")
             String search,
 
+            @RequestParam(required = false, value = "petTypeId", defaultValue = "")
+            Long petTypeId,
+
             @RequestParam(required = false, value = "statusCodes", defaultValue = "")
             List<String> statusCodes,
 

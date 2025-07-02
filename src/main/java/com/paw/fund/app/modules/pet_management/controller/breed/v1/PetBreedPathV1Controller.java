@@ -32,34 +32,34 @@ public class PetBreedPathV1Controller implements IPetBreedPathV1API {
     public ValueResponse<PetBreedResponse> getPetBreedDetail(Long petBreedId) {
         PetBreed petBreed = useCase.getPetBreedDetail(PetBreedId.of(petBreedId));
 
-        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<PetBreedResponse> updatePetBreed(Long petBreedId, PetBreedRequest request) {
         PetBreed petBreed = useCase.updatePetBreed(PetBreedUpdate.of(petBreedId, modelMapper.toDto(request)));
 
-        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<?> deletePetBreed(Long petBreedId) {
         useCase.deletePetBreed(PetBreedId.of(petBreedId));
 
-        return ValueResponse.success(null, HttpStatus.NO_CONTENT, API_VERSION);
+        return ValueResponse.success(null, HttpStatus.NO_CONTENT);
     }
 
     @Override
     public ValueResponse<PetBreedResponse> activePetBreed(Long petBreedId) {
         PetBreed petBreed = useCase.activePetBreed(PetBreedId.of(petBreedId));
 
-        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<PetBreedResponse> blockPetBreed(Long petBreedId) {
         PetBreed petBreed = useCase.blockPetBreed(PetBreedId.of(petBreedId));
 
-        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petBreed), HttpStatus.OK);
     }
 }

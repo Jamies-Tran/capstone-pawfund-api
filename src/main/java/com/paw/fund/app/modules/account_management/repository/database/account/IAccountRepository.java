@@ -1,17 +1,27 @@
 package com.paw.fund.app.modules.account_management.repository.database.account;
 
-import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountSearchCriteria;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountId;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountIdAndThumbnail;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountNewEmail;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountSearchCriteria;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface IAccountRepository extends JpaRepository<AccountEntity, Long> {
-    Optional<AccountEntity> findByEmail(String email);
+    @Query("""
+        SELECT a
+        FROM AccountEntity a
+        WHERE a.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
+            AND a.email = :email
+    """)
+    Optional<AccountEntity> findByEmailAndStatusCodeNotDeleted(String email);
 
     Boolean existsByEmail(String email);
 
@@ -60,4 +70,40 @@ public interface IAccountRepository extends JpaRepository<AccountEntity, Long> {
             AND sr.statusCode != :statusCode
     """)
     Boolean existsByAnyShelterRegistrationByIdAndStatusCodeNot(Long accountId, String statusCode);
+
+    @Query("""
+        SELECT a
+        FROM AccountEntity a
+        INNER JOIN VerificationEntity v ON a.accountId = v.accountId
+        WHERE v.code = :verificationCode
+            AND v.typeCode = :verificationTypeCode 
+            AND v.expiredAt > CURRENT_TIMESTAMP 
+    """)
+    Optional<AccountEntity> findByVerificationCodeAndVerifyTypeCode(String verificationCode, String verificationTypeCode);
+
+    @Query("""
+        SELECT v.newEmail
+        FROM AccountEntity a
+        INNER JOIN VerificationEntity v ON a.accountId = v.accountId
+        WHERE a.accountId = :accountId
+            AND (v.code = :verificationCode AND v.expiredAt > CURRENT_TIMESTAMP)
+    """)
+    Optional<String> findNewEmailByAccountIdAndVerificationCode(Long accountId, String verificationCode);
+
+    @Query("""
+        SELECT new com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountIdAndThumbnail(a.accountId, cm.url)
+        FROM AccountEntity a
+        LEFT JOIN CommonMediaEntity cm ON a.accountId = cm.accountId
+        WHERE a.accountId IN :accountIds
+            AND cm.isThumbnail = TRUE
+    """)
+    List<AccountIdAndThumbnail> findAccountIdAndThumbnailByAccountIdIn(List<Long> accountIds);
+
+    @Query("""
+        SELECT a
+        FROM AccountEntity a
+        WHERE a.statusCode != :#{T(com.paw.fund.enums.EDeleteStatus).DELETED.getCode()}
+            AND a.accountId = :accountId
+    """)
+    Optional<AccountEntity> findByAccountIdAndStatusCodeNotDeleted(Long accountId);
 }

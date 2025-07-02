@@ -53,8 +53,7 @@ public class ShelterRegistrationV1Controller implements IShelterRegistrationV1AP
 
         return ValueResponse.success(
                 modelMapper.toResponse(saveShelter),
-                HttpStatus.CREATED,
-                API_VERSION);
+                HttpStatus.CREATED);
     }
 
     @Override
@@ -71,6 +70,6 @@ public class ShelterRegistrationV1Controller implements IShelterRegistrationV1AP
                 .getShelterRegistrationListProcessingByAccount(ShelterRegistrationFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);
 
-        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK, API_VERSION);
+        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK);
     }
 }

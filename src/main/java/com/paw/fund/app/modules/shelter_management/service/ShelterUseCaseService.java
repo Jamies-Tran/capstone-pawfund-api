@@ -4,8 +4,7 @@ import com.paw.fund.app.modules.account_management.service.account.AccountQueryS
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
 import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleCommandService;
 import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
-import com.paw.fund.app.modules.account_management.domain.role.Role;
-import com.paw.fund.app.modules.account_management.service.role.usecase.IRoleUseCase;
+import com.paw.fund.app.modules.account_management.domain.role.usecase.IRoleUseCase;
 import com.paw.fund.app.modules.shelter_management.aspect.AttachMedia;
 import com.paw.fund.app.modules.shelter_management.aspect.CreateShelterMedia;
 import com.paw.fund.app.modules.shelter_management.aspect.CreateShelterRegistration;
@@ -18,12 +17,8 @@ import com.paw.fund.app.modules.shelter_management.domain.usecase.ShelterId;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationCreate;
 import com.paw.fund.app.modules.shelter_management.service.registration.ShelterRegistrationQueryService;
 import com.paw.fund.app.modules.shelter_management.service.usecase.IShelterUseCase;
-import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
 import com.paw.fund.configuration.handler.exceptions.RequestNotAvailable;
-import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
-import com.paw.fund.enums.ERole;
-import com.paw.fund.enums.EShelterRegistrationStatus;
+import com.paw.fund.common.context.request.RequestContext;
 import com.paw.fund.enums.EShelterStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
@@ -33,7 +28,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -72,14 +66,14 @@ public class ShelterUseCaseService implements IShelterUseCase {
     @UpdateLocation
     public Shelter registerShelter(ShelterRegistrationCreate shelterRegistrationCreate) {
         ValidationUtil.validateNotNullPointerException(shelterRegistrationCreate);
-        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
-        Optional<Shelter> foundShelter = queryService.findByAccountIdNullable(currentAccountLogin.accountId());
+//        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+        Optional<Shelter> foundShelter = queryService.findByAccountIdNullable(0L);
         if(foundShelter.isPresent()) {
             return commandService
                     .update(foundShelter.get().shelterId(), shelterRegistrationCreate.shelter());
         }
-        List<String> roleCodes = currentAccountLogin.roles().stream().map(Role::roleCode).toList();
-        validateCreateShelterAvailability(currentAccountLogin.accountId(), roleCodes);
+        List<String> roleCodes = List.of();
+        validateCreateShelterAvailability(0L, roleCodes);
         Shelter shelter = shelterRegistrationCreate.shelter();
         Shelter updateStatusShelter = shelter
                 .withStatusCode(EShelterStatus.DRAFT.getCode())
@@ -95,23 +89,22 @@ public class ShelterUseCaseService implements IShelterUseCase {
         ValidationUtil.validateNotNullPointerException(shelterActive.shelterId());
         validateActiveShelter(shelterActive.shelterId());
 
-        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+//        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
         Long adminRoleId = roleUseCase.getAdminRole().roleId();
         Long accountRoleId;
 
-        Optional<AccountRole> existsAccountRole = accountRoleQueryService
-                .findByRoleIdAndAccountIdNullable(adminRoleId, currentAccountLogin.accountId());
+        Optional<AccountRole> existsAccountRole = null;
         if(existsAccountRole.isPresent()) {
             accountRoleId = existsAccountRole.get().accountRoleId();
         } else {
-            AccountRole accountRole = accountRoleCommandService.save(currentAccountLogin.accountId(),
-                    roleUseCase.getShelterOwnerRole().roleId());
-            accountRoleId = accountRole.accountRoleId();
+//            AccountRole accountRole = accountRoleCommandService.save(0L,
+//                    roleUseCase.getShelterOwnerRole().roleId());
+//            accountRoleId = accountRole.accountRoleId();
         }
 
         return commandService.updateStatusAndAccountRoleIdAndDescription(
                 shelterActive.shelterId(),
-                accountRoleId,
+                0L,
                 shelterActive.description(),
                 shelterActive.maximumPetCapacity(),
                 EShelterStatus.ENABLE);
@@ -143,15 +136,15 @@ public class ShelterUseCaseService implements IShelterUseCase {
 
     private void validateCreateShelterAvailability(Long accountId, List<String> roleCodes) {
 
-        if(accountQueryService.existsAnyShelterById(accountId)) {
-            throw new RequestNotAvailable("Tài khoản không thể tạo thêm trung tâm cứu trợ");
-        } else if(accountQueryService.existsAnyShelterRegistrationByIdAndStatusCodeNot(
-                accountId,
-                EShelterRegistrationStatus.REJECTED.getCode())) {
-            throw new RequestNotAvailable("Đăng ký trung tâm cứu trợ không hợp lệ");
-        } else if(!CollectionUtils.isEmpty(roleCodes)
-                && !roleCodes.contains(ERole.SHELTER_OWNER.getCode())) {
-            throw new AuthenticationException("Bạn không có quyền tạo trung tâm cứu trợ");
-        }
+//        if(accountQueryService.existsAnyShelterById(accountId)) {
+//            throw new RequestNotAvailable("Tài khoản không thể tạo thêm trung tâm cứu trợ");
+//        } else if(accountQueryService.existsAnyShelterRegistrationByIdAndStatusCodeNot(
+//                accountId,
+//                EShelterRegistrationStatus.REJECTED.getCode())) {
+//            throw new RequestNotAvailable("Đăng ký trung tâm cứu trợ không hợp lệ");
+//        } else if(!CollectionUtils.isEmpty(roleCodes)
+//                && !roleCodes.contains(ERole.SHELTER_OWNER.getCode())) {
+//            throw new AuthenticationException("Bạn không có quyền tạo trung tâm cứu trợ");
+//        }
     }
 }

@@ -36,7 +36,7 @@ public class PetIntakeRegistrationPathV1Controller implements IPetIntakeRegistra
         PetIntakeRegistration petIntakeRegistration = useCase
                 .processPetIntakeRegistration(PetIntakeRegistrationId.of(petIntakeRegistrationId));
 
-        return ValueResponse.success(modelMapper.toResponse(petIntakeRegistration), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petIntakeRegistration), HttpStatus.OK);
     }
 
     @Override
@@ -46,6 +46,6 @@ public class PetIntakeRegistrationPathV1Controller implements IPetIntakeRegistra
         PetIntakeRegistration petIntakeRegistration = useCase
                 .cancelPetIntakeRegistration(PetIntakeRegistrationCancel.of(petIntakeRegistrationId, petIntakeRegistrationCancelReason.cancelReason()));
 
-        return ValueResponse.success(modelMapper.toResponse(petIntakeRegistration), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petIntakeRegistration), HttpStatus.OK);
     }
 }

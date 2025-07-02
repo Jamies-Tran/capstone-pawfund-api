@@ -52,7 +52,6 @@ public class AccountActivityLogV1Controller implements IAccountActivityLogV1API 
         return PageResponse.success(
                 responses.getContent(),
                 Meta.of(responses),
-                HttpStatus.OK,
-                API_VERSION);
+                HttpStatus.OK);
     }
 }

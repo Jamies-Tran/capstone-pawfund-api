@@ -45,7 +45,7 @@ public class PetTypeV1Controller implements IPetTypeV1API {
         PetType petType = modelMapper.toDto(request);
         PetType savePetType = useCase.createPetType(petType);
 
-        return ValueResponse.success(modelMapper.toResponse(savePetType), HttpStatus.CREATED, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(savePetType), HttpStatus.CREATED);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class PetTypeV1Controller implements IPetTypeV1API {
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(responseList, HttpStatus.OK, API_VERSION);
+        return ListResponse.success(responseList, HttpStatus.OK);
     }
 
     @Override
@@ -70,6 +70,6 @@ public class PetTypeV1Controller implements IPetTypeV1API {
         Page<PetTypeResponse> responses = useCase.getPetTypeList(PetTypeFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);
 
-        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK, API_VERSION);
+        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK);
     }
 }

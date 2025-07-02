@@ -24,7 +24,7 @@ public record PetIntakeRegistration(
         @With BigDecimal latitude,
         @With BigDecimal longitude,
         @With List<VerificationMedia> medias,
-        @With String canceledReason,
+        @With String cancelReason,
         String statusCode,
         String statusName,
         LocalDateTime createdAt,

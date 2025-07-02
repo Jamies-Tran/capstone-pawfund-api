@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.shelter_management.service;
 
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
 import com.paw.fund.app.modules.shelter_management.domain.IShelterMapper;
 import com.paw.fund.app.modules.shelter_management.domain.Shelter;
 import com.paw.fund.app.modules.shelter_management.repository.database.IShelterRepository;
@@ -28,9 +28,6 @@ public class ShelterCommandService {
     IShelterRepository repository;
 
     @NonNull
-    IAuditableUseCase auditableUseCase;
-
-    @NonNull
     IShelterMapper mapper;
 
     public Shelter save(Shelter shelter) {
@@ -39,7 +36,6 @@ public class ShelterCommandService {
 
         ShelterEntity newShelter = mapper.toEntity(shelter);
         ShelterEntity savedShelter = repository.save(newShelter);
-        savedShelter.prepareSave(auditableUseCase.createAuditableForNew());
 
         return mapper.toDto(savedShelter);
     }
@@ -51,7 +47,6 @@ public class ShelterCommandService {
         return repository.findById(shelterId)
                 .map(x -> {
                     mapper.update(x, shelter);
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
 
                     ShelterEntity savedShelter = repository.save(x);
                     return mapper.toDto(savedShelter);
@@ -75,7 +70,6 @@ public class ShelterCommandService {
                     x.setStatusName(status.getName());
                     x.setAccountRoleId(accountRoleId);
                     x.setMaximumPetCapacity(maximumPetCapacity);
-                    x.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     ShelterEntity savedShelter = repository.save(x);
 
                     return mapper.toDto(savedShelter);

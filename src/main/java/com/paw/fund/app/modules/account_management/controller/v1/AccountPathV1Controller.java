@@ -4,9 +4,9 @@ import com.paw.fund.app.modules.account_management.controller.models.AccountResp
 import com.paw.fund.app.modules.account_management.controller.models.AccountUpdatePasswordRequest;
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
 import com.paw.fund.app.modules.account_management.domain.account.Account;
-import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountId;
-import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountUpdatePassword;
-import com.paw.fund.app.modules.account_management.service.account.usecase.IAccountUseCase;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountId;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountUpdatePassword;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.IAccountUseCase;
 import com.paw.fund.utils.response.ValueResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -35,14 +35,14 @@ public class AccountPathV1Controller implements IAccountPathV1API {
     public ValueResponse<AccountResponse> activeAccount(Long accountId) {
         Account account = useCase.activeAccount(AccountId.of(accountId));
 
-        return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<AccountResponse> inActiveAccount(Long accountId) {
         Account account = useCase.inactiveAccount(AccountId.of(accountId));
 
-        return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK);
     }
 
     @Override
@@ -51,13 +51,13 @@ public class AccountPathV1Controller implements IAccountPathV1API {
                 accountUpdatePasswordRequest.password());
         Account account = useCase.changePassword(accountUpdatePassword);
 
-        return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<?> deleteAccount(Long accountId) {
         useCase.deleteAccount(AccountId.of(accountId));
 
-        return ValueResponse.success(null, HttpStatus.NO_CONTENT, API_VERSION);
+        return ValueResponse.success(null, HttpStatus.NO_CONTENT);
     }
 }

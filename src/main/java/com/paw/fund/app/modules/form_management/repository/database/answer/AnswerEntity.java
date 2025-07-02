@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.form_management.repository.database.answer;
 
-import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
+import com.paw.fund.common.context.auditor.repository.database.AuditableEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

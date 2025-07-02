@@ -1,10 +1,15 @@
 package com.paw.fund.app.modules.account_management.service.account;
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
-import com.paw.fund.app.modules.account_management.domain.account.IAccountMapper;
-import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountSearchCriteria;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountIdAndThumbnail;
+import com.paw.fund.app.modules.account_management.repository.database.account.AccountEntity;
+import com.paw.fund.app.modules.account_management.repository.database.account.IAccountMapper;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountSearchCriteria;
 import com.paw.fund.app.modules.account_management.repository.database.account.IAccountRepository;
+import com.paw.fund.common.aspect.annotation.validate.args.ValidateArgs;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
+import com.paw.fund.enums.EVerificationType;
+import com.paw.fund.utils.StringUtils;
 import com.paw.fund.utils.request.PageRequestCustom;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
@@ -14,7 +19,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,47 +34,36 @@ public class AccountQueryService {
     @NonNull
     IAccountMapper mapper;
 
-    public Account findById(Long accountId) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        return repository.findById(accountId)
+    @ValidateArgs
+    protected Account findById(Long accountId) {
+        return repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
                 .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
-    public Account findByAccountEmail(String accountEmail) {
-        ValidationUtil.validateArgumentNotNull(accountEmail);
-        return repository.findByEmail(accountEmail)
+    @ValidateArgs
+    protected Account findByAccountEmail(String accountEmail) {
+        return repository.findByEmailAndStatusCodeNotDeleted(accountEmail)
                 .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
     }
 
-    public Optional<Account> findByAccountEmailNullable(String accountEmail) {
-        ValidationUtil.validateArgumentNotNull(accountEmail);
-        return repository.findByEmail(accountEmail)
-                .map(mapper::toDto);
+    @ValidateArgs
+    protected Account findByVerificationCodeAndVerifyType(String verificationCode, EVerificationType verificationType) {
+        return repository.findByVerificationCodeAndVerifyTypeCode(verificationCode, verificationType.getCode())
+                .map(mapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
-    public Boolean existsByAccountId(Long accountId) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        return Optional.ofNullable(accountId)
-                .map(repository::existsById)
-                .orElse(false);
-    }
-
-    public Page<Account> findAll(AccountSearchCriteria searchCriteria, PageRequestCustom pageRequestCustom) {
-        ValidationUtil.validateNotNullPointerException(searchCriteria);
-        ValidationUtil.validateNotNullPointerException(pageRequestCustom);
-
-        return repository.findAll(searchCriteria, pageRequestCustom.pageRequest())
-                .map(mapper::toDto);
-    }
-
-    public Boolean existsAnyShelterById(Long accountId) {
-        return repository.existsAnyShelterByAccountId(accountId);
-    }
-
-    public Boolean existsAnyShelterRegistrationByIdAndStatusCodeNot(Long accountId,
-                                                                    String statusCode) {
-        return repository.existsByAnyShelterRegistrationByIdAndStatusCodeNot(accountId, statusCode);
+    @ValidateArgs
+    protected Page<Account> findAll(AccountSearchCriteria searchCriteria, PageRequestCustom pageRequestCustom) {
+        Page<AccountEntity> foundAccounts = repository.findAll(searchCriteria, pageRequestCustom.pageRequest());
+        List<Long> accountIds = foundAccounts.map(AccountEntity::getAccountId).stream().toList();
+        Map<Long, String> accountThumbnailMap = repository.findAccountIdAndThumbnailByAccountIdIn(accountIds)
+                .stream()
+                .collect(Collectors.toMap(AccountIdAndThumbnail::accountId, AccountIdAndThumbnail::thumbnail));
+        return foundAccounts
+                .map(account -> mapper.toDto(account).withThumbnail(accountThumbnailMap
+                        .computeIfAbsent(account.getAccountId(), _ -> StringUtils.empty())));
     }
 }

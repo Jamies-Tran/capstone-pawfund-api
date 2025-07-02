@@ -1,9 +1,10 @@
 package com.paw.fund.app.modules.account_management.service.account.role;
 
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
-import com.paw.fund.app.modules.account_management.domain.account.role.IAccountRoleMapper;
+import com.paw.fund.app.modules.account_management.repository.database.account.role.IAccountRoleMapper;
 import com.paw.fund.app.modules.account_management.repository.database.account.role.AccountRoleEntity;
 import com.paw.fund.app.modules.account_management.repository.database.account.role.IAccountRoleRepository;
+import com.paw.fund.common.aspect.annotation.validate.args.ValidateArgs;
 import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
@@ -23,7 +24,8 @@ public class AccountRoleCommandService {
     @NonNull
     IAccountRoleMapper mapper;
 
-    public List<AccountRole> saveAll(Long accountId, List<Long> roleIds) {
+    @ValidateArgs
+    protected List<AccountRole> saveAll(Long accountId, List<Long> roleIds) {
         ValidationUtil.validateArgumentNotNull(accountId);
         ValidationUtil.validateArgumentListNotNull(roleIds);
         List<AccountRoleEntity> newAccountRoles = roleIds.stream()
@@ -38,9 +40,9 @@ public class AccountRoleCommandService {
                 .map(mapper::toDto)
                 .toList();
     }
-    public List<AccountRole> saveAll(Long shelterId, Long accountId, List<Long> roleIds) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        ValidationUtil.validateArgumentListNotNull(roleIds);
+
+    @ValidateArgs
+    protected List<AccountRole> saveAll(Long shelterId, Long accountId, List<Long> roleIds) {
         List<AccountRoleEntity> newAccountRoles = roleIds.stream()
                 .map(x -> AccountRoleEntity.builder()
                         .accountId(accountId)
@@ -56,15 +58,15 @@ public class AccountRoleCommandService {
     }
 
 
-
-    public void deleteByAccountId(Long accountId) {
-        ValidationUtil.validateArgumentNotNull(accountId);
+    @ValidateArgs
+    protected void deleteByAccountId(Long accountId) {
         List<AccountRoleEntity> accountRoles = repository.findAllByAccountId(accountId);
 
         repository.deleteAll(accountRoles);
     }
 
-    public AccountRole save(Long accountId, Long roleId) {
+    @ValidateArgs
+    protected AccountRole save(Long accountId, Long roleId) {
         AccountRole accountRole = AccountRole.builder()
                 .accountId(accountId)
                 .roleId(roleId)

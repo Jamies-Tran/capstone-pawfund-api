@@ -35,7 +35,7 @@ public class PetTypePathV1Controller implements IPetTypePathV1API {
     public ValueResponse<PetTypeResponse> getPetTypeDetail(Long petTypeId) {
         PetType petType = useCase.getPetTypeDetail(PetTypeId.of(petTypeId));
 
-        return ValueResponse.success(modelMapper.toResponse(petType), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petType), HttpStatus.OK);
     }
 
     @Override
@@ -43,27 +43,27 @@ public class PetTypePathV1Controller implements IPetTypePathV1API {
         PetType petType = modelMapper.toDto(request);
         PetType savedPetType = useCase.updatePetType(PetTypeUpdate.of(petTypeId, petType));
 
-        return ValueResponse.success(modelMapper.toResponse(savedPetType), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(savedPetType), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<?> deletePetType(Long petTypeId) {
         useCase.deletePetType(PetTypeId.of(petTypeId));
 
-        return ValueResponse.success(null, HttpStatus.NO_CONTENT, API_VERSION);
+        return ValueResponse.success(null, HttpStatus.NO_CONTENT);
     }
 
     @Override
     public ValueResponse<PetTypeResponse> activePetType(Long petTypeId) {
         PetType petType = useCase.activePetType(PetTypeId.of(petTypeId));
 
-        return ValueResponse.success(modelMapper.toResponse(petType), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petType), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<PetTypeResponse> blockPetType(Long petTypeId) {
         PetType petType = useCase.blockPetType(PetTypeId.of(petTypeId));
 
-        return ValueResponse.success(modelMapper.toResponse(petType), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(petType), HttpStatus.OK);
     }
 }

@@ -33,7 +33,7 @@ public class ShelterAssignmentPathV1Controller implements IShelterAssignmentPath
         ShelterAssignment shelterAssignment = useCase
                 .getShelterAssignmentDetail(ShelterAssignmentId.of(shelterAssignmentId));
 
-        return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK, ShelterAssignmentModuleConstant.getAppVersion());
+        return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ShelterAssignmentPathV1Controller implements IShelterAssignmentPath
         ShelterAssignment shelterAssignment = useCase
                 .updateShelterAssignment(ShelterAssignmentUpdate.of(shelterAssignmentId, modelMapper.toDto(request)));
 
-        return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK, ShelterAssignmentModuleConstant.getAppVersion());
+        return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK);
     }
 
     @Override
@@ -49,21 +49,21 @@ public class ShelterAssignmentPathV1Controller implements IShelterAssignmentPath
         ShelterAssignment shelterAssignment = useCase
                 .receiveShelterAssignment(ShelterAssignmentId.of(shelterAssignmentId));
 
-        return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK, ShelterAssignmentModuleConstant.getAppVersion());
+        return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<ShelterAssignmentResponse> cancelShelterAssignment(Long shelterAssignmentId, ShelterAssignmentCancelReason rejectReason) {
         ShelterAssignment shelterAssignment = useCase
-                .cancelShelterAssignment(ShelterAssignmentCancel.of(shelterAssignmentId, rejectReason.reason()));
+                .cancelShelterAssignment(ShelterAssignmentCancel.of(shelterAssignmentId, rejectReason.cancelReason()));
 
-        return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK, ShelterAssignmentModuleConstant.getAppVersion());
+        return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK);
     }
 
     @Override
     public ValueResponse<ShelterAssignmentResponse> completeShelterAssignment(Long shelterAssignmentId) {
         ShelterAssignment shelterAssignment = useCase.completeShelterAssignment(ShelterAssignmentId.of(shelterAssignmentId));
 
-        return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK, ShelterAssignmentModuleConstant.getAppVersion());
+        return ValueResponse.success(modelMapper.toResponse(shelterAssignment), HttpStatus.OK);
     }
 }

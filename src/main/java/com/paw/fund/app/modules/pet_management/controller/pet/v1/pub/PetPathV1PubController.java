@@ -33,6 +33,6 @@ public class PetPathV1PubController implements IPetPathV1PubAPI {
     public ValueResponse<PetResponse> getPetDetail(Long petId) {
         Pet pet = useCase.getPetDetail(PetId.of(petId));
 
-        return ValueResponse.success(modelMapper.toResponse(pet), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(pet), HttpStatus.OK);
     }
 }

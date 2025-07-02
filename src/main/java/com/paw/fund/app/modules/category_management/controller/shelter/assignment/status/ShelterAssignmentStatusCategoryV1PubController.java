@@ -37,6 +37,6 @@ public class ShelterAssignmentStatusCategoryV1PubController implements IShelterA
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(responses, HttpStatus.OK, API_VERSION);
+        return ListResponse.success(responses, HttpStatus.OK);
     }
 }

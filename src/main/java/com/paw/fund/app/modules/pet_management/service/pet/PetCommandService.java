@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.pet_management.service.pet;
 
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
 import com.paw.fund.app.modules.pet_management.domain.pet.IPetMapper;
 import com.paw.fund.app.modules.pet_management.domain.pet.Pet;
 import com.paw.fund.app.modules.pet_management.repository.database.pet.IPetRepository;
@@ -25,15 +25,11 @@ public class PetCommandService {
     @NonNull
     IPetMapper mapper;
 
-    @NonNull
-    IAuditableUseCase auditService;
-
     public Pet save(Pet pet) {
         ValidationUtil.validateNotNullPointerException(pet);
 
         PetEntity newPet = mapper.toEntity(pet);
         PetEntity savedPet = repository.save(newPet);
-        savedPet.prepareSave(auditService.createAuditableForNew());
 
         return mapper.toDto(savedPet);
     }
@@ -44,7 +40,6 @@ public class PetCommandService {
         return repository.findByStatusCodeNotDeletedAndPetId(petId)
                 .map(x -> {
                     mapper.update(x, pet);
-                    x.prepareUpdate(auditService.createAuditableForUpdate());
                     PetEntity savePet = repository.save(x);
 
                     return mapper.toDto(savePet);
@@ -60,7 +55,6 @@ public class PetCommandService {
                 .map(pet -> {
                     pet.setStatusCode(status.getCode());
                     pet.setStatusName(status.getName());
-                    pet.prepareUpdate(auditService.createAuditableForUpdate());
                     PetEntity updatedPet = repository.save(pet);
 
                     return mapper.toDto(updatedPet);
@@ -76,7 +70,6 @@ public class PetCommandService {
                         x -> {
                             x.setStatusCode(EDeleteStatus.DELETED.getCode());
                             x.setStatusName(EDeleteStatus.DELETED.getName());
-                            x.prepareUpdate(auditService.createAuditableForUpdate());
 
                             repository.save(x);
                         },

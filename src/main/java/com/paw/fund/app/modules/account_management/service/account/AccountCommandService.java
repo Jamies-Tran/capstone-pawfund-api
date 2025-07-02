@@ -1,16 +1,17 @@
 package com.paw.fund.app.modules.account_management.service.account;
 
 import com.paw.fund.app.modules.account_management.domain.account.Account;
-import com.paw.fund.app.modules.account_management.domain.account.IAccountMapper;
+import com.paw.fund.app.modules.account_management.repository.database.account.IAccountMapper;
 import com.paw.fund.app.modules.account_management.repository.database.account.AccountEntity;
 import com.paw.fund.app.modules.account_management.repository.database.account.IAccountRepository;
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
+import com.paw.fund.common.aspect.annotation.validate.args.ValidateArgs;
 import com.paw.fund.configuration.handler.exceptions.ResourceDuplicateException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotFoundException;
 import com.paw.fund.configuration.handler.exceptions.ResourceNotValidException;
 import com.paw.fund.enums.EAccountStatus;
+import com.paw.fund.enums.EDeleteStatus;
 import com.paw.fund.utils.password.encoder.PawFundPasswordEncoder;
-import com.paw.fund.utils.validation.ValidationUtil;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,21 +28,17 @@ public class AccountCommandService {
     IAccountRepository repository;
 
     @NonNull
-    IAuditableUseCase auditableUseCase;
-
-    @NonNull
     IAccountMapper mapper;
 
     @NonNull
     PawFundPasswordEncoder passwordEncoder;
 
-    public Account save(Account account) {
-        ValidationUtil.validateNotNullPointerException(account);
+    @ValidateArgs
+    protected Account save(Account account) {
         validateNewAccount(account);
-
         AccountEntity newAccount = mapper.toEntity(account);
-        newAccount.prepareSave(auditableUseCase.createAuditableForNew());
         AccountEntity savedAccount = repository.save(newAccount);
+
         return mapper.toDto(savedAccount);
     }
 
@@ -63,51 +60,54 @@ public class AccountCommandService {
         }
     }
 
-    public Account updateStatus(Long accountId, EAccountStatus status) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        ValidationUtil.validateArgumentNotNull(status);
-        AccountEntity account = repository.findById(accountId)
+    @ValidateArgs
+    protected Account updateStatus(Long accountId, EAccountStatus status) {
+        return repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
+                .map(account -> {
+                    account.setStatusCode(status.getCode());
+                    account.setStatusName(status.getName());
+                    return repository.save(account);
+                })
+                .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-        account.setStatusCode(status.getCode());
-        account.setStatusName(status.getName());
-        account.prepareUpdate(auditableUseCase.createAuditableForUpdate());
-        AccountEntity updatedAccount = repository.save(account);
-
-        return mapper.toDto(updatedAccount);
     }
 
-    public Account updateEmail(Long accountId, String email) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        ValidationUtil.validateArgumentNotNull(email);
-        AccountEntity account = repository.findById(accountId)
+    @ValidateArgs
+    protected Account updateEmailByAccountIdAndVerificationCode(Long accountId, String verificationCode) {
+        AccountEntity account = repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
                 .orElseThrow(ResourceNotFoundException::new);
-        account.setEmail(email);
-        account.prepareUpdate(auditableUseCase.createAuditableForUpdate());
-        AccountEntity updatedAccount = repository.save(account);
 
-        return mapper.toDto(updatedAccount);
+        return repository.findNewEmailByAccountIdAndVerificationCode(accountId, verificationCode)
+                .map(newEmail -> {
+                    account.setEmail(newEmail);
+                    return repository.save(account);
+                })
+                .map(mapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
-    public Account update(Long accountId, Account account) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        ValidationUtil.validateNotNullPointerException(account);
-        AccountEntity foundAccount = repository.findById(accountId)
+    @ValidateArgs
+    protected Account update(Long accountId, Account account) {
+        return repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
+                .map(foundAccount -> {
+                    validateUpdateAccount(foundAccount, account);
+                    mapper.update(foundAccount, account);
+                    return repository.save(foundAccount);
+                })
+                .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-        validateUpdateAccount(foundAccount, account);
-        mapper.update(foundAccount, account);
-        foundAccount.prepareUpdate(auditableUseCase.createAuditableForUpdate());
-        AccountEntity updatedAccount = repository.save(foundAccount);
-
-        return mapper.toDto(updatedAccount);
     }
 
     private void validateUpdateAccount(AccountEntity foundAccount, Account account) {
         boolean isDuplicatedEmail = !Objects.equals(foundAccount.getEmail(), account.email())
                 && repository.existsByEmail(account.email());
+
         boolean isDuplicatedPhone = !Objects.equals(foundAccount.getPhone(), account.phone())
                 && repository.existsByPhone(account.phone());
+
         boolean isDuplicatedIdentification = !Objects.equals(foundAccount.getIdentification(), account.identification())
                 && repository.existsByIdentification(account.identification());
+
         if(isDuplicatedEmail) {
             throw new ResourceDuplicateException("Email đã tồn tại");
         } else if(isDuplicatedPhone) {
@@ -117,30 +117,30 @@ public class AccountCommandService {
         }
     }
 
-    public Account updatePassword(Long accountId, String password) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        ValidationUtil.validateArgumentNotNull(password);
-        AccountEntity foundAccount = repository.findById(accountId)
+    @ValidateArgs
+    protected Account updatePassword(Long accountId, String password) {
+        return repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
+                .map(account -> {
+                    account.setPassword(passwordEncoder.bCryptpasswordEncoder().encode(password));
+                    return repository.save(account);
+                })
+                .map(mapper::toDto)
                 .orElseThrow(ResourceNotFoundException::new);
-        foundAccount.setPassword(passwordEncoder.bCryptpasswordEncoder().encode(password));
-        AccountEntity updatedAccount = repository.save(foundAccount);
-
-        return mapper.toDto(updatedAccount);
     }
 
-    public void delete(Long accountId) {
-        ValidationUtil.validateArgumentNotNull(accountId);
-        if(validateDelete(accountId)) {
-            AccountEntity account = repository.findById(accountId)
-                    .orElseThrow(ResourceNotFoundException::new);
-            repository.delete(account);
-        } else {
-            throw new ResourceNotValidException("Không thể xóa tài khoản");
-        }
+    @ValidateArgs
+    protected void delete(Long accountId) {
+        repository.findByAccountIdAndStatusCodeNotDeleted(accountId)
+                .map(account -> {
+                    account.setStatusCode(EDeleteStatus.DELETED.getCode());
+                    account.setStatusName(EDeleteStatus.DELETED.getName());
+                    return repository.save(account);
+                })
+                .map(mapper::toDto)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
-    public boolean validateDelete(Long accountId) {
+    public void validateDelete(Long accountId) {
         //TODO: Kiểm tra điều kiện xóa tài khoản
-        return true;
     }
 }

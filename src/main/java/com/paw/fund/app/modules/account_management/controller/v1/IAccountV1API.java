@@ -3,8 +3,6 @@ package com.paw.fund.app.modules.account_management.controller.v1;
 import com.paw.fund.app.modules.account_management.controller.models.AccountRequest;
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
 import com.paw.fund.app.modules.account_management.controller.models.AccountUpdatePasswordRequest;
-import com.paw.fund.app.modules.account_management.controller.models.AccountUpdateRequest;
-import com.paw.fund.app.modules.account_management.controller.models.verification.code.AccountVerificationCodeRequest;
 import com.paw.fund.app.modules.account_management.controller.models.verification.code.EmailVerificationCodeRequest;
 import com.paw.fund.utils.response.ValueResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,7 +52,7 @@ public interface IAccountV1API {
                     - Người dùng cập nhật thông tin cá nhân của tài khoản
                     - [AUTHENTICATED - Người dùng đã xác thực]
                     """)
-    ValueResponse<AccountResponse> selfChangeInfo(@RequestBody @Valid AccountUpdateRequest updateRequest);
+    ValueResponse<AccountResponse> selfChangeInfo(@RequestBody @Valid AccountRequest request);
 
     @PatchMapping("/self-change-password")
     @Operation(

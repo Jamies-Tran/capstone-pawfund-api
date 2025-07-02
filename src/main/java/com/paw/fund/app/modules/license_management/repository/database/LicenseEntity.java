@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.license_management.repository.database;
 
-import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
+import com.paw.fund.common.context.auditor.repository.database.AuditableEntity;
 import com.paw.fund.enums.ELicenseStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,9 +16,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 import org.springframework.util.StringUtils;
-
-import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter

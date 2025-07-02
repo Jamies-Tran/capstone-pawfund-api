@@ -13,7 +13,7 @@ public record ShelterAssignmentResponse(
         ShelterResponse shelter,
         Long petIntakeRegistrationId,
         PetIntakeRegistrationResponse petIntakeRegistration,
-        String reason,
+        String cancelReason,
         String statusCode,
         String statusName,
         LocalDateTime createdAt

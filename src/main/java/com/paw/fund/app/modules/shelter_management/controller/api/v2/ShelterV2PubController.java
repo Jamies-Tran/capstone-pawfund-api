@@ -50,6 +50,6 @@ public class ShelterV2PubController implements IShelterV2PubAPI {
         Page<ShelterResponse> responses = useCase.getShelterList(ShelterFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);
 
-        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK, API_VERSION);
+        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK);
     }
 }

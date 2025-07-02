@@ -34,6 +34,6 @@ public class FormReplyV1Controller implements IFormReplyV1API {
         FormReply formReply = mapper.toDto(request);
         FormReply saveFormReply = useCase.createFormReply(formReply);
 
-        return ValueResponse.success(mapper.toResponse(saveFormReply), HttpStatus.CREATED, API_VERSION);
+        return ValueResponse.success(mapper.toResponse(saveFormReply), HttpStatus.CREATED);
     }
 }

@@ -28,8 +28,7 @@ public class PawFundAuthenticationEntryPoint implements AuthenticationEntryPoint
         ValueResponse<?> errorResponse = ValueResponse
                 .error("Không có quyền truy cập.",
                         HttpStatus.FORBIDDEN,
-                        EErrorCode.NO_AUTHORITY.getCode(),
-                        API_VERSION);
+                        EErrorCode.NO_AUTHORITY.getCode());
         response.setContentType("application/json");
         response.setStatus(unauthorized.value());
         OutputStream os = response.getOutputStream();

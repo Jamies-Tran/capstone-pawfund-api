@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.form_management.repository.database.form;
 
-import com.paw.fund.app.modules.auditable_management.repository.database.AuditableEntity;
+import com.paw.fund.common.context.auditor.repository.database.AuditableEntity;
 import com.paw.fund.enums.EFormStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -25,6 +25,9 @@ public class FormEntity extends AuditableEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long formId;
+
+    @Column
+    Long shelterId;
 
     @Column
     String title;

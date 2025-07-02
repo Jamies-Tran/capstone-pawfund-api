@@ -1,6 +1,6 @@
 package com.paw.fund.app.modules.form_management.service.answer;
 
-import com.paw.fund.app.modules.auditable_management.service.usecase.IAuditableUseCase;
+
 import com.paw.fund.app.modules.form_management.domain.answer.Answer;
 import com.paw.fund.app.modules.form_management.domain.answer.IAnswerMapper;
 import com.paw.fund.app.modules.form_management.domain.answer.option.AnswerOption;
@@ -32,9 +32,6 @@ public class AnswerCommandService {
     IAnswerMapper mapper;
 
     @NonNull
-    IAuditableUseCase auditableUseCase;
-
-    @NonNull
     AnswerOptionCommandService answerOptionCommandService;
 
     public List<Answer> save(Long formResponseId, List<Answer> answers) {
@@ -42,7 +39,6 @@ public class AnswerCommandService {
                 .map(x -> {
                     AnswerEntity newAnswer = mapper.toEntity(x);
                     newAnswer.setFormResponseId(formResponseId);
-                    newAnswer.prepareSave(auditableUseCase.createAuditableForNew());
                     AnswerEntity saveAnswer = repository.save(newAnswer);
                     if(!CollectionUtils.isEmpty(x.options())) {
                         List<Long> optionIds = x.options().stream()
@@ -93,7 +89,6 @@ public class AnswerCommandService {
                         });
                     }
                     mapper.update(newAnswer, x);
-                    newAnswer.prepareUpdate(auditableUseCase.createAuditableForUpdate());
                     AnswerEntity updateAnswer = repository.save(newAnswer);
                     if(!CollectionUtils.isEmpty(x.options())) {
                         List<Option> saveOptions = answerOptionCommandService

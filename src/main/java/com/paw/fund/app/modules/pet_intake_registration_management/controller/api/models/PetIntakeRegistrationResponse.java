@@ -23,7 +23,7 @@ public record PetIntakeRegistrationResponse(
         BigDecimal latitude,
         BigDecimal longitude,
         List<VerificationMedia> medias,
-        String canceledReason,
+        String cancelReason,
         String statusCode,
         String statusName,
         LocalDateTime createdAt,

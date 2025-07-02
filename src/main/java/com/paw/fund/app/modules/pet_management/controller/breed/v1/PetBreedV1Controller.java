@@ -46,7 +46,7 @@ public class PetBreedV1Controller implements IPetBreedV1API {
         PetBreed petBreed = modelMapper.toDto(request, petTypeId);
         PetBreed savedPetBreed = useCase.createPetBreed(petBreed);
 
-        return ValueResponse.success(modelMapper.toResponse(savedPetBreed), HttpStatus.CREATED, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(savedPetBreed), HttpStatus.CREATED);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class PetBreedV1Controller implements IPetBreedV1API {
                 .map(modelMapper::toResponse)
                 .toList();
 
-        return ListResponse.success(savedResponses, HttpStatus.CREATED, API_VERSION);
+        return ListResponse.success(savedResponses, HttpStatus.CREATED);
     }
 
     @Override
@@ -73,6 +73,6 @@ public class PetBreedV1Controller implements IPetBreedV1API {
         Page<PetBreedResponse> responses = useCase.getPetBreedList(PetBreedFilter.of(searchCriteria, pageRequestCustom))
                 .map(modelMapper::toResponse);
 
-        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK, API_VERSION);
+        return PageResponse.success(responses.getContent(), Meta.of(responses), HttpStatus.OK);
     }
 }

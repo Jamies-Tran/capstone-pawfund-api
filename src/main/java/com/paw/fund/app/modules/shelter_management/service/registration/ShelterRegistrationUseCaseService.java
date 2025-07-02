@@ -1,10 +1,8 @@
 package com.paw.fund.app.modules.shelter_management.service.registration;
 
-import com.paw.fund.app.modules.account_management.domain.account.Account;
 import com.paw.fund.app.modules.account_management.service.account.AccountQueryService;
 import com.paw.fund.app.modules.account_management.domain.account.role.AccountRole;
 import com.paw.fund.app.modules.account_management.service.account.role.AccountRoleQueryService;
-import com.paw.fund.app.modules.account_management.domain.role.Role;
 import com.paw.fund.app.modules.shelter_management.aspect.PublishRegistration;
 import com.paw.fund.app.modules.shelter_management.aspect.SendMail;
 import com.paw.fund.app.modules.shelter_management.domain.registration.ShelterRegistration;
@@ -15,9 +13,7 @@ import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.S
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationReject;
 import com.paw.fund.app.modules.shelter_management.domain.usecase.registration.ShelterRegistrationSearchCriteria;
 import com.paw.fund.app.modules.shelter_management.service.usecase.IShelterRegistrationUseCase;
-import com.paw.fund.configuration.handler.exceptions.AuthenticationException;
-import com.paw.fund.configuration.request.context.RequestContext;
-import com.paw.fund.dto.CurrentAccountLogin;
+import com.paw.fund.common.context.request.RequestContext;
 import com.paw.fund.enums.ERole;
 import com.paw.fund.enums.EShelterRegistrationStatus;
 import com.paw.fund.utils.validation.ValidationUtil;
@@ -30,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -53,10 +48,7 @@ public class ShelterRegistrationUseCaseService implements IShelterRegistrationUs
 
     @Override
     public ShelterRegistrationNotification getRegistrationNotification(ShelterRegistrationFilter filter) {
-        List<String> accountRoleCodes = requestContext.getCurrentAccountLogin().roles()
-                .stream()
-                .map(Role::roleCode)
-                .toList();
+        List<String> accountRoleCodes = List.of();
         if(accountRoleCodes.contains(ERole.ADMIN.getCode())) {
             Page<ShelterRegistration> shelterRegistrations = queryService
                     .findAll(filter.searchCriteria(), filter.pageRequestCustom());
@@ -73,9 +65,10 @@ public class ShelterRegistrationUseCaseService implements IShelterRegistrationUs
 
     @Override
     public ShelterRegistration getShelterRegistrationDetail(ShelterRegistrationEmail email) {
-        Account account = accountQueryService.findByAccountEmail(email.value());
-
-        return queryService.findByAccountId(account.accountId());
+//        Account account = accountQueryService.findByAccountEmail(email.value());
+//
+//        return queryService.findByAccountId(account.accountId());
+        return null;
     }
 
 
@@ -88,7 +81,7 @@ public class ShelterRegistrationUseCaseService implements IShelterRegistrationUs
     @SendMail(confirmContent = "RECEIVED")
     public ShelterRegistration receiveShelterRegistration(ShelterRegistrationId shelterRegistrationId) {
         ValidationUtil.validateNotNullPointerException(shelterRegistrationId);
-        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+        //CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
 
         return commandService.updateStatusAndProcessById(
                 shelterRegistrationId.value(),
@@ -143,13 +136,12 @@ public class ShelterRegistrationUseCaseService implements IShelterRegistrationUs
     }
 
     private Long getProcessById() {
-        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
-        Role adminRole = currentAccountLogin.roles().stream()
-                .filter(x -> Objects.equals(x.roleCode(), ERole.ADMIN.getCode()))
-                .findAny()
-                .orElseThrow(AuthenticationException::new);
-        AccountRole accountRole = accountRoleQueryService
-                .findByRoleIdAndAccountId(adminRole.roleId(), currentAccountLogin.accountId());
+//        CurrentAccountLogin currentAccountLogin = requestContext.getCurrentAccountLogin();
+//        Role adminRole = currentAccountLogin.roles().stream()
+//                .filter(x -> Objects.equals(x.roleCode(), ERole.ADMIN.getCode()))
+//                .findAny()
+//                .orElseThrow(AuthenticationException::new);
+        AccountRole accountRole = null;
 
         return accountRole.accountRoleId();
     }

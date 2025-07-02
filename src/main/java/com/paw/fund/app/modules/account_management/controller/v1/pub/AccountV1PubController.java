@@ -5,12 +5,12 @@ import com.paw.fund.app.modules.account_management.controller.models.AccountResp
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
 import com.paw.fund.app.modules.account_management.controller.models.verification.code.AccountVerificationCodeRequest;
 import com.paw.fund.app.modules.account_management.domain.account.Account;
-import com.paw.fund.app.modules.account_management.domain.account.usecase.AccountSave;
-import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountFilter;
-import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountSearchCriteria;
-import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountVerification;
-import com.paw.fund.app.modules.account_management.service.account.usecase.IAccountUseCase;
-import com.paw.fund.app.modules.account_management.service.role.usecase.IRoleUseCase;
+import com.paw.fund.app.modules.account_management.domain.account.AccountSave;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountFilter;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountSearchCriteria;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountVerification;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.IAccountUseCase;
+import com.paw.fund.app.modules.account_management.domain.role.usecase.IRoleUseCase;
 import com.paw.fund.utils.request.PageRequestCustom;
 import com.paw.fund.utils.response.Meta;
 import com.paw.fund.utils.response.PageResponse;
@@ -19,8 +19,6 @@ import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,10 +31,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccountV1PubController implements IAccountV1PubAPI {
-    @NonFinal
-    @Value("${app.version}")
-    String API_VERSION;
-
     @NonNull
     IAccountUseCase useCase;
 
@@ -51,7 +45,7 @@ public class AccountV1PubController implements IAccountV1PubAPI {
         Account account = modelMapper.toDto(accountRequest);
         Account createdAccount = useCase.createAccount(AccountSave.of(account));
 
-        return ValueResponse.success(modelMapper.toResponse(createdAccount), HttpStatus.CREATED, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(createdAccount), HttpStatus.CREATED);
     }
 
     @Override
@@ -80,8 +74,7 @@ public class AccountV1PubController implements IAccountV1PubAPI {
         return PageResponse.success(
                 responses.getContent(),
                 Meta.of(responses),
-                HttpStatus.OK,
-                API_VERSION);
+                HttpStatus.OK);
     }
 
     @Override
@@ -90,6 +83,6 @@ public class AccountV1PubController implements IAccountV1PubAPI {
                 verificationCode.verificationCode());
         Account verifiedAccount = useCase.verifyCreatedAccount(accountVerification);
 
-        return ValueResponse.success(modelMapper.toResponse(verifiedAccount), HttpStatus.OK, API_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(verifiedAccount), HttpStatus.OK);
     }
 }

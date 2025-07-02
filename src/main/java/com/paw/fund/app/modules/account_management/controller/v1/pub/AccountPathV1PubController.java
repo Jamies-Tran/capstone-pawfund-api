@@ -3,15 +3,13 @@ package com.paw.fund.app.modules.account_management.controller.v1.pub;
 import com.paw.fund.app.modules.account_management.controller.models.AccountResponse;
 import com.paw.fund.app.modules.account_management.controller.models.IAccountModelMapper;
 import com.paw.fund.app.modules.account_management.domain.account.Account;
-import com.paw.fund.app.modules.account_management.domain.usecase.account.AccountId;
-import com.paw.fund.app.modules.account_management.service.account.usecase.IAccountUseCase;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.data.transfer.AccountId;
+import com.paw.fund.app.modules.account_management.domain.account.usecase.IAccountUseCase;
 import com.paw.fund.utils.response.ValueResponse;
 import lombok.AccessLevel;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,9 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AccountPathV1PubController implements IAccountPathV1PubAPI {
-    @NonFinal
-    @Value("${app.version}")
-    String APP_VERSION;
 
     @NonNull
     IAccountUseCase useCase;
@@ -33,6 +28,6 @@ public class AccountPathV1PubController implements IAccountPathV1PubAPI {
     public ValueResponse<AccountResponse> getAccountDetail(Long accountId) {
         Account account = useCase.getAccountDetail(AccountId.of(accountId));
 
-        return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK, APP_VERSION);
+        return ValueResponse.success(modelMapper.toResponse(account), HttpStatus.OK);
     }
 }
