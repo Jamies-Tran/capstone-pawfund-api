@@ -6,8 +6,16 @@ import lombok.Builder;
 
 @Builder
 public record AccountUpdatePasswordRequest(
-        @Schema(description = "Mật khẩu mới")
-        @NotNull(message = "Vui lòng nhập mật khẩu mới")
+        @Schema(
+                description = """
+                        Mật khẩu mới
+                        """
+        )
+        @NotNull(
+                message = """
+                        Vui lòng nhập mật khẩu mới
+                        """
+        )
         String password
 ) {
 }

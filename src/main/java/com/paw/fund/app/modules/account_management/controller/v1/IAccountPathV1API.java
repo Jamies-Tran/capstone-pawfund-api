@@ -20,17 +20,29 @@ public interface IAccountPathV1API {
     @PatchMapping("/active")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
-            summary = "Kích hoạt tài khoản",
+            summary = """
+                    Kích hoạt tài khoản
+                    """,
             description = """
                     - Admin kích hoạt tài khoản
                     - [ADMIN - Quản trị viên]
                     """)
-    ValueResponse<AccountResponse> activeAccount(@Schema(description = "Id tài khoản người dùng") @PathVariable Long accountId);
+    ValueResponse<AccountResponse> activeAccount(
+            @Schema(
+                    description = """
+                            Id tài khoản người dùng
+                            """
+            )
+            @PathVariable
+            Long accountId
+    );
 
     @PatchMapping("/inactive")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
-            summary = "Vô hiệu hóa tài khoản",
+            summary = """
+                    Vô hiệu hóa tài khoản
+                    """,
             description = """
                     - Admin vô hiệu hóa tài khoản
                     - [ADMIN - Quản trị viên]
@@ -43,7 +55,9 @@ public interface IAccountPathV1API {
     @PatchMapping("/change-password")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
-            summary = "Đổi mật khẩu",
+            summary = """
+                    Đổi mật khẩu
+                    """,
             description = """
                     - Admin đổi mật khẩu của tài khoản người dùng
                     - [ADMIN - Quản trị viên]
@@ -57,7 +71,9 @@ public interface IAccountPathV1API {
     @DeleteMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(
-            summary = "Xóa tài khoản",
+            summary = """
+                    Xóa tài khoản
+                    """,
             description = """
                     - Admin xóa tài khoản
                     - [ADMIN - Quản trị viên]
